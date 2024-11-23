@@ -538,11 +538,8 @@ const downloadFarmerPDF = () => {
   const anchor = document.createElement('a');
   anchor.href = filePath;
   anchor.download = 'RSBSA_Enrollment-Form_032021.pdf';
-
   document.body.appendChild(anchor);
-
   anchor.click();
-
   document.body.removeChild(anchor);
 };
 
