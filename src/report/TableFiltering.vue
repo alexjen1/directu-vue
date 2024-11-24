@@ -118,37 +118,26 @@ const fetchFarmers = async () => {
 
 // Filtered farmers based on selected columns and search query
 const filteredFarmers = computed(() => {
-  const query = searchQuery.value.toLowerCase(); // Normalize the search query
+  const query = searchQuery.value.toLowerCase();
   return farmers.value
     .filter(farmer => {
-      const matchesSearch =
-        farmer.reference_number?.toString().includes(query) ||
-        farmer.surname?.toLowerCase().includes(query) ||
-        farmer.first_name?.toLowerCase().includes(query) ||
-        farmer.extension_name?.toLowerCase().includes(query) ||
-        farmer.house_lot_bldg_no_purok?.toLowerCase().includes(query) ||
-        farmer.street_sitio_subdv?.toLowerCase().includes(query) ||
-        farmer.barangay?.toLowerCase().includes(query) ||
-        farmer.municipality_city?.toLowerCase().includes(query) ||
-        farmer.province?.toLowerCase().includes(query) ||
-        farmer.mobile_number?.toString().includes(query) ||
-        farmer.landline_number?.toString().includes(query) ||
-        farmer.date_of_birth?.toString().includes(query) ||
-        farmer.place_of_birth?.toLowerCase().includes(query) ||
-        farmer.religion?.toLowerCase().includes(query) ||
-        farmer.civil_status?.toLowerCase().includes(query) ||
-        farmer.sex?.toLowerCase() === query;
-
-      return matchesSearch; // Return true if the farmer matches the search query
+      // Check only selected columns
+      return selectedColumns.value.some(column => {
+        const fieldValue = farmer[column];
+        return fieldValue 
+          ? fieldValue.toString().toLowerCase().includes(query) 
+          : false;
+      });
     })
     .map(farmer => {
+      // Return only the selected columns for each farmer
       const filteredFarmer = {};
       selectedColumns.value.forEach(column => {
         filteredFarmer[column] = farmer[column];
       });
       return filteredFarmer;
     });
-  });
+});
 
 
 // Add selected column to the list

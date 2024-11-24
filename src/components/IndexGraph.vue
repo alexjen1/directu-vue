@@ -132,18 +132,23 @@
     currentPage.value = 1;
   });
   
-  // Paginate Farmers Data
   const filteredFarmers = computed(() => {
-    const query = searchQuery.value.toLowerCase();
-    return farmers.value.filter(farmer => {
-      return (
-        farmer.reference_number?.toString().includes(query) ||
-        (farmer.surname?.toLowerCase().includes(query) || '') || 
-        (farmer.first_name?.toLowerCase().includes(query) || '') ||
-        (farmer.extension_name?.toLowerCase().includes(query) || '') 
-      );
+  const query = searchQuery.value.toLowerCase();
+  return farmers.value.filter(farmer => {
+    // Check if the query matches any property of the farmer object
+    const matchesSearch = Object.values(farmer).some(value => {
+      if (value && typeof value === 'string') {
+        return value.toLowerCase().includes(query);
+      }
+      if (value && typeof value === 'number') {
+        return value.toString().includes(query);
+      }
+      return false;
     });
+
+    return matchesSearch;
   });
+});
   
   const totalPages = computed(() => {
     return Math.ceil(filteredFarmers.value.length / entriesPerPage.value);

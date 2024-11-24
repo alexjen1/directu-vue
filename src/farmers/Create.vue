@@ -238,6 +238,24 @@
                 <label>PLACE OF BIRTH:</label>
               </div>
               <div class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.place_of_birth_province_state"
+                  required
+                  spellcheck="false"
+                />
+                <label>Province/State:</label>
+              </div>
+              <div class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.place_of_birth_country"
+                  required
+                  spellcheck="false"
+                />
+                <label>Country:</label>
+              </div>
+              <div class="input-field">
                 <select v-model="selectedReligion" required spellcheck="false" class="black-select" >
                   <option value="christianity">Christianity</option>
                   <option value="islam">Islam</option>
@@ -1066,6 +1084,8 @@ const farmer = ref({
   landline_number: '',
   date_of_birth: '',
   place_of_birth: '',
+  place_of_birth_province_state: '',
+  place_of_birth_country: '',
   religion: '',
   civil_status: '',
   name_of_spouse_if_married: '',

@@ -101,14 +101,14 @@ const fetchFarmersData = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          refresh_token: refreshToken,  // Use refresh token to get a new access token
+          refresh_token: refreshToken, // Use refresh token to get a new access token
         }),
       });
 
       if (refreshResponse.status === 200) {
         const refreshData = await refreshResponse.json();
         const newAccessToken = refreshData.data.access_token;
-        const newRefreshToken = refreshData.data.refresh_token;  // New refresh token issued by the server
+        const newRefreshToken = refreshData.data.refresh_token; // New refresh token issued by the server
 
         // Store the new tokens
         localStorage.setItem('auth_token', newAccessToken);
@@ -122,8 +122,37 @@ const fetchFarmersData = async () => {
             'Content-Type': 'application/json',
           },
         });
+      } else if (refreshResponse.status === 401) {
+        // Refresh token expired, request a new refresh token or log the user out
+        const newTokenResponse = await fetch('http://localhost:8055/auth/request-new-tokens', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (newTokenResponse.status === 200) {
+          const newTokenData = await newTokenResponse.json();
+          const latestAccessToken = newTokenData.data.access_token;
+          const latestRefreshToken = newTokenData.data.refresh_token;
+
+          // Store the new tokens
+          localStorage.setItem('auth_token', latestAccessToken);
+          localStorage.setItem('refresh_token', latestRefreshToken);
+
+          // Retry the original request with the new access token
+          response = await fetch('http://localhost:8055/items/farmers', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${latestAccessToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+        } else {
+          alert('Session expired. Please log in again.');
+          return;
+        }
       } else {
-        // Refresh token also failed
         alert('Session expired. Please log in again.');
         return;
       }
@@ -140,6 +169,7 @@ const fetchFarmersData = async () => {
     console.error('Error fetching farmers data:', error);
   }
 };
+
 onMounted(fetchFarmersData);
 </script>
 

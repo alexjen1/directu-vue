@@ -150,7 +150,7 @@
       </div>
       <br>
       <div v-if="showUndo" class="undo-alert">
-        <p>Farmer deleted! <button @click="restoreDeletedFarmersSelected">Undo multiple</button></p>
+        <p>Farmer deleted! <button @click="restoreDeletedFarmersSelected">Undo Selected</button></p>
       </div>
 
       <!-- Success Alert -->
@@ -169,6 +169,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import axios from 'axios';
+import { PDFDocument, rgb } from 'pdf-lib';
 // import html2pdf from 'html2pdf.js';
 
 const router = useRouter();
@@ -323,8 +324,27 @@ const fetchFarmers = async () => {
         response = await axios.get('http://localhost:8055/items/farmers', {
           headers: { Authorization: `Bearer ${newAccessToken}` },
         });
+      } else if (refreshResponse.status === 401) {
+        // If the refresh token is also expired, request new tokens or log out
+        const newTokenResponse = await axios.post('http://localhost:8055/auth/request-new-tokens');
+
+        if (newTokenResponse.status === 200) {
+          const { access_token: latestAccessToken, refresh_token: latestRefreshToken } = newTokenResponse.data.data;
+
+          // Store the new tokens
+          localStorage.setItem('auth_token', latestAccessToken);
+          localStorage.setItem('refresh_token', latestRefreshToken);
+
+          // Retry the original request with the latest access token
+          response = await axios.get('http://localhost:8055/items/farmers', {
+            headers: { Authorization: `Bearer ${latestAccessToken}` },
+          });
+        } else {
+          alert('Session expired. Please log in again.');
+          return;
+        }
       } else {
-        alert('Session expired. Please log in again or Refresh to Restore the Token.');
+        alert('Session expired. Please log in again.');
         return;
       }
     }
@@ -363,12 +383,18 @@ const uniqueFarmingActivity = computed(() => {
 const filteredFarmers = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return farmers.value.filter(farmer => {
-    const matchesSearch =
-      farmer.reference_number?.toString().includes(query) ||
-      farmer.surname?.toLowerCase().includes(query) ||
-      farmer.first_name?.toLowerCase().includes(query) ||
-      farmer.extension_name?.toLowerCase().includes(query);
+    // Check if the query matches any property of the farmer object
+    const matchesSearch = Object.values(farmer).some(value => {
+      if (value && typeof value === 'string') {
+        return value.toLowerCase().includes(query);
+      }
+      if (value && typeof value === 'number') {
+        return value.toString().includes(query);
+      }
+      return false;
+    });
 
+    // Match the selected main livelihood
     const matchesActivity = selectedMainLivelihood.value
       ? farmer.main_livelihood.includes(selectedMainLivelihood.value)
       : true;
@@ -377,16 +403,21 @@ const filteredFarmers = computed(() => {
     const matchesBarangay = selectedbarangay.value
       ? farmer.barangay === selectedbarangay.value
       : true;
+
+    // Match the selected gender
     const matchesGender = selectedGender.value
       ? farmer.sex === selectedGender.value
       : true;
-      const matchesFarmingActivity = selectedFarmingActivity.value
+
+    // Match the selected farming activity
+    const matchesFarmingActivity = selectedFarmingActivity.value
       ? farmer.type_of_farming_activity.join(', ') === selectedFarmingActivity.value
       : true;
 
     return matchesSearch && matchesActivity && matchesBarangay && matchesGender && matchesFarmingActivity;
   });
 });
+
 
 
 const totalPages = computed(() => {
@@ -532,12 +563,208 @@ const closeAlert = () => {
   alertMessage.value = '';
 };
 
-const downloadFarmerPDF = () => {
+const downloadFarmerPDF = async (id) => {
+  // Find the farmer using their ID
+  const farmer = farmers.value.find(farmer => farmer.id === id);
+  if (!farmer) {
+    alert('Farmer not found!');
+    return;
+  }
+  const {
+  reference_number,
+  surname,
+  first_name,
+  middle_name,
+  extension_name,
+  house_lot_bldg_no_purok,
+  street_sitio_subdv,
+  barangay,
+  municipality_city,
+  province,
+  region,
+  place_of_birth,
+  place_of_birth_province_state,
+  place_of_birth_country,
+  name_of_spouse_if_married,
+  mothers_maiden_name,
+  if_no_name_of_household_heads,
+  relationship,
+  no_of_living_household_members,
+  no_of_male,
+  no_of_female,
+  if_yes_specify_id_type,
+  id_number,
+  if_yes_spefify_farmers_association,
+  person_to_notify_in_case_of_emergency,
+} = farmer;
+
+  // Path to the existing PDF
   const filePath = '/src/assets/file/RSBSA_Enrollment-Form_032021.pdf';
 
+  // Fetch the existing PDF
+  const existingPdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
+
+  // Load the PDF into PDF-lib
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+  // Get the first page of the PDF
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[0];
+
+  // Add the farmer's surname to the PDF
+  firstPage.drawText(` ${surname}`, {
+    x: 110, // (width)
+    y: 715, //  (height)
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${first_name}`, {
+    x: 300, 
+    y: 715, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${middle_name}`, {
+    x: 110, 
+    y: 687, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${extension_name}`, {
+    x: 300, 
+    y: 687, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${house_lot_bldg_no_purok}`, {
+    x: 72, 
+    y: 655, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${street_sitio_subdv}`, {
+    x: 242, 
+    y: 655, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${barangay}`, {
+    x: 412, 
+    y: 655, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${municipality_city}`, {
+    x: 72, 
+    y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${province}`, {
+    x: 242, 
+    y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${region}`, {
+    x: 412, 
+    y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${place_of_birth}`, {
+    x: 205, 
+    y: 568,  
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${place_of_birth_province_state}`, {
+    x: 155, 
+    y: 556,  
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${place_of_birth_country}`, {
+    x: 240, 
+    y: 556,  
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${name_of_spouse_if_married}`, {
+    x: 110, 
+    y: 485, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${mothers_maiden_name}`, {
+    x: 110, 
+    y: 455, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${if_no_name_of_household_heads}`, {
+    x: 155, 
+    y: 420, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${relationship}`, {
+    x: 155, 
+    y: 403, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${no_of_living_household_members}`, {
+    x: 155, 
+    y: 385, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${no_of_male}`, {
+    x: 100, 
+    y: 368, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${no_of_female}`, {
+    x: 245, 
+    y: 368, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${if_yes_specify_id_type}`, {
+    x: 400, 
+    y: 460, 
+    size: 8,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${id_number}`, {
+    x: 400, 
+    y: 448, 
+    size: 8,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${if_yes_spefify_farmers_association}`, {
+    x: 370, 
+    y: 415, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${person_to_notify_in_case_of_emergency}`, {
+    x: 400, 
+    y: 390, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+
+  // Serialize the PDF to bytes
+  const pdfBytes = await pdfDoc.save();
+
+  // Create a blob and download the modified PDF
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const anchor = document.createElement('a');
-  anchor.href = filePath;
-  anchor.download = 'RSBSA_Enrollment-Form_032021.pdf';
+  anchor.href = URL.createObjectURL(blob);
+  anchor.download = `RSBSA_Enrollment-Form_${reference_number}.pdf`;
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);

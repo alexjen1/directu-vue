@@ -81,7 +81,7 @@ input:valid ~ label {
   display: flex;
   flex-wrap: wrap;
   margin-left: 55px;
-  gap: 10px 150px; /* Gap between the input fields: 10px vertical, 20px horizontal */
+  gap: 10px 100px; /* Gap between the input fields: 10px vertical, 20px horizontal */
 }
 .input-field-container {
   display: flex;
