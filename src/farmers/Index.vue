@@ -235,7 +235,7 @@ const deleteSelectedFarmers = async () => {
           await permanentlyDeleteFarmerSelected(id, farmerToPermanentlyDelete);
         }
       }
-    }, 200000); // Adjust the timeout duration as needed
+    }, 10000); // Adjust the timeout duration as needed
 
     // Reset selected farmers after deletion
     selectedFarmers.value = [];
@@ -411,8 +411,9 @@ const filteredFarmers = computed(() => {
 
     // Match the selected farming activity
     const matchesFarmingActivity = selectedFarmingActivity.value
-      ? farmer.type_of_farming_activity.join(', ') === selectedFarmingActivity.value
+      ? farmer.type_of_farming_activity.join(', ').toLowerCase().includes(selectedFarmingActivity.value.toLowerCase())
       : true;
+
 
     return matchesSearch && matchesActivity && matchesBarangay && matchesGender && matchesFarmingActivity;
   });
@@ -496,7 +497,7 @@ const deleteFarmer = async (id) => {
       if (showUndo.value) {
         await permanentlyDeleteFarmer(deletedFarmerId.value, deletedFarmer); 
       }
-    }, 200000); 
+    }, 10000); 
 
   } catch (err) {
     alert('Error deleting farmer: ' + err);

@@ -380,7 +380,7 @@ hr {
   cursor: pointer;
   align-items: flex-start;
   margin-bottom: 15px;
-  font-size: 18px;
+  font-size: 15px;
 }
 .settings{
   background-color: white;
@@ -388,7 +388,7 @@ hr {
   cursor: pointer;
   align-items: flex-start;
   margin-bottom: 15px;
-  font-size: 18px;
+  font-size: 15px;
 }
 .switch {
   position: relative;

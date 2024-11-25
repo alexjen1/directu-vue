@@ -71,6 +71,7 @@
                   <option value="Updating">Updating</option>
                 </select>
                 <label>Enrollment Type:</label>
+                <span class="arrow-down"></span>
               </div>
               <div class="input-field">
                 <input
@@ -81,7 +82,8 @@
                 />
                 <label>Reference Number:</label>
               </div>
-              <br>
+            </div>
+              <div class="row mb-3">
               <div class="input-field">
                 <input
                   type="text"
@@ -119,14 +121,24 @@
                 <label>EXTENSION NAME:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.sex"
-                  required
-                  spellcheck="false"
-                />
-                <label>GENDER:</label>
-              </div>
+  <select v-model="farmer.sex" spellcheck="false" class="black-select">
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+    <option value="Other">Other</option>
+    <option v-if="farmer.sex && !['male', 'female', 'Other'].includes(farmer.sex)" :value="farmer.sex">
+      {{ farmer.sex }}
+    </option>
+  </select>
+  <label>Gender:</label>
+  <span class="arrow-down"></span>
+</div>
+
+<div v-if="isOtherSexSelected" class="input-field">
+  <input type="text" v-model="farmer.sex" spellcheck="false" />
+  <label>Please specify your sex:</label>
+</div>
+
+
               <div class="input-field">
                 <input
                   type="text"
@@ -921,6 +933,9 @@ const farmer = ref({
   for_agri_youth_other: '',
 
 });
+
+const isOtherSexSelected = computed(() => farmer.value.sex === 'Other');
+
 
 // List of checkboxes for main livelihood
 const livelihoodOptions = [
