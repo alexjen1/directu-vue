@@ -64,8 +64,9 @@
           <select id="showEntries" class="form-select" v-model="entriesPerPage" @change="changePage(1)">
             <option value="3">3</option>
             <option value="10">10</option>
-            <option value="20">20</option>
+            <option value="25">25</option>
             <option value="30">30</option>
+            <option value="50">50</option>
             <option value="-1">All</option>
           </select>
         </div>

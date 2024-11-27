@@ -57,7 +57,7 @@
             Farm Profile II
           </button>
         </router-link>
-        <router-link to="#">
+        <!-- <router-link to="#">
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 6 }"
@@ -66,7 +66,7 @@
           >
             Uploads (id,image)
           </button>
-        </router-link>
+        </router-link> -->
       </div>
       <br>
       <br>
@@ -842,7 +842,7 @@
                 <table v-if="showFarmTable2" id="farmTable2">
                     <thead>
                         <tr>
-                          <th>Farm Parcel No.</th>
+                            <th>Farm Parcel No.</th>
                             <th>Farm Land Description</th>
                             <th>CROP/COMMODITY <br>(Rice/Corn/HVC/Livestock/Poultry/Agri-fishery) <br> For Livestock & Poultry <br>(specify type of animal)</th>
                             <th>SIZE (ha)</th>
@@ -988,13 +988,13 @@
                 <table v-if="showFarmTable3" id="farmTable3">
                     <thead>
                         <tr>
-                            <th>Farm Parcel No.</th>
+                          <th>Farm Parcel No.</th>
                             <th>Farm Land Description</th>
-                            <th>CROP/COMMODITY</th>
+                            <th>CROP/COMMODITY <br>(Rice/Corn/HVC/Livestock/Poultry/Agri-fishery) <br> For Livestock & Poultry <br>(specify type of animal)</th>
                             <th>SIZE (ha)</th>
-                            <th>No. of Head</th>
+                            <th>No. of Head <br>(For Livestock and Poultry)</th>
                             <th>Farm Type</th>
-                            <th>Organic Practitioner</th>
+                            <th>Organic Practitioner <br>(Y/N)</th>
                             <th>Remarks</th>
                         </tr>
                     </thead>
@@ -1133,14 +1133,14 @@
             </div>
         </div>
 
-        <div v-if="isHovered === 6" id="personalInfoI" class="personal-info-section">
+        <!-- <div v-if="isHovered === 6" id="personalInfoI" class="personal-info-section">
             <div class="row mb-3">
-              <!-- <input type="file" @change="onImageSelected" accept="image/*" />
+              <input type="file" @change="onImageSelected" accept="image/*" />
               <div v-if="farmer.image" class="image-preview" style="margin-top: -60px; margin-left: 10px">
                 <img :src="farmer.image" alt="Selected Image" width="220" height="150" />
-              </div> -->
               </div>
-        </div>
+              </div>
+        </div> -->
 
         <div v-if="alertMessage" class="alert-box">
           <i class="fa-regular fa-circle-check fa-5x" style="color: #63E6BE;"></i>
@@ -1180,8 +1180,6 @@ const showNoOfHeads2 = ref(false);
 const showNoOfHeads3 = ref(false);
 const showNoOfHeads4 = ref(false);
 const showNoOfHeads5 = ref(false);
-
-
 const showCropInput2_2 = ref(false);
 const showCropInput3_2 = ref(false);
 const showCropInput4_2 = ref(false);
@@ -1194,7 +1192,6 @@ const showNoOfHeads2_2 = ref(false);
 const showNoOfHeads3_2 = ref(false);
 const showNoOfHeads4_2 = ref(false);
 const showNoOfHeads5_2 = ref(false);
-
 const showCropInput2_3 = ref(false);
 const showCropInput3_3 = ref(false);
 const showCropInput4_3 = ref(false);

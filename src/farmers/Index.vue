@@ -101,12 +101,26 @@
                 <button class="action-button delete" @click="deleteFarmer(farmer.id)">
                   <i class="fas fa-trash-alt"></i>
                 </button>
-                <button class="action-button download" @click="downloadFarmerPDF(farmer.id)">
+                <!-- <button class="action-button download" @click="downloadFarmerPDF(farmer.id)">
                   <i class="fas fa-download"></i>
-                </button>
-                <!-- <button class="action-button option" @click="(farmer.id)">
-                  <i class="fa-solid fa-ellipsis-vertical"></i>
                 </button> -->
+                <!-- <button class="action-button edit" @click="showFarmer(farmer.id)">
+                  <i class="fas fa-eye"></i>
+                </button> -->
+                <!-- Option Button -->
+                <button class="action-button option" @click="toggleOptions(farmer.id)">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+
+                <!-- Option Text that will appear below -->
+                <div v-if="showOptions[farmer.id]" class="option-text">
+                  <button1 @click="downloadFarmerPDF(farmer.id)"><i class="fas fa-download"></i> Download</button1>
+                  <br>
+                  <!-- <button1 @click="showFarmer(farmer.id)"><i class="fas fa-book"></i> Show</button1> -->
+                  <button1 @click="showMaintenance">
+                    <i class="fas fa-book"></i> Show
+                  </button1>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -114,7 +128,10 @@
       </div>
       <div class="d-flex justify-content-end">
         <button v-if="selectedFarmers.length > 0" @click="deleteSelectedFarmers" class=" btn-danger">
-          Delete Selected Farmers
+          <i class="fas fa-trash-alt selecteddelete"></i> Delete Selected Farmers
+        </button>
+        <button v-if="selectedFarmers.length > 0" @click="downloadSelectedFarmersPDF" class="btn-warning">
+          <i class="fas fa-download"></i> Download Selected Farmers
         </button>
       </div>
 
@@ -124,8 +141,9 @@
         <div class="show-entries-dropdown">
           <select id="showEntries" class="form-select" v-model="entriesPerPage" @change="changePage(1)">
             <option value="10">10</option>
-            <option value="20">20</option>
+            <option value="25">25</option>
             <option value="30">30</option>
+            <option value="50">50</option>
             <option value="-1">All</option>
           </select>
         </div>
@@ -165,7 +183,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import axios from 'axios';
@@ -186,6 +204,48 @@ const selectedbarangay = ref('');
 const selectedGender = ref(''); 
 const selectedFarmingActivity = ref(''); 
 const selectedFarmers = ref([]);
+
+const showOptions = ref({}); 
+
+// Method to toggle options dropdown for a specific farmer
+const toggleOptions = (farmerId) => {
+  // Check if the current farmer's dropdown is already open
+  const isCurrentlyVisible = showOptions.value[farmerId];
+
+  // Close all dropdowns
+  Object.keys(showOptions.value).forEach((key) => {
+    showOptions.value[key] = false;
+  });
+
+  // Toggle the current farmer's dropdown based on its previous state
+  showOptions.value[farmerId] = !isCurrentlyVisible;
+};
+const showMaintenance = () => {
+  alert('This feature is currently under maintenance. Please try again later.');
+};
+
+// Method to hide all options when clicking outside
+const hideAllOptions = () => {
+  Object.keys(showOptions.value).forEach((key) => {
+    showOptions.value[key] = false;
+  });
+};
+
+// Listen for outside clicks
+const handleClickOutside = (event) => {
+  const dropdowns = document.querySelectorAll('.option-text, .action-button.option');
+  let clickedInside = false;
+
+  dropdowns.forEach((dropdown) => {
+    if (dropdown.contains(event.target)) {
+      clickedInside = true;
+    }
+  });
+
+  if (!clickedInside) {
+    hideAllOptions(); // Hide all options if clicked outside
+  }
+};
 
 const isAllSelected = computed(() => {
   return selectedFarmers.value.length === paginatedFarmers.value.length;
@@ -208,25 +268,21 @@ const deleteSelectedFarmers = async () => {
   const farmersToDelete = selectedFarmers.value.map(id => farmers.value.find(farmer => farmer.id === id));
 
   try {
-    // Mark each selected farmer as deleted (soft delete)
     for (const farmer of farmersToDelete) {
       await axios.patch(`http://localhost:8055/items/farmers/${farmer.id}`, {
-        deleted: true,  // Soft delete
+        deleted: true,  
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Log activity for each deleted farmer
       logActivity(email, `Temporary Deleted farmer with reference number: ${farmer.reference_number}`);
     }
 
-    // Update farmers list to reflect the deletion
     farmers.value = farmers.value.filter(farmer => !selectedFarmers.value.includes(farmer.id));
     alertMessage.value = 'Selected farmers have been deleted!';
 
-    // Show Undo option
     showUndo.value = true;
-    deletedFarmerId.value = farmersToDelete.map(farmer => farmer.id); // Store deleted farmer IDs
+    deletedFarmerId.value = farmersToDelete.map(farmer => farmer.id); 
 
     setTimeout(async () => {
       if (showUndo.value) {
@@ -235,9 +291,8 @@ const deleteSelectedFarmers = async () => {
           await permanentlyDeleteFarmerSelected(id, farmerToPermanentlyDelete);
         }
       }
-    }, 10000); // Adjust the timeout duration as needed
+    }, 10000); 
 
-    // Reset selected farmers after deletion
     selectedFarmers.value = [];
   } catch (err) {
     console.error('Error deleting selected farmers:', err);
@@ -247,7 +302,6 @@ const deleteSelectedFarmers = async () => {
 // Permanent Deletion of Farmer
 const permanentlyDeleteFarmerSelected = async (id, deletedFarmer) => {
   try {
-    // Permanently delete the farmer from the database
     await axios.delete(`http://localhost:8055/items/farmers/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -256,7 +310,6 @@ const permanentlyDeleteFarmerSelected = async (id, deletedFarmer) => {
     const email = localStorage.getItem('email');
     logActivity(email, `Permanently deleted farmer with reference number: ${deletedFarmer?.reference_number}`);
 
-    // Update farmers list to reflect the permanent deletion
     farmers.value = farmers.value.filter(farmer => farmer.id !== id);
     alertMessage.value = 'Farmer Permanently Deleted!';
 
@@ -266,21 +319,15 @@ const permanentlyDeleteFarmerSelected = async (id, deletedFarmer) => {
   }
 };
 
-// Restore the deleted farmers
 const restoreDeletedFarmersSelected = async () => {
   for (const id of deletedFarmerId.value) {
     try {
-      // Restore the farmer by setting 'deleted' to false
       await axios.patch(`http://localhost:8055/items/farmers/${id}`, {
         deleted: false,  // Restore the record
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Fetch the updated list of farmers after restoration
       await fetchFarmers();
-
-      // Log activity for the restoration
       const restoredFarmer = farmers.value.find(farmer => farmer.id === id);
       if (restoredFarmer && restoredFarmer.reference_number) {
         const email = localStorage.getItem('email');
@@ -292,6 +339,208 @@ const restoreDeletedFarmersSelected = async () => {
   }
 
   showUndo.value = false;
+};
+
+const downloadSelectedFarmersPDF = async () => {
+  const confirmDelete = confirm('Are you sure you want to download the selected farmers?');
+  if (!confirmDelete) return;
+  if (selectedFarmers.value.length === 0) {
+    alert('No farmers selected for download!');
+    return;
+  }
+  for (const farmerId of selectedFarmers.value) {
+    await downloadFarmerPDF(farmerId);
+  }
+  const {
+  reference_number,
+  surname,
+  first_name,
+  middle_name,
+  extension_name,
+  house_lot_bldg_no_purok,
+  street_sitio_subdv,
+  barangay,
+  municipality_city,
+  province,
+  region,
+  place_of_birth,
+  place_of_birth_province_state,
+  place_of_birth_country,
+  name_of_spouse_if_married,
+  mothers_maiden_name,
+  if_no_name_of_household_heads,
+  relationship,
+  no_of_living_household_members,
+  no_of_male,
+  no_of_female,
+  if_yes_specify_id_type,
+  id_number,
+  if_yes_spefify_farmers_association,
+  person_to_notify_in_case_of_emergency,
+} = farmer;
+
+  const filePath = '/src/assets/file/RSBSA_Enrollment-Form_032021.pdf';
+  const existingPdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[0];
+
+  firstPage.drawText(` ${surname}`, {
+    x: 110, 
+    y: 715, 
+    size: 12,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${first_name}`, {
+    x: 300, 
+    y: 715, 
+    size: 12,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${middle_name}`, {
+    x: 110, 
+    y: 687, 
+    size: 12,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${extension_name}`, {
+    x: 300, 
+    y: 687, 
+    size: 12,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${house_lot_bldg_no_purok}`, {
+    x: 72, 
+    y: 655, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${street_sitio_subdv}`, {
+    x: 242, 
+    y: 655, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${barangay}`, {
+    x: 412, 
+    y: 655, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${municipality_city}`, {
+    x: 72, 
+    y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${province}`, {
+    x: 242, 
+    y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${region}`, {
+    x: 412, 
+    y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${place_of_birth}`, {
+    x: 205, 
+    y: 568,  
+    size: 6,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${place_of_birth_province_state}`, {
+    x: 155, 
+    y: 556,  
+    size: 6,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${place_of_birth_country}`, {
+    x: 240, 
+    y: 556,  
+    size: 6,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${name_of_spouse_if_married}`, {
+    x: 110, 
+    y: 485, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${mothers_maiden_name}`, {
+    x: 110, 
+    y: 455, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${if_no_name_of_household_heads}`, {
+    x: 155, 
+    y: 420, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${relationship}`, {
+    x: 155, 
+    y: 403, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${no_of_living_household_members}`, {
+    x: 155, 
+    y: 385, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${no_of_male}`, {
+    x: 100, 
+    y: 368, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${no_of_female}`, {
+    x: 245, 
+    y: 368, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${if_yes_specify_id_type}`, {
+    x: 400, 
+    y: 460, 
+    size: 8,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${id_number}`, {
+    x: 400, 
+    y: 448, 
+    size: 8,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${if_yes_spefify_farmers_association}`, {
+    x: 370, 
+    y: 415, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${person_to_notify_in_case_of_emergency}`, {
+    x: 400, 
+    y: 390, 
+    size: 10,
+    color: rgb(0, 0, 0), 
+  });
+
+  // Serialize the PDF to bytes
+  const pdfBytes = await pdfDoc.save();
+
+  // Create a blob and download the modified PDF
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const anchor = document.createElement('a');
+  anchor.href = URL.createObjectURL(blob);
+  anchor.download = `RSBSA_Enrollment-Form_${reference_number}.pdf`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
 };
 
 // Fetch Farmers Data
@@ -441,6 +690,9 @@ const changePage = (page) => {
 const editFarmer = (id) => {
   router.push(`/edit-farmer/${id}`);
 };
+const showFarmer = (id) => {
+  router.push(`/show-farmer/${id}`);
+};
 // Function to log activity (email, time, and action) to localStorage
 const logActivity = async (email, action) => {
   const token = localStorage.getItem('auth_token'); 
@@ -583,6 +835,7 @@ const downloadFarmerPDF = async (id) => {
   municipality_city,
   province,
   region,
+  mobile_number,
   place_of_birth,
   place_of_birth_province_state,
   place_of_birth_country,
@@ -597,6 +850,11 @@ const downloadFarmerPDF = async (id) => {
   id_number,
   if_yes_spefify_farmers_association,
   person_to_notify_in_case_of_emergency,
+  other_crop_specify,
+  livestock_specify,
+  poultry_specify,
+  for_farmworkers_other,
+  for_fishfolk_other,
 } = farmer;
 
   // Path to the existing PDF
@@ -670,6 +928,12 @@ const downloadFarmerPDF = async (id) => {
   firstPage.drawText(` ${region}`, {
     x: 412, 
     y: 625, 
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${mobile_number}`, {
+    x: 35, 
+    y: 591, 
     size: 10,
     color: rgb(0, 0, 0), // Black color
   });
@@ -749,19 +1013,71 @@ const downloadFarmerPDF = async (id) => {
     x: 370, 
     y: 415, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${person_to_notify_in_case_of_emergency}`, {
     x: 400, 
     y: 390, 
     size: 10,
+    color: rgb(0, 0, 0), 
+  });
+  firstPage.drawText(` ${other_crop_specify}`, {
+    x: 100, 
+    y: 245, 
+    size: 8,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${livestock_specify}`, {
+    x: 100, 
+    y: 220, 
+    size: 8,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${poultry_specify}`, {
+    x: 100, 
+    y: 195, 
+    size: 8,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${surname}`, {
+    x: 110, // (width)
+    y: 75, //  (height)
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${first_name}`, {
+    x: 300, 
+    y: 75, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${middle_name}`, {
+    x: 110, 
+    y: 46, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${extension_name}`, {
+    x: 300, 
+    y: 46, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${for_farmworkers_other}`, {
+    x: 220, 
+    y: 195, 
+    size: 8,
+    color: rgb(0, 0, 0), // Black color
+  });
+  firstPage.drawText(` ${for_fishfolk_other}`, {
+    x: 330, 
+    y: 195, 
+    size: 8,
     color: rgb(0, 0, 0), // Black color
   });
 
-  // Serialize the PDF to bytes
   const pdfBytes = await pdfDoc.save();
 
-  // Create a blob and download the modified PDF
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const anchor = document.createElement('a');
   anchor.href = URL.createObjectURL(blob);
@@ -771,7 +1087,13 @@ const downloadFarmerPDF = async (id) => {
   document.body.removeChild(anchor);
 };
 
-onMounted(fetchFarmers);
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+  fetchFarmers(); 
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 
@@ -848,7 +1170,7 @@ onMounted(fetchFarmers);
   }
   
   .table-responsive {
-    overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
+    overflow-x: auto;
   }
   
   .table {
@@ -867,7 +1189,7 @@ onMounted(fetchFarmers);
   }
   .table td {
   border-bottom: 1px solid #d7d7d7;
-  border-left: none; /* Default: No vertical lines */
+  border-left: none; 
   border-right: none;
 }
 
@@ -879,9 +1201,9 @@ onMounted(fetchFarmers);
   border-right: 1px solid #F5F5F5;
 }
 .table th {
-  border-top: 1px solid #ddd; /* Horizontal line */
+  border-top: 1px solid #ddd; 
   border-bottom: 1px solid #ddd;
-  border-left: none; /* Default: No vertical lines */
+  border-left: none; 
   border-right: none;
 }
 
@@ -893,40 +1215,50 @@ onMounted(fetchFarmers);
     font-weight: bold;
   }
   
-  /* New style for table data text */
   .table td {
     color: black;
   }
   
-  /* Style for action buttons */
   .action-button {
     border: none;
     background: none;
     cursor: pointer;
-    font-size: 1.4rem; /* Increase icon size */
-    margin-right: 0.5rem; /* Space between icons */
+    font-size: 1.4rem; 
+    margin-right: 0.5rem; 
   }
   
   .edit {
-    color: #387e90; /* Green color for edit icon */
+    color: #387e90; 
   }
   
   .delete {
-    color: #e88955; /* Red color for delete icon */
+    color: #e88955; 
+  }
+  .selecteddelete {
+    color: white;
   }
   .btn-danger {
     color: white;
-    background: red;
+    background: #e88955;
     border: none;
     width: 10%;
     height: 35px;
     border-radius: 5px;
   }
+  .btn-warning {
+    color: white;
+    background: #46cab6;
+    border: none;
+    width: 10%;
+    height: 35px;
+    border-radius: 5px;
+    margin-right: 79%;
+  }
   .download{
     color: #46cab6;
   }
   .option{
-    color: white;
+    color: #46cab6;
   }
   .pagination-controls {
   display: flex;
@@ -1004,19 +1336,38 @@ onMounted(fetchFarmers);
     border-radius: 4px;
     text-decoration: none;
     color: white;
-    background-color: #7e4ee6; /* Bootstrap primary color */
-    /* border: 1px solid white;  */
+    background-color: #7e4ee6;
     transition: background-color 0.3s;
-    position: absolute; /* Position it relative to the nearest positioned ancestor */
+    position: absolute;
     right: 34px; 
     top: 195px; 
 }
   .btn:hover {
-    background-color: #7e4ee6; /* Darker shade for hover effect */
+    background-color: #7e4ee6; 
   }
   h1 {
     color: black;
   }
+  .option-text {
+    background-color: white;
+    padding: 8px;
+    margin-top: 10px;
+    margin-left: -25px;
+    position: absolute;
+    cursor: pointer;
+    width: 120px;
+    border-radius: 7px;
+  }
+  button {
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+  font-size: 1em;
+}
+button1:hover {
+  color: #7e4ee6;
+}
   
   @media (max-width: 768px) {
     .content-box {
@@ -1045,7 +1396,7 @@ onMounted(fetchFarmers);
       font-size: 0.875rem; /* Smaller font size on smaller screens */
     }
   }
-  
+
   @media (max-width: 576px) {
     .content-box {
       padding: 1rem;

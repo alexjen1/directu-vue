@@ -58,7 +58,7 @@ const routes = [
     component: Index,
   },
   {
-    path: '/show-farmers',
+    path: '/show-farmer/:id',
     name: 'Show',
     component: Show,
   },
