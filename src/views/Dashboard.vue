@@ -80,113 +80,76 @@ const router = useRouter();
 const farmersCount = ref(0);
 
 const fetchFarmersData = async () => {
-  const getNewTokens = async () => {
-    try {
-      const newTokenResponse = await fetch('http://localhost:8055/auth/request-new-tokens', {
+  const token = localStorage.getItem('auth_token');
+  const refreshToken = localStorage.getItem('refresh_token');
+
+  try {
+    // First attempt to fetch data with the current access token
+    let response = await fetch('http://localhost:8055/items/farmers', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 401) {
+      // Token expired, attempt to refresh
+      const refreshResponse = await fetch('http://localhost:8055/auth/refresh', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          refresh_token: refreshToken,  // Use refresh token to get a new access token
+        }),
       });
 
-      if (newTokenResponse.status === 200) {
-        const newTokenData = await newTokenResponse.json();
-        const latestAccessToken = newTokenData.data.access_token;
-        const latestRefreshToken = newTokenData.data.refresh_token;
+      if (refreshResponse.status === 200) {
+        const refreshData = await refreshResponse.json();
+        const newAccessToken = refreshData.data.access_token;
+        const newRefreshToken = refreshData.data.refresh_token;  // New refresh token issued by the server
 
-        localStorage.setItem('auth_token', latestAccessToken);
-        localStorage.setItem('refresh_token', latestRefreshToken);
+        // Store the new tokens
+        localStorage.setItem('auth_token', newAccessToken);
+        localStorage.setItem('refresh_token', newRefreshToken);
 
-        return { latestAccessToken, latestRefreshToken };
-      } else {
-        throw new Error('Unable to fetch new tokens. Please log in again.');
-      }
-    } catch (error) {
-      console.error('Error requesting new tokens:', error);
-      alert('Session expired. Please log in again.');
-      throw error;
-    }
-  };
-
-  const fetchWithRetry = async (retryCount = 1) => {
-    if (retryCount === 0) {
-      console.error('Maximum retry attempts reached.');
-      alert('Unable to fetch data. Please try again later.');
-      return;
-    }
-
-    let token = localStorage.getItem('auth_token');
-    let refreshToken = localStorage.getItem('refresh_token');
-
-    try {
-      let response = await fetch('http://localhost:8055/items/farmers', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.status === 401) {
-        // Attempt to refresh the access token
-        const refreshResponse = await fetch('http://localhost:8055/auth/refresh', {
-          method: 'POST',
+        // Retry the original request with the new access token
+        response = await fetch('http://localhost:8055/items/farmers', {
+          method: 'GET',
           headers: {
+            'Authorization': `Bearer ${newAccessToken}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ refresh_token: refreshToken }),
         });
-
-        if (refreshResponse.status === 200) {
-          const refreshData = await refreshResponse.json();
-          token = refreshData.data.access_token;
-          refreshToken = refreshData.data.refresh_token;
-
-          localStorage.setItem('auth_token', token);
-          localStorage.setItem('refresh_token', refreshToken);
-
-          response = await fetch('http://localhost:8055/items/farmers', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-        } else if (refreshResponse.status === 401) {
-          // If the refresh token is also invalid, get new tokens
-          const newTokens = await getNewTokens();
-          token = newTokens.latestAccessToken;
-          refreshToken = newTokens.latestRefreshToken;
-
-          response = await fetch('http://localhost:8055/items/farmers', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
+      } else {
+        // Refresh token also failed (expired/invalid)
+        const errorData = await refreshResponse.json();
+        if (errorData.message === 'Refresh token expired') {
+          // Handle the case where refresh token is expired
+          alert('Your session has expired. Please log in again.');
+          // Optionally redirect to login page or trigger re-login process
+          window.location.href = '/login'; // Adjust according to your login flow
+          return;
         } else {
-          throw new Error('Unable to refresh token.');
+          // General failure, maybe invalid refresh token or server error
+          alert('Session expired. Please log in again.');
+          return;
         }
       }
-
-      if (!response.ok) {
-        throw new Error(`Error fetching farmers: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      farmersCount.value = data.data.length;
-      console.log('Farmers data fetched successfully:', data);
-    } catch (error) {
-      console.error('Error during token flow or data fetch:', error);
-      await fetchWithRetry(retryCount - 1); // Retry with reduced count
     }
-  };
 
-  await fetchWithRetry();
+    if (!response.ok) {
+      throw new Error(`Error fetching farmers: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    farmersCount.value = data.data.length;
+    console.log('Farmers data fetched successfully:', data);
+  } catch (error) {
+    console.error('Error fetching farmers data:', error);
+  }
 };
-
-
 
 onMounted(fetchFarmersData);
 </script>

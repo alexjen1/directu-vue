@@ -855,6 +855,50 @@ const downloadFarmerPDF = async (id) => {
   poultry_specify,
   for_farmworkers_other,
   for_fishfolk_other,
+  farm_location_brgy1,
+  farm_location_city_muni1,
+  ownership_document_no_1,
+  tenant_1,
+  lessee_1,
+  crop_commodity1_1,
+  crop_commodity1_2,
+  crop_commodity1_3,
+  crop_commodity1_4,
+  crop_commodity1_5,
+  sizeHa1_1,
+  sizeHa1_2,
+  sizeHa1_3,
+  sizeHa1_4,
+  sizeHa1_5,
+  no_of_head1_1,
+  no_of_head1_2,
+  no_of_head1_3,
+  no_of_head1_4,
+  no_of_head1_5,
+  farm_type1,
+  organic_practitioner1,
+  farm_location_brgy2,
+  farm_location_city_muni2,
+  ownership_document_no_2,
+  tenant_2,
+  lessee_2,
+  crop_commodity2_1,
+  crop_commodity2_2,
+  crop_commodity2_3,
+  crop_commodity2_4,
+  crop_commodity2_5,
+  sizeHa2_1,
+  sizeHa2_2,
+  sizeHa2_3,
+  sizeHa2_4,
+  sizeHa2_5,
+  no_of_head2_1,
+  no_of_head2_2,
+  no_of_head2_3,
+  no_of_head2_4,
+  no_of_head2_5,
+  farm_type2,
+  organic_practitioner2,
 } = farmer;
 
   // Path to the existing PDF
@@ -869,6 +913,10 @@ const downloadFarmerPDF = async (id) => {
   // Get the first page of the PDF
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
+  const secondPage = pages[1];
+  const totalSize = parseFloat(sizeHa1_1) + parseFloat(sizeHa1_2) + parseFloat(sizeHa1_3) + parseFloat(sizeHa1_4) + parseFloat(sizeHa1_5);
+  const totalSize2 = parseFloat(sizeHa2_1) + parseFloat(sizeHa2_2) + parseFloat(sizeHa2_3) + parseFloat(sizeHa2_4) + parseFloat(sizeHa2_5);
+  // const totalSize3 = parseFloat(sizeHa3_1) + parseFloat(sizeHa3_2) + parseFloat(sizeHa3_3) + parseFloat(sizeHa3_4) + parseFloat(sizeHa3_5);
 
   // Add the farmer's surname to the PDF
   firstPage.drawText(` ${surname}`, {
@@ -1075,6 +1123,408 @@ const downloadFarmerPDF = async (id) => {
     size: 8,
     color: rgb(0, 0, 0), // Black color
   });
+
+  if (farm_location_brgy1) {
+  secondPage.drawText(` ${farm_location_brgy1}`, {
+    x: 140,
+    y: 788,
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (farm_location_city_muni1) {
+  secondPage.drawText(` ${farm_location_city_muni1}`, {
+    x: 140,
+    y: 777,
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (ownership_document_no_1) {
+  secondPage.drawText(` ${ownership_document_no_1}`, {
+    x: 135,
+    y: 742,
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (totalSize) {
+  secondPage.drawText(` ${totalSize}`, {
+    x: 145,
+    y: 760,
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (tenant_1) {
+  secondPage.drawText(` ${tenant_1}`, {
+    x: 160,
+    y: 707,
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (lessee_1) {
+  secondPage.drawText(` ${lessee_1}`, {
+    x: 160,
+    y: 697,
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (crop_commodity1_1) {
+  secondPage.drawText(` ${crop_commodity1_1}`, {
+    x: 275,
+    y: 783,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (crop_commodity1_2) {
+  secondPage.drawText(` ${crop_commodity1_2}`, {
+    x: 275,
+    y: 760,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (crop_commodity1_3) {
+  secondPage.drawText(` ${crop_commodity1_3}`, {
+    x: 275,
+    y: 737,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (crop_commodity1_4) {
+  secondPage.drawText(` ${crop_commodity1_4}`, {
+    x: 275,
+    y: 717,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (crop_commodity1_5) {
+  secondPage.drawText(` ${crop_commodity1_5}`, {
+    x: 275,
+    y: 695,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa1_1) {
+  secondPage.drawText(` ${sizeHa1_1}`, {
+    x: 360,
+    y: 783,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa1_2) {
+  secondPage.drawText(` ${sizeHa1_2}`, {
+    x: 360,
+    y: 760,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa1_3) {
+  secondPage.drawText(` ${sizeHa1_3}`, {
+    x: 360,
+    y: 737,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa1_4) {
+  secondPage.drawText(` ${sizeHa1_4}`, {
+    x: 360,
+    y: 717,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa1_5) {
+  secondPage.drawText(` ${sizeHa1_5}`, {
+    x: 360,
+    y: 695,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head1_1) {
+  secondPage.drawText(` ${no_of_head1_1}`, {
+    x: 400,
+    y: 783,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head1_2) {
+  secondPage.drawText(` ${no_of_head1_2}`, {
+    x: 400,
+    y: 760,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head1_3) {
+  secondPage.drawText(` ${no_of_head1_3}`, {
+    x: 400,
+    y: 737,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head1_4) {
+  secondPage.drawText(` ${no_of_head1_4}`, {
+    x: 400,
+    y: 717,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head1_5) {
+  secondPage.drawText(` ${no_of_head1_5}`, {
+    x: 400,
+    y: 695,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (farm_type1) {
+  secondPage.drawText(` ${farm_type1}`, {
+    x: 440,
+    y: 783,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (organic_practitioner1) {
+  secondPage.drawText(` ${organic_practitioner1}`, {
+    x: 480,
+    y: 783,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (farm_location_brgy2) {
+  secondPage.drawText(` ${farm_location_brgy2}`, {
+    x: 140, // (width)
+    y: 682, // (height)
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (farm_location_city_muni2) {
+  secondPage.drawText(` ${farm_location_city_muni2}`, {
+    x: 140, 
+    y: 670, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (ownership_document_no_2) {
+  secondPage.drawText(` ${ownership_document_no_2}`, {
+    x: 135, 
+    y: 635, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (totalSize) {
+  secondPage.drawText(` ${totalSize2}`, {
+    x: 145, 
+    y: 653, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (tenant_2) {
+  secondPage.drawText(` ${tenant_2}`, {
+    x: 160, 
+    y: 600, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (lessee_2) {
+  secondPage.drawText(` ${lessee_2}`, {
+    x: 160, 
+    y: 590, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity2_1) {
+  secondPage.drawText(` ${crop_commodity2_1}`, {
+    x: 275, // (width)
+    y: 677, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity2_2) {
+  secondPage.drawText(` ${crop_commodity2_2}`, {
+    x: 275, // (width)
+    y: 654, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity2_3) {
+  secondPage.drawText(` ${crop_commodity2_3}`, {
+    x: 275, // (width)
+    y: 631, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity2_4) {
+  secondPage.drawText(` ${crop_commodity2_4}`, {
+    x: 275, // (width)
+    y: 610, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity2_5) {
+  secondPage.drawText(` ${crop_commodity2_5}`, {
+    x: 275, // (width)
+    y: 588, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa2_1) {
+  secondPage.drawText(` ${sizeHa2_1}`, {
+    x: 360,
+    y: 677, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa2_2) {
+  secondPage.drawText(` ${sizeHa2_2}`, {
+    x: 360,
+    y: 654,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa2_3) {
+  secondPage.drawText(` ${sizeHa2_3}`, {
+    x: 360,
+    y: 633,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (sizeHa2_4) {
+  secondPage.drawText(` ${sizeHa2_4}`, {
+    x: 360,
+    y: 612,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa2_5) {
+  secondPage.drawText(` ${sizeHa2_5}`, {
+    x: 360,
+    y: 590,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (no_of_head2_1 > 0) {
+  secondPage.drawText(` ${no_of_head2_1}`, {
+    x: 400,
+    y: 677,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head2_2 > 0) {
+  secondPage.drawText(` ${no_of_head2_2}`, {
+    x: 400,
+    y: 654,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head2_3 > 0) {
+  secondPage.drawText(` ${no_of_head2_3}`, {
+    x: 400,
+    y: 633,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head2_4 > 0) {
+  secondPage.drawText(` ${no_of_head2_4}`, {
+    x: 400,
+    y: 612, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head2_5 > 0) {
+  secondPage.drawText(` ${no_of_head2_5}`, {
+    x: 400,
+    y: 590, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (farm_type2) {
+  secondPage.drawText(` ${farm_type2}`, {
+    x: 440,
+    y: 677,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (organic_practitioner2) {
+  secondPage.drawText(` ${organic_practitioner2}`, {
+    x: 480,
+    y: 677,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
 
   const pdfBytes = await pdfDoc.save();
 
