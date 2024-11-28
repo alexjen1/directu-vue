@@ -635,6 +635,7 @@ const downloadFarmerPDF = async (id) => {
     return;
   }
   const {
+  enrollment_type,
   reference_number,
   surname,
   first_name,
@@ -673,6 +674,10 @@ const downloadFarmerPDF = async (id) => {
   if_yes_spefify_farmers_association,
   person_to_notify_in_case_of_emergency,
   main_livelihood,
+  type_of_farming_activity,
+  farmworkers_kind_of_work,
+  for_fisherfolk,
+  for_agri_youth,
   other_crop_specify,
   livestock_specify,
   poultry_specify,
@@ -683,6 +688,9 @@ const downloadFarmerPDF = async (id) => {
   ownership_document_no_1,
   tenant_1,
   lessee_1,
+  ancestral_domain_1,
+  agrarian_reform_1,
+  registered_owner_1,
   crop_commodity1_1,
   crop_commodity1_2,
   crop_commodity1_3,
@@ -705,6 +713,9 @@ const downloadFarmerPDF = async (id) => {
   ownership_document_no_2,
   tenant_2,
   lessee_2,
+  ancestral_domain_2,
+  agrarian_reform_2,
+  registered_owner_2,
   crop_commodity2_1,
   crop_commodity2_2,
   crop_commodity2_3,
@@ -727,6 +738,9 @@ const downloadFarmerPDF = async (id) => {
   ownership_document_no_3,
   tenant_3,
   lessee_3,
+  ancestral_domain_3,
+  agrarian_reform_3,
+  registered_owner_3,
   crop_commodity3_1,
   crop_commodity3_2,
   crop_commodity3_3,
@@ -783,6 +797,22 @@ const totalSize3 =
 
 
   // Add the farmer's surname to the PDF
+if (enrollment_type === "New") {
+    firstPage.drawText("/", {
+    x: 110, 
+    y: 771, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (enrollment_type === "Updating") {
+    firstPage.drawText("/", {
+    x: 154, 
+    y: 771, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${surname}`, {
     x: 110, // (width)
     y: 715, //  (height)
@@ -1205,7 +1235,78 @@ if (Array.isArray(main_livelihood) && main_livelihood.includes("agri youth")) {
     color: rgb(0, 0, 0), // Black color
   });
 }
-
+if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("rice")) {
+  firstPage.drawText("/", {
+    x: 35, 
+    y: 285, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("corn")) {
+  firstPage.drawText("/", {
+    x: 35, 
+    y: 268, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("other_crop")) {
+  firstPage.drawText("/", {
+    x: 35, 
+    y: 251, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("livestock")) {
+  firstPage.drawText("/", {
+    x: 35, 
+    y: 225, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("poultry")) {
+  firstPage.drawText("/", {
+    x: 35, 
+    y: 202, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("land preparation")) {
+  firstPage.drawText("/", {
+    x: 216, 
+    y: 283, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("planting / transplanting")) {
+  firstPage.drawText("/", {
+    x: 216, 
+    y: 265, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("cultivation")) {
+  firstPage.drawText("/", {
+    x: 216, 
+    y: 250, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("harvesting")) {
+  firstPage.drawText("/", {
+    x: 216, 
+    y: 233, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${other_crop_specify}`, {
     x: 100, 
     y: 245, 
@@ -1224,6 +1325,78 @@ if (Array.isArray(main_livelihood) && main_livelihood.includes("agri youth")) {
     size: 8,
     color: rgb(0, 0, 0), // Black color
   });
+if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("fish capture")) {
+  firstPage.drawText("/", {
+    x: 333, 
+    y: 240, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("aquaculture")) {
+  firstPage.drawText("/", {
+    x: 333, 
+    y: 229, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("gleaning")) {
+  firstPage.drawText("/", {
+    x: 333, 
+    y: 218, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("fish processing")) {
+  firstPage.drawText("/", {
+    x: 399, 
+    y: 240, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("fish vending")) {
+  firstPage.drawText("/", {
+    x: 399, 
+    y: 229, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_agri_youth) && for_agri_youth.includes("part of a farming household")) {
+  firstPage.drawText("/", {
+    x: 474, 
+    y: 257, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_agri_youth) && for_agri_youth.includes("attending attended formal agri fishery related course")) {
+  firstPage.drawText("/", {
+    x: 474, 
+    y: 248, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_agri_youth) && for_agri_youth.includes("attending attended non formal agri fishery related course")) {
+  firstPage.drawText("/", {
+    x: 474, 
+    y: 231, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(for_agri_youth) && for_agri_youth.includes("participated in any agricultural activity program")) {
+  firstPage.drawText("/", {
+    x: 474, 
+    y: 214, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${surname}`, {
     x: 110, // (width)
     y: 75, //  (height)
@@ -1311,6 +1484,46 @@ if (lessee_1) {
     x: 160,
     y: 697,
     size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (ancestral_domain_1 === "yes") {
+  secondPage.drawText("/", {
+    x: 180,
+    y: 750, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (ancestral_domain_1 === "no") {
+  secondPage.drawText("/", {
+    x: 222,
+    y: 750, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (agrarian_reform_1 === "yes") {
+  secondPage.drawText("/", {
+    x: 180,
+    y: 730, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (agrarian_reform_1 === "no") {
+  secondPage.drawText("/", {
+    x: 222,
+    y: 730, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (registered_owner_1 === "Register Owner") {
+  secondPage.drawText("/", {
+    x: 63,
+    y: 715, 
+    size: 9,
     color: rgb(0, 0, 0), // Black color
   });
 }
@@ -1519,6 +1732,45 @@ if (lessee_2) {
     color: rgb(0, 0, 0), // Black color
   });
 }
+if (ancestral_domain_2 === "yes") {
+  secondPage.drawText("/", {
+    x: 180,
+    y: 643, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (ancestral_domain_2 === "no") {
+  secondPage.drawText("/", {
+    x: 222,
+    y: 643, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (agrarian_reform_2 === "yes") {
+  secondPage.drawText("/", {
+    x: 180,
+    y: 623, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}if (agrarian_reform_2 === "no") {
+  secondPage.drawText("/", {
+    x: 222,
+    y: 623, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (registered_owner_2 === "Register Owner") {
+  secondPage.drawText("/", {
+    x: 63,
+    y: 609, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
 if (crop_commodity2_1) {
   secondPage.drawText(` ${crop_commodity2_1}`, {
     x: 275, // (width)
@@ -1709,6 +1961,47 @@ if (lessee_3) {
     color: rgb(0, 0, 0), // Black color
   });
 }
+if (ancestral_domain_3 === "yes") {
+  secondPage.drawText("/", {
+    x: 183,
+    y: 539, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (ancestral_domain_3 === "no") {
+  secondPage.drawText("/", {
+    x: 225,
+    y: 539, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (agrarian_reform_3 === "yes") {
+  secondPage.drawText("/", {
+    x: 183,
+    y: 519, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (agrarian_reform_3 === "no") {
+  secondPage.drawText("/", {
+    x: 225,
+    y: 519, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (registered_owner_3 === "Register Owner") {
+  secondPage.drawText("/", {
+    x: 66,
+    y: 503, 
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
 if (crop_commodity3_1) {
   secondPage.drawText(` ${crop_commodity3_1}`, {
     x: 275, // (width)

@@ -109,8 +109,6 @@
     width: 100%; /* Full width */
     max-width: 900px; /* Set a max width for the chart */
     height: 400px; /* Set a fixed height for the chart */
-    margin-left: 0; /* Align to the left */
-    margin-right: auto; /* Allow right margin to auto for spacing */
   }
   </style>
   

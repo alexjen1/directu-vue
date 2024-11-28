@@ -80,95 +80,64 @@ const router = useRouter();
 const farmersCount = ref(0);
 
 const fetchFarmersData = async () => {
-  const token = localStorage.getItem('auth_token');
-  const refreshToken = localStorage.getItem('refresh_token');
+  let token = localStorage.getItem('auth_token');
+  let refreshToken = localStorage.getItem('refresh_token');
 
-  try {
-    // Attempt to fetch data with the current access token
-    let response = await fetch('http://localhost:8055/items/farmers', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.status === 401) {
-      // Access token expired, attempt to refresh
-      let refreshResponse = await fetch('http://localhost:8055/auth/refresh', {
-        method: 'POST',
+  const fetchDataWithAuth = async (token, refreshToken) => {
+    try {
+      // Attempt to fetch data with the current access token
+      let response = await fetch('http://localhost:8055/items/farmers', {
+        method: 'GET',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          refresh_token: refreshToken,
-        }),
       });
 
-      if (refreshResponse.status === 200) {
-        const refreshData = await refreshResponse.json();
-        const newAccessToken = refreshData.data.access_token;
-        const newRefreshToken = refreshData.data.refresh_token;
-
-        // Store the new tokens
-        localStorage.setItem('auth_token', newAccessToken);
-        localStorage.setItem('refresh_token', newRefreshToken);
-
-        // Retry the original request with the new access token
-        response = await fetch('http://localhost:8055/items/farmers', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${newAccessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-      } else if (refreshResponse.status === 401) {
-        // Refresh token is also expired, attempt to get a new one
-        refreshResponse = await fetch('http://localhost:8055/auth/new-refresh-token', {
+      if (response.status === 401) {
+        // Token expired, attempt to refresh
+        const refreshResponse = await fetch('http://localhost:8055/auth/refresh', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            expired_refresh_token: refreshToken,
+            refresh_token: refreshToken,  // Use refresh token to get a new access token
           }),
         });
 
         if (refreshResponse.status === 200) {
-          const newTokensData = await refreshResponse.json();
-          const newAccessToken = newTokensData.data.access_token;
-          const newRefreshToken = newTokensData.data.refresh_token;
+          const refreshData = await refreshResponse.json();
+          const newAccessToken = refreshData.data.access_token;
+          const newRefreshToken = refreshData.data.refresh_token;  // New refresh token issued by the server
 
           // Store the new tokens
           localStorage.setItem('auth_token', newAccessToken);
           localStorage.setItem('refresh_token', newRefreshToken);
 
           // Retry the original request with the new access token
-          response = await fetch('http://localhost:8055/items/farmers', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${newAccessToken}`,
-              'Content-Type': 'application/json',
-            },
-          });
+          return fetchDataWithAuth(newAccessToken, newRefreshToken);
         } else {
-          // Handle failure to get a new refresh token
-          alert('Unable to retrieve a new refresh token. Please contact support.');
+          // Refresh token failed, attempt to log in again
+          alert('Session expired. Please log in again.');
           return;
         }
       }
-    }
 
-    if (!response.ok) {
-      throw new Error(`Error fetching farmers: ${response.statusText}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Error fetching farmers: ${response.statusText}`);
+      }
 
-    const data = await response.json();
-    farmersCount.value = data.data.length;
-    console.log('Farmers data fetched successfully:', data);
-  } catch (error) {
-    console.error('Error fetching farmers data:', error);
-  }
+      const data = await response.json();
+      farmersCount.value = data.data.length;
+      console.log('Farmers data fetched successfully:', data);
+    } catch (error) {
+      console.error('Error fetching farmers data:', error);
+    }
+  };
+
+  // First attempt to fetch data with the current tokens
+  await fetchDataWithAuth(token, refreshToken);
 };
 
 onMounted(fetchFarmersData);

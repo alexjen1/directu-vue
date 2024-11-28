@@ -119,7 +119,6 @@ const login = async () => {
     alert('Login failed: ' + (err.response?.data?.errors[0]?.message || 'Unknown error'));
   }
 };
-
 </script>
 
 

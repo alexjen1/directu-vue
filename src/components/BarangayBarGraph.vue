@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas id="barangayBarChart" width="1200" height="400"></canvas> <!-- Adjusted size -->
+    <canvas id="barangayBarChart" width="1200" height="300"></canvas> <!-- Adjusted size -->
   </div>
 </template>
 
@@ -97,8 +97,6 @@ onMounted(fetchBarangayData);
 #barangayBarChart {
   width: 100%; /* Full width */
   max-width: 900px; /* Set a max width for the chart */
-  height: 300px; /* Set a fixed height for the chart */
-  margin-left: 0; /* Align to the left */
-  margin-right: auto; /* Allow right margin to auto for spacing */
+  height: 400px; /* Set a fixed height for the chart */
 }
 </style>

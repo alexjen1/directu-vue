@@ -4,17 +4,19 @@
     <div class="content-box" id="reportContent">
       <h1>Farmer Filtering</h1>
 
-      <!-- Search Input -->
-      <div class="input-field1 search-box">
-        <input
-          type="text"
-          v-model="searchQuery" 
-          name="search"
-          id="search"  
-          required
-          spellcheck="false"
-        />
-        <label for="search">Filter by Column:</label>
+      <!-- Multiple Search Inputs (up to 5) -->
+      <div class="search-box-container">
+        <div v-for="(query, index) in searchQueries" :key="index" class="input-field1 search-box">
+          <input
+            type="text"
+            v-model="searchQueries[index]"
+            :name="'search' + index"
+            :id="'search' + index"
+            required
+            spellcheck="false"
+          />
+          <label :for="'search' + index">Filter by Column {{ index + 1 }}:</label>
+        </div>
       </div>
 
       <!-- Dropdown for selecting multiple columns -->
@@ -83,15 +85,15 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js'; // Import html2pdf.js
 
-const farmers = ref([]); // Initialize farmers with an empty array
+const farmers = ref([]);
 const availableColumns = ref([]);
 const selectedColumn = ref('');
 const selectedColumns = ref([]);
 const loading = ref(false);
-const searchQuery = ref(''); // Search query for filtering
+const searchQueries = ref(['', '', '', '', '']); // Array for up to 5 search queries
 const token = localStorage.getItem('auth_token');
 
-// Fetching farmers and columns
+// Fetch farmers and columns
 const fetchFarmers = async () => {
   loading.value = true;
   try {
@@ -101,36 +103,33 @@ const fetchFarmers = async () => {
       },
     });
 
-    // Check if response data is correct
     if (response.data && response.data.data) {
       farmers.value = response.data.data;
-      availableColumns.value = Object.keys(response.data.data[0] || {}); // Get column names
+      availableColumns.value = Object.keys(response.data.data[0] || {});
     } else {
       farmers.value = [];
     }
   } catch (error) {
     console.error('Error fetching farmers:', error);
-    farmers.value = []; // Set to empty array if there's an error
+    farmers.value = [];
   } finally {
     loading.value = false;
   }
 };
 
-// Filtered farmers based on selected columns and search query
+// Filter farmers based on selected columns and search queries
 const filteredFarmers = computed(() => {
-  const query = searchQuery.value.toLowerCase();
   return farmers.value
     .filter(farmer => {
-      // Check only selected columns
-      return selectedColumns.value.some(column => {
-        const fieldValue = farmer[column];
-        return fieldValue 
-          ? fieldValue.toString().toLowerCase().includes(query) 
-          : false;
+      return searchQueries.value.every(query => {
+        return query ? selectedColumns.value.some(column => {
+          const fieldValue = farmer[column];
+          // Check for exact match, case-insensitive
+          return fieldValue ? fieldValue.toString().toLowerCase() === query.toLowerCase() : false;
+        }) : true;
       });
     })
     .map(farmer => {
-      // Return only the selected columns for each farmer
       const filteredFarmer = {};
       selectedColumns.value.forEach(column => {
         filteredFarmer[column] = farmer[column];
@@ -138,7 +137,6 @@ const filteredFarmers = computed(() => {
       return filteredFarmer;
     });
 });
-
 
 // Add selected column to the list
 const addColumn = () => {
@@ -158,26 +156,27 @@ const removeColumn = (column) => {
 
 // Download the table data as a PDF using html2pdf.js
 const downloadPDF = () => {
-  const element = document.getElementById('farmersTable'); // Select the table element
+  const element = document.getElementById('farmersTable');
   const opt = {
-    margin:       1,
-    filename:     'farmer_report.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 4 },
-    jsPDF:        { unit: 'mm', format: 'legal', orientation: 'landscape' }
+    margin: 1,
+    filename: 'farmer_report.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 4 },
+    jsPDF: { unit: 'mm', format: 'legal', orientation: 'landscape' }
   };
   html2pdf()
-    .from(element) // Convert the table to PDF
-    .set(opt)      // Apply the options
-    .save();       // Download the PDF
+    .from(element)
+    .set(opt)
+    .save();
 };
 
 onMounted(() => {
   fetchFarmers();
 });
 </script>
+
   
-    <style scoped>
+  <style scoped>
     .report_count-container {
       display: flex;
       flex-direction: column;
@@ -365,6 +364,20 @@ onMounted(() => {
     
     .btn:hover {
       background-color: #7e4ee6; /* Darker shade for hover effect */
+    }
+    .search-box-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .search-box {
+      flex: 1 1 calc(20% - 10px); /* Adjust this based on the desired width */
+      min-width: 150px;
+    }
+
+    input[type="text"] {
+      width: 100%;
     }
     
     @media (max-width: 768px) {
