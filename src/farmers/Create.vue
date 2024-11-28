@@ -377,6 +377,7 @@
                   <option value="college">college</option>
                   <option value="vocational">vocational</option>
                   <option value="post-graduate">post-graduate</option>
+                  <option value="none">none</option>
                   <option value="Other">Other</option>
                 </select>
                 <label>HIGHEST FORMAL EDUCATION:</label>
@@ -414,6 +415,14 @@
               <label>MEMBER OF INDIGINOUS GROUP:</label>
               <span class="arrow-down"></span>
             </div>
+            <div class="input-field" v-if="selectedMemberOfIndiginousGroup === 'yes'">
+                <input
+                  type="text"
+                  v-model="farmer.member_of_an_indiginous_group_if_yes_specify"
+                  spellcheck="false"
+                />
+                <label>SPECIFY YOUR INDIGINOUS GROUP:</label>
+              </div>
             <div class="input-field">
                 <select v-model="selectedWithGovId" required spellcheck="false" class="black-select" >
                   <option value="yes">Yes</option>

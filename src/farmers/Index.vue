@@ -351,202 +351,13 @@ const downloadSelectedFarmersPDF = async () => {
   for (const farmerId of selectedFarmers.value) {
     await downloadFarmerPDF(farmerId);
   }
-  const {
-  reference_number,
-  surname,
-  first_name,
-  middle_name,
-  extension_name,
-  house_lot_bldg_no_purok,
-  street_sitio_subdv,
-  barangay,
-  municipality_city,
-  province,
-  region,
-  place_of_birth,
-  place_of_birth_province_state,
-  place_of_birth_country,
-  name_of_spouse_if_married,
-  mothers_maiden_name,
-  if_no_name_of_household_heads,
-  relationship,
-  no_of_living_household_members,
-  no_of_male,
-  no_of_female,
-  if_yes_specify_id_type,
-  id_number,
-  if_yes_spefify_farmers_association,
-  person_to_notify_in_case_of_emergency,
-} = farmer;
-
-  const filePath = '/src/assets/file/RSBSA_Enrollment-Form_032021.pdf';
-  const existingPdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
-  const pdfDoc = await PDFDocument.load(existingPdfBytes);
-  const pages = pdfDoc.getPages();
-  const firstPage = pages[0];
-
-  firstPage.drawText(` ${surname}`, {
-    x: 110, 
-    y: 715, 
-    size: 12,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${first_name}`, {
-    x: 300, 
-    y: 715, 
-    size: 12,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${middle_name}`, {
-    x: 110, 
-    y: 687, 
-    size: 12,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${extension_name}`, {
-    x: 300, 
-    y: 687, 
-    size: 12,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${house_lot_bldg_no_purok}`, {
-    x: 72, 
-    y: 655, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${street_sitio_subdv}`, {
-    x: 242, 
-    y: 655, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${barangay}`, {
-    x: 412, 
-    y: 655, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${municipality_city}`, {
-    x: 72, 
-    y: 625, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${province}`, {
-    x: 242, 
-    y: 625, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${region}`, {
-    x: 412, 
-    y: 625, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${place_of_birth}`, {
-    x: 205, 
-    y: 568,  
-    size: 6,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${place_of_birth_province_state}`, {
-    x: 155, 
-    y: 556,  
-    size: 6,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${place_of_birth_country}`, {
-    x: 240, 
-    y: 556,  
-    size: 6,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${name_of_spouse_if_married}`, {
-    x: 110, 
-    y: 485, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${mothers_maiden_name}`, {
-    x: 110, 
-    y: 455, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${if_no_name_of_household_heads}`, {
-    x: 155, 
-    y: 420, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${relationship}`, {
-    x: 155, 
-    y: 403, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${no_of_living_household_members}`, {
-    x: 155, 
-    y: 385, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${no_of_male}`, {
-    x: 100, 
-    y: 368, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${no_of_female}`, {
-    x: 245, 
-    y: 368, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${if_yes_specify_id_type}`, {
-    x: 400, 
-    y: 460, 
-    size: 8,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${id_number}`, {
-    x: 400, 
-    y: 448, 
-    size: 8,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${if_yes_spefify_farmers_association}`, {
-    x: 370, 
-    y: 415, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-  firstPage.drawText(` ${person_to_notify_in_case_of_emergency}`, {
-    x: 400, 
-    y: 390, 
-    size: 10,
-    color: rgb(0, 0, 0), 
-  });
-
-  // Serialize the PDF to bytes
-  const pdfBytes = await pdfDoc.save();
-
-  // Create a blob and download the modified PDF
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  const anchor = document.createElement('a');
-  anchor.href = URL.createObjectURL(blob);
-  anchor.download = `RSBSA_Enrollment-Form_${reference_number}.pdf`;
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
+  
 };
 
 // Fetch Farmers Data
 const fetchFarmers = async () => {
-  const token = localStorage.getItem('auth_token');
-  const refreshToken = localStorage.getItem('refresh_token');
+  let token = localStorage.getItem('auth_token');
+  let refreshToken = localStorage.getItem('refresh_token');
 
   try {
     // First attempt to fetch farmers data using the current access token
@@ -574,13 +385,13 @@ const fetchFarmers = async () => {
           headers: { Authorization: `Bearer ${newAccessToken}` },
         });
       } else if (refreshResponse.status === 401) {
-        // If the refresh token is also expired, request new tokens or log out
+        // If the refresh token is also expired, request new tokens
         const newTokenResponse = await axios.post('http://localhost:8055/auth/request-new-tokens');
 
         if (newTokenResponse.status === 200) {
           const { access_token: latestAccessToken, refresh_token: latestRefreshToken } = newTokenResponse.data.data;
 
-          // Store the new tokens
+          // Store the new tokens in localStorage
           localStorage.setItem('auth_token', latestAccessToken);
           localStorage.setItem('refresh_token', latestRefreshToken);
 
@@ -829,6 +640,7 @@ const downloadFarmerPDF = async (id) => {
   first_name,
   middle_name,
   extension_name,
+  sex,
   house_lot_bldg_no_purok,
   street_sitio_subdv,
   barangay,
@@ -839,17 +651,28 @@ const downloadFarmerPDF = async (id) => {
   place_of_birth,
   place_of_birth_province_state,
   place_of_birth_country,
+  religion,
+  civil_status,
   name_of_spouse_if_married,
   mothers_maiden_name,
+  household_heads,
   if_no_name_of_household_heads,
   relationship,
   no_of_living_household_members,
   no_of_male,
   no_of_female,
+  highest_formal_education,
+  person_with_disability,
+  IVps_beneficiary,
+  member_of_an_indiginous_group,
+  member_of_an_indiginous_group_if_yes_specify,
+  with_government_id,
   if_yes_specify_id_type,
   id_number,
+  member_of_any_farmers_association_cooperative,
   if_yes_spefify_farmers_association,
   person_to_notify_in_case_of_emergency,
+  main_livelihood,
   other_crop_specify,
   livestock_specify,
   poultry_specify,
@@ -899,6 +722,28 @@ const downloadFarmerPDF = async (id) => {
   no_of_head2_5,
   farm_type2,
   organic_practitioner2,
+  farm_location_brgy3,
+  farm_location_city_muni3,
+  ownership_document_no_3,
+  tenant_3,
+  lessee_3,
+  crop_commodity3_1,
+  crop_commodity3_2,
+  crop_commodity3_3,
+  crop_commodity3_4,
+  crop_commodity3_5,
+  sizeHa3_1,
+  sizeHa3_2,
+  sizeHa3_3,
+  sizeHa3_4,
+  sizeHa3_5,
+  no_of_head3_1,
+  no_of_head3_2,
+  no_of_head3_3,
+  no_of_head3_4,
+  no_of_head3_5,
+  farm_type3,
+  organic_practitioner3,
 } = farmer;
 
   // Path to the existing PDF
@@ -914,9 +759,28 @@ const downloadFarmerPDF = async (id) => {
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
   const secondPage = pages[1];
-  const totalSize = parseFloat(sizeHa1_1) + parseFloat(sizeHa1_2) + parseFloat(sizeHa1_3) + parseFloat(sizeHa1_4) + parseFloat(sizeHa1_5);
-  const totalSize2 = parseFloat(sizeHa2_1) + parseFloat(sizeHa2_2) + parseFloat(sizeHa2_3) + parseFloat(sizeHa2_4) + parseFloat(sizeHa2_5);
-  // const totalSize3 = parseFloat(sizeHa3_1) + parseFloat(sizeHa3_2) + parseFloat(sizeHa3_3) + parseFloat(sizeHa3_4) + parseFloat(sizeHa3_5);
+  
+  const totalSize = 
+  (parseFloat(sizeHa1_1) || 0) + 
+  (parseFloat(sizeHa1_2) || 0) + 
+  (parseFloat(sizeHa1_3) || 0) + 
+  (parseFloat(sizeHa1_4) || 0) + 
+  (parseFloat(sizeHa1_5) || 0);
+
+const totalSize2 = 
+  (parseFloat(sizeHa2_1) || 0) + 
+  (parseFloat(sizeHa2_2) || 0) + 
+  (parseFloat(sizeHa2_3) || 0) + 
+  (parseFloat(sizeHa2_4) || 0) + 
+  (parseFloat(sizeHa2_5) || 0);
+
+const totalSize3 = 
+  (parseFloat(sizeHa3_1) || 0) + 
+  (parseFloat(sizeHa3_2) || 0) + 
+  (parseFloat(sizeHa3_3) || 0) + 
+  (parseFloat(sizeHa3_4) || 0) + 
+  (parseFloat(sizeHa3_5) || 0);
+
 
   // Add the farmer's surname to the PDF
   firstPage.drawText(` ${surname}`, {
@@ -943,6 +807,22 @@ const downloadFarmerPDF = async (id) => {
     size: 12,
     color: rgb(0, 0, 0), // Black color
   });
+if (sex === "male") {
+    firstPage.drawText("/", {
+    x: 457, 
+    y: 676,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sex === "female") {
+    firstPage.drawText("/", {
+    x: 506, 
+    y: 676,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${house_lot_bldg_no_purok}`, {
     x: 72, 
     y: 655, 
@@ -1003,6 +883,54 @@ const downloadFarmerPDF = async (id) => {
     size: 6,
     color: rgb(0, 0, 0), // Black color
   });
+if (religion === "christianity") {
+    firstPage.drawText("/", {
+    x: 79,  
+    y: 525,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (religion === "islam") {
+    firstPage.drawText("/", {
+    x: 139,  
+    y: 525,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (civil_status === "single") {
+    firstPage.drawText("/", {
+    x: 95,   
+    y: 506,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (civil_status === "married") {
+    firstPage.drawText("/", {
+    x: 140,   
+    y: 506,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (civil_status === "widowed") {
+    firstPage.drawText("/", {
+    x: 189,   
+    y: 506,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (civil_status === "separated") {
+    firstPage.drawText("/", {
+    x: 243,   
+    y: 506,
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${name_of_spouse_if_married}`, {
     x: 110, 
     y: 485, 
@@ -1015,6 +943,22 @@ const downloadFarmerPDF = async (id) => {
     size: 10,
     color: rgb(0, 0, 0), // Black color
   });
+if (household_heads === "yes") {
+    firstPage.drawText("/", {
+    x: 136, 
+    y: 435, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (household_heads === "no") {
+    firstPage.drawText("/", {
+    x: 179, 
+    y: 435, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${if_no_name_of_household_heads}`, {
     x: 155, 
     y: 420, 
@@ -1045,6 +989,150 @@ const downloadFarmerPDF = async (id) => {
     size: 10,
     color: rgb(0, 0, 0), // Black color
   });
+if (highest_formal_education === "pre-school") {
+    firstPage.drawText("/", {
+    x: 317, 
+    y: 586, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "junior high school (K-12)") {
+    firstPage.drawText("/", {
+    x: 405, 
+    y: 586, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "vocational") {
+    firstPage.drawText("/", {
+    x: 501, 
+    y: 586, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "elementary") {
+    firstPage.drawText("/", {
+    x: 317, 
+    y: 574, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "senior high school (K-12)") {
+    firstPage.drawText("/", {
+    x: 405, 
+    y: 574, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "post-graduate") {
+    firstPage.drawText("/", {
+    x: 501, 
+    y: 574, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "high school (non K-12)") {
+    firstPage.drawText("/", {
+    x: 317, 
+    y: 562, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "college") {
+    firstPage.drawText("/", {
+    x: 405, 
+    y: 562, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (highest_formal_education === "none") {
+    firstPage.drawText("/", {
+    x: 501, 
+    y: 562, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (person_with_disability === "yes") {
+    firstPage.drawText("/", {
+    x: 454, 
+    y: 541, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (person_with_disability === "no") {
+    firstPage.drawText("/", {
+    x: 496, 
+    y: 541, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (IVps_beneficiary === "yes") {
+    firstPage.drawText("/", {
+    x: 452, 
+    y: 518, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (IVps_beneficiary === "no") {
+    firstPage.drawText("/", {
+    x: 494, 
+    y: 518, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (member_of_an_indiginous_group === "yes") {
+    firstPage.drawText("/", {
+    x: 452, 
+    y: 504, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (member_of_an_indiginous_group_if_yes_specify) {
+  firstPage.drawText(` ${member_of_an_indiginous_group_if_yes_specify}`, {
+    x: 380, 
+    y: 490,
+    size: 9,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (member_of_an_indiginous_group === "no") {
+    firstPage.drawText("/", {
+    x: 494, 
+    y: 504, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (with_government_id === "yes") {
+    firstPage.drawText("/", {
+    x: 400, 
+    y: 469, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (with_government_id === "no") {
+    firstPage.drawText("/", {
+    x: 441, 
+    y: 469, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${if_yes_specify_id_type}`, {
     x: 400, 
     y: 460, 
@@ -1057,6 +1145,22 @@ const downloadFarmerPDF = async (id) => {
     size: 8,
     color: rgb(0, 0, 0), // Black color
   });
+if (member_of_any_farmers_association_cooperative === "yes") {
+    firstPage.drawText("/", {
+    x: 504, 
+    y: 430, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (member_of_any_farmers_association_cooperative === "no") {
+    firstPage.drawText("/", {
+    x: 539, 
+    y: 430, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
   firstPage.drawText(` ${if_yes_spefify_farmers_association}`, {
     x: 370, 
     y: 415, 
@@ -1069,6 +1173,39 @@ const downloadFarmerPDF = async (id) => {
     size: 10,
     color: rgb(0, 0, 0), 
   });
+if (Array.isArray(main_livelihood) && main_livelihood.includes("farmer")) {
+  firstPage.drawText("/", {
+    x: 124, 
+    y: 332, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(main_livelihood) && main_livelihood.includes("farmworker/laborer")) {
+  firstPage.drawText("/", {
+    x: 212, 
+    y: 332, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(main_livelihood) && main_livelihood.includes("fisherfolk")) {
+  firstPage.drawText("/", {
+    x: 361, 
+    y: 332, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (Array.isArray(main_livelihood) && main_livelihood.includes("agri youth")) {
+  firstPage.drawText("/", {
+    x: 481, 
+    y: 332, 
+    size: 12,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
   firstPage.drawText(` ${other_crop_specify}`, {
     x: 100, 
     y: 245, 
@@ -1358,7 +1495,7 @@ if (ownership_document_no_2) {
   });
 }
 
-if (totalSize) {
+if (totalSize2) {
   secondPage.drawText(` ${totalSize2}`, {
     x: 145, 
     y: 653, 
@@ -1524,7 +1661,194 @@ if (organic_practitioner2) {
     color: rgb(0, 0, 0), // Black color
   });
 }
+if (farm_location_brgy3) {
+  secondPage.drawText(` ${farm_location_brgy3}`, {
+    x: 140, // (width)
+    y: 576, // (height)
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (farm_location_city_muni3) {
+  secondPage.drawText(` ${farm_location_city_muni3}`, {
+    x: 140, 
+    y: 565, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (ownership_document_no_3) {
+  secondPage.drawText(` ${ownership_document_no_3}`, {
+    x: 137, 
+    y: 530, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (totalSize3) {
+  secondPage.drawText(` ${totalSize3}`, {
+    x: 146, 
+    y: 548, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (tenant_3) {
+  secondPage.drawText(` ${tenant_3}`, {
+    x: 160, 
+    y: 495, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (lessee_3) {
+  secondPage.drawText(` ${lessee_3}`, {
+    x: 160, 
+    y: 485, 
+    size: 5,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity3_1) {
+  secondPage.drawText(` ${crop_commodity3_1}`, {
+    x: 275, // (width)
+    y: 571, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity3_2) {
+  secondPage.drawText(` ${crop_commodity3_2}`, {
+    x: 275, // (width)
+    y: 548, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity3_3) {
+  secondPage.drawText(` ${crop_commodity3_3}`, {
+    x: 275, // (width)
+    y: 525, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity3_4) {
+  secondPage.drawText(` ${crop_commodity3_4}`, {
+    x: 275, // (width)
+    y: 504, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (crop_commodity3_5) {
+  secondPage.drawText(` ${crop_commodity3_5}`, {
+    x: 275, // (width)
+    y: 483, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa3_1) {
+  secondPage.drawText(` ${sizeHa3_1}`, {
+    x: 360,
+    y: 571, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa3_2) {
+  secondPage.drawText(` ${sizeHa3_2}`, {
+    x: 360,
+    y: 548, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa3_3) {
+  secondPage.drawText(` ${sizeHa3_3}`, {
+    x: 360,
+    y: 525, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa3_4) {
+  secondPage.drawText(` ${sizeHa3_4}`, {
+    x: 360,
+    y: 504, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (sizeHa3_5) {
+  secondPage.drawText(` ${sizeHa3_5}`, {
+    x: 360,
+    y: 483, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (no_of_head3_1 > 0) {
+  secondPage.drawText(` ${no_of_head3_1}`, {
+    x: 400,
+    y: 571,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
 
+if (no_of_head3_2 > 0) {
+  secondPage.drawText(` ${no_of_head3_2}`, {
+    x: 400,
+    y: 548,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head3_3 > 0) {
+  secondPage.drawText(` ${no_of_head3_3}`, {
+    x: 400,
+    y: 525,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head3_4 > 0) {
+  secondPage.drawText(` ${no_of_head3_4}`, {
+    x: 400,
+    y: 504, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+
+if (no_of_head3_5 > 0) {
+  secondPage.drawText(` ${no_of_head3_5}`, {
+    x: 400,
+    y: 483, 
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (farm_type3) {
+  secondPage.drawText(` ${farm_type3}`, {
+    x: 440,
+    y: 570,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
+if (organic_practitioner3) {
+  secondPage.drawText(` ${organic_practitioner3}`, {
+    x: 480,
+    y: 570,
+    size: 6,
+    color: rgb(0, 0, 0), // Black color
+  });
+}
 
   const pdfBytes = await pdfDoc.save();
 
@@ -1809,9 +2133,9 @@ onBeforeUnmount(() => {
     border-radius: 7px;
   }
   button {
-  background: none;
+  background: #63e6be;
   border: none;
-  color: black;
+  color: white;
   cursor: pointer;
   font-size: 1em;
 }

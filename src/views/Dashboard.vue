@@ -84,7 +84,7 @@ const fetchFarmersData = async () => {
   const refreshToken = localStorage.getItem('refresh_token');
 
   try {
-    // First attempt to fetch data with the current access token
+    // Attempt to fetch data with the current access token
     let response = await fetch('http://localhost:8055/items/farmers', {
       method: 'GET',
       headers: {
@@ -94,21 +94,21 @@ const fetchFarmersData = async () => {
     });
 
     if (response.status === 401) {
-      // Token expired, attempt to refresh
-      const refreshResponse = await fetch('http://localhost:8055/auth/refresh', {
+      // Access token expired, attempt to refresh
+      let refreshResponse = await fetch('http://localhost:8055/auth/refresh', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          refresh_token: refreshToken,  // Use refresh token to get a new access token
+          refresh_token: refreshToken,
         }),
       });
 
       if (refreshResponse.status === 200) {
         const refreshData = await refreshResponse.json();
         const newAccessToken = refreshData.data.access_token;
-        const newRefreshToken = refreshData.data.refresh_token;  // New refresh token issued by the server
+        const newRefreshToken = refreshData.data.refresh_token;
 
         // Store the new tokens
         localStorage.setItem('auth_token', newAccessToken);
@@ -122,18 +122,38 @@ const fetchFarmersData = async () => {
             'Content-Type': 'application/json',
           },
         });
-      } else {
-        // Refresh token also failed (expired/invalid)
-        const errorData = await refreshResponse.json();
-        if (errorData.message === 'Refresh token expired') {
-          // Handle the case where refresh token is expired
-          alert('Your session has expired. Please log in again.');
-          // Optionally redirect to login page or trigger re-login process
-          window.location.href = '/login'; // Adjust according to your login flow
-          return;
+      } else if (refreshResponse.status === 401) {
+        // Refresh token is also expired, attempt to get a new one
+        refreshResponse = await fetch('http://localhost:8055/auth/new-refresh-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            expired_refresh_token: refreshToken,
+          }),
+        });
+
+        if (refreshResponse.status === 200) {
+          const newTokensData = await refreshResponse.json();
+          const newAccessToken = newTokensData.data.access_token;
+          const newRefreshToken = newTokensData.data.refresh_token;
+
+          // Store the new tokens
+          localStorage.setItem('auth_token', newAccessToken);
+          localStorage.setItem('refresh_token', newRefreshToken);
+
+          // Retry the original request with the new access token
+          response = await fetch('http://localhost:8055/items/farmers', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${newAccessToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
         } else {
-          // General failure, maybe invalid refresh token or server error
-          alert('Session expired. Please log in again.');
+          // Handle failure to get a new refresh token
+          alert('Unable to retrieve a new refresh token. Please contact support.');
           return;
         }
       }

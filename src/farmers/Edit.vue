@@ -368,6 +368,7 @@
                   <option value="college">college</option>
                   <option value="vocational">vocational</option>
                   <option value="post-graduate">post-graduate</option>
+                  <option value="none">none</option>
                   <option value="Other">Other</option>
                   <option v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate', 'Other'].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education">
                     {{ farmer.highest_formal_education }}
@@ -376,7 +377,7 @@
                 <label>HIGHEST FORMAL EDUCATION:</label>
                 <span class="arrow-down"></span>
               </div>
-              <div v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate', ].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education" class="input-field">
+              <div v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate','none' ].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education" class="input-field">
                 <input type="text" v-model="farmer.highest_formal_education" spellcheck="false" />
                 <label>Please specify your Highest Formal Educ:</label>
               </div>
@@ -412,6 +413,14 @@
                 </select>
                 <label>MEMBER OF INDIGINOUS GROUP:</label>
                 <span class="arrow-down"></span>
+              </div>
+              <div class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.member_of_an_indiginous_group_if_yes_specify"
+                  spellcheck="false"
+                />
+                <label>SPECIFY YOUR INDIGINOUS GROUP:</label>
               </div>
               <div class="input-field">
                 <select v-model="farmer.with_government_id" spellcheck="false" class="black-select">
@@ -722,14 +731,29 @@
                             </td>
                             <td>
                               <div class="input-field2">
-                                <input type="number" v-model="farmer.farm_type1" spellcheck="false" step="any" />
-                                <label>Farm Type:</label>
+                                <select v-model="farmer.farm_type1" spellcheck="false" class="black-select">
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option v-if="farmer.farm_type1 && !['1', '2', '3'].includes(farmer.farm_type1)" :value="farmer.farm_type1">
+                                    {{ farmer.farm_type1 }}
+                                  </option>
+                                </select>
+                                <!-- <label>Farm Type:</label> -->
+                                <span class="arrow-down"></span>
                               </div>
                             </td>
                             <td>
                               <div class="input-field2">
-                                <input type="text" v-model="farmer.organic_practitioner1" spellcheck="false" step="any" />
-                                <label>Practitioner :</label>
+                                <select v-model="farmer.organic_practitioner1" spellcheck="false" class="black-select">
+                                  <option value="yes">yes</option>
+                                  <option value="no">no</option>
+                                  <option v-if="farmer.organic_practitioner1 && !['yes', 'no'].includes(farmer.organic_practitioner1)" :value="farmer.organic_practitioner1">
+                                    {{ farmer.organic_practitioner1 }}
+                                  </option>
+                                </select>
+                                <!-- <label>Practitioner:</label> -->
+                                <span class="arrow-down"></span>
                               </div>
                             </td>
                             <td>
@@ -856,14 +880,29 @@
                             </td>
                             <td>
                               <div class="input-field2">
-                                <input type="number" v-model="farmer.farm_type2" spellcheck="false" step="any" />
-                                <label>Farm Type:</label>
+                                <select v-model="farmer.farm_type2" spellcheck="false" class="black-select">
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option v-if="farmer.farm_type2 && !['1', '2', '3'].includes(farmer.farm_type2)" :value="farmer.farm_type2">
+                                    {{ farmer.farm_type2 }}
+                                  </option>
+                                </select>
+                                <!-- <label>Farm Type:</label> -->
+                                <span class="arrow-down"></span>
                               </div>
                             </td>
                             <td>
                               <div class="input-field2">
-                                <input type="text" v-model="farmer.organic_practitioner2" spellcheck="false" step="any" />
-                                <label>Practitioner :</label>
+                                <select v-model="farmer.organic_practitioner2" spellcheck="false" class="black-select">
+                                  <option value="yes">yes</option>
+                                  <option value="no">no</option>
+                                  <option v-if="farmer.organic_practitioner2 && !['yes', 'no'].includes(farmer.organic_practitioner2)" :value="farmer.organic_practitioner2">
+                                    {{ farmer.organic_practitioner2 }}
+                                  </option>
+                                </select>
+                                <!-- <label>Practitioner:</label> -->
+                                <span class="arrow-down"></span>
                               </div>
                             </td>
                             <td>
@@ -990,14 +1029,29 @@
                             </td>
                             <td>
                               <div class="input-field2">
-                                <input type="number" v-model="farmer.farm_type3" spellcheck="false" step="any" />
-                                <label>Farm Type:</label>
+                                <select v-model="farmer.farm_type3" spellcheck="false" class="black-select">
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option v-if="farmer.farm_type3 && !['1', '2', '3'].includes(farmer.farm_type3)" :value="farmer.farm_type3">
+                                    {{ farmer.farm_type3 }}
+                                  </option>
+                                </select>
+                                <!-- <label>Farm Type:</label> -->
+                                <span class="arrow-down"></span>
                               </div>
                             </td>
                             <td>
                               <div class="input-field2">
-                                <input type="text" v-model="farmer.organic_practitioner3" spellcheck="false" step="any" />
-                                <label>Practitioner :</label>
+                                <select v-model="farmer.organic_practitioner3" spellcheck="false" class="black-select">
+                                  <option value="yes">yes</option>
+                                  <option value="no">no</option>
+                                  <option v-if="farmer.organic_practitioner3 && !['yes', 'no'].includes(farmer.organic_practitioner3)" :value="farmer.organic_practitioner3">
+                                    {{ farmer.organic_practitioner3 }}
+                                  </option>
+                                </select>
+                                <!-- <label>Practitioner:</label> -->
+                                <span class="arrow-down"></span>
                               </div>
                             </td>
                             <td>
@@ -1432,7 +1486,7 @@ const resetHover = () => {
     appearance: none; /* Remove default arrow */
     -webkit-appearance: none; /* Remove default arrow for Safari */
 }
-.input-field2 input {
+.input-field2 select {
     width: 150px;
     height: 50px;
     border-radius: 6px;
@@ -1467,8 +1521,7 @@ const resetHover = () => {
     font-size: 15px;
     pointer-events: none;
     transition: 0.3s;      
-}
-    
+} 
     
 .black-select option {
     background-color: #F8F9FA;
