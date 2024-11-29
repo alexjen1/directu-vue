@@ -98,9 +98,9 @@
                 <button class="action-button edit" @click="editFarmer(farmer.id)">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="action-button delete" @click="deleteFarmer(farmer.id)">
+                <!-- <button class="action-button delete" @click="deleteFarmer(farmer.id)">
                   <i class="fas fa-trash-alt"></i>
-                </button>
+                </button> -->
                 <!-- <button class="action-button download" @click="downloadFarmerPDF(farmer.id)">
                   <i class="fas fa-download"></i>
                 </button> -->
@@ -120,6 +120,8 @@
                   <button1 @click="showMaintenance">
                     <i class="fas fa-book"></i> Show
                   </button1>
+                  <br>
+                  <button1 @click="deleteFarmer(farmer.id)"><i class="fas fa-trash-alt"></i> Delete</button1>
                 </div>
               </td>
             </tr>
@@ -2326,7 +2328,7 @@ onBeforeUnmount(() => {
     color: #46cab6;
   }
   .option{
-    color: #46cab6;
+    color: #2d2d2d;
   }
   .pagination-controls {
   display: flex;

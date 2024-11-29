@@ -28,7 +28,7 @@
           <th>First Name</th>
           <th>Middle Name</th>
           <th>Extension Name</th>
-          <th>Action</th>
+          <!-- <th>Action</th> -->
         </tr>
       </thead>
       <tbody>
@@ -38,7 +38,7 @@
           <td>{{ farmer.first_name }}</td>
           <td>{{ farmer.middle_name }}</td>
           <td>{{ farmer.extension_name }}</td>
-          <td>
+          <!-- <td>
             <button class="action-button edit" @click="editFarmer(farmer.id)">
               <i class="fas fa-edit"></i>
             </button>
@@ -48,10 +48,10 @@
             <button class="action-button download" @click="downloadFarmerPDF(farmer.id)">
               <i class="fas fa-download"></i>
             </button>
-            <!-- <button class="action-button option" @click="(farmer.id)">
+            <button class="action-button option" @click="(farmer.id)">
               <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button> -->
-          </td>
+            </button>
+          </td> -->
         </tr>
       </tbody>
     </table>
@@ -62,7 +62,7 @@
     <p>Rows Per Page: </p>
         <div class="show-entries-dropdown">
           <select id="showEntries" class="form-select" v-model="entriesPerPage" @change="changePage(1)">
-            <option value="3">3</option>
+            <option value="4">4</option>
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="30">30</option>
@@ -108,7 +108,7 @@
   
   const router = useRouter();
   const farmers = ref([]);
-  const entriesPerPage = ref(3);
+  const entriesPerPage = ref(4);
   const currentPage = ref(1);
   const searchQuery = ref('');
   const token = localStorage.getItem('auth_token');

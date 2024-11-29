@@ -73,7 +73,8 @@
 
       <!-- Download button -->
       <div v-if="selectedColumns.length > 0">
-        <button @click="downloadPDF" class="btn btn-primary">Download PDF</button>
+        <button @click="downloadPDF" class="btn btn-primary btn-margin">Download as PDF</button>
+        <button @click="downloadCSV" class="btn btn-secondary">Export as CSV</button>
       </div>
     </div>
   </div>
@@ -168,6 +169,19 @@ const downloadPDF = () => {
     .from(element)
     .set(opt)
     .save();
+};
+
+const downloadCSV = () => {
+  const headers = selectedColumns.value.join(',');
+  const rows = filteredFarmers.value.map(farmer =>
+    selectedColumns.value.map(column => `"${farmer[column] || ''}"`).join(',')
+  );
+  const csvContent = [headers, ...rows].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'farmer_report.csv';
+  link.click();
 };
 
 onMounted(() => {
@@ -348,9 +362,9 @@ onMounted(() => {
     width: 20%;
   }
   .btn {
-        width: 8%; /* Full width on small screens */
+        width: 9%; /* Full width on small screens */
         text-align: center; /* Center text */
-        margin-left: 0; /* Reset margin */
+        
       }
     .btn {
       padding: 0.5rem 1rem;
@@ -378,6 +392,9 @@ onMounted(() => {
 
     input[type="text"] {
       width: 100%;
+    }
+    .btn-margin {
+        margin-right: 10px; /* Adjust the value as needed */
     }
     
     @media (max-width: 768px) {
