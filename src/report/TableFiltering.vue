@@ -271,7 +271,7 @@ onMounted(() => {
   }
   .table td {
   border-bottom: 1px solid #d7d7d7;
-  border-left: none; /* Default: No vertical lines */
+  border-left: none; 
   border-right: none;
 }
 
@@ -285,7 +285,7 @@ onMounted(() => {
 .table th {
   border-top: 1px solid #ddd; /* Horizontal line */
   border-bottom: 1px solid #ddd;
-  border-left: none; /* Default: No vertical lines */
+  border-left: none; 
   border-right: none;
 }
 

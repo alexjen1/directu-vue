@@ -167,7 +167,7 @@
         <p>Farmer deleted! <button @click="restoreDeletedFarmer">Undo</button></p>
       </div>
       <br>
-      <div v-if="showUndo" class="undo-alert">
+      <div v-if="showUndoSelected" class="undo-alert">
         <p>Farmer deleted! <button @click="restoreDeletedFarmersSelected">Undo Selected</button></p>
       </div>
 
@@ -198,6 +198,7 @@ const searchQuery = ref('');
 const token = localStorage.getItem('auth_token');
 const alertMessage = ref('');
 const showUndo = ref(false);
+const showUndoSelected = ref(false);
 let deletedFarmerId = ref(null);
 const selectedMainLivelihood = ref(''); 
 const selectedbarangay = ref(''); 
@@ -281,11 +282,11 @@ const deleteSelectedFarmers = async () => {
     farmers.value = farmers.value.filter(farmer => !selectedFarmers.value.includes(farmer.id));
     alertMessage.value = 'Selected farmers have been deleted!';
 
-    showUndo.value = true;
+    showUndoSelected.value = true;
     deletedFarmerId.value = farmersToDelete.map(farmer => farmer.id); 
 
     setTimeout(async () => {
-      if (showUndo.value) {
+      if (showUndoSelected.value) {
         for (const id of deletedFarmerId.value) {
           const farmerToPermanentlyDelete = farmersToDelete.find(farmer => farmer.id === id);
           await permanentlyDeleteFarmerSelected(id, farmerToPermanentlyDelete);
@@ -313,7 +314,7 @@ const permanentlyDeleteFarmerSelected = async (id, deletedFarmer) => {
     farmers.value = farmers.value.filter(farmer => farmer.id !== id);
     alertMessage.value = 'Farmer Permanently Deleted!';
 
-    showUndo.value = false;
+    showUndoSelected.value = false;
   } catch (err) {
     alert('Error permanently deleting farmer: ' + err);
   }
@@ -338,7 +339,7 @@ const restoreDeletedFarmersSelected = async () => {
     }
   }
 
-  showUndo.value = false;
+  showUndoSelected.value = false;
 };
 
 const downloadSelectedFarmersPDF = async () => {

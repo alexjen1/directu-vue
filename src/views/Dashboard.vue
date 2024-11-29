@@ -102,14 +102,14 @@ const fetchFarmersData = async () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            refresh_token: refreshToken,  // Use refresh token to get a new access token
+            refresh_token: refreshToken, // Use refresh token to get a new access token
           }),
         });
 
         if (refreshResponse.status === 200) {
           const refreshData = await refreshResponse.json();
           const newAccessToken = refreshData.data.access_token;
-          const newRefreshToken = refreshData.data.refresh_token;  // New refresh token issued by the server
+          const newRefreshToken = refreshData.data.refresh_token; // Even if expired, server should issue a new one
 
           // Store the new tokens
           localStorage.setItem('auth_token', newAccessToken);
@@ -118,9 +118,7 @@ const fetchFarmersData = async () => {
           // Retry the original request with the new access token
           return fetchDataWithAuth(newAccessToken, newRefreshToken);
         } else {
-          // Refresh token failed, attempt to log in again
-          alert('Session expired. Please log in again.');
-          return;
+          throw new Error('Failed to refresh tokens.');
         }
       }
 

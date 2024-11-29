@@ -1588,7 +1588,7 @@ const submitForm = async () => {
     // Redirect to farmers index page on success
     setTimeout(() => {
       router.push('/farmers/index');
-    }, 5000); // Redirect after 5 seconds
+    }, 2000); // Redirect after 5 seconds
   } catch (error) {
     console.error('Error submitting form:', error.response ? error.response.data : error.message);
     alertMessage.value = 'An error occurred while creating the farmer.';

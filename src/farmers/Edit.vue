@@ -1288,10 +1288,9 @@ const logActivity = async (email, action) => {
     console.error('Failed to log activity:', error);
   }
 };
-// Function to submit the form and update the farmer in Directus
 const submitForm = async () => {
   try {
-    const farmerId = route.params.id; // Assuming ID is passed via the route
+    const farmerId = route.params.id; // Farmer ID from route
     const token = localStorage.getItem('auth_token');
     const refreshToken = localStorage.getItem('refresh_token');
     const email = localStorage.getItem('email');
@@ -1303,7 +1302,7 @@ const submitForm = async () => {
 
     let response;
     try {
-      // Attempt to make the PATCH request with the current access token
+      // Attempt PATCH request with the current token
       response = await axios.patch(`http://localhost:8055/items/farmers/${farmerId}`, farmer.value, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1311,9 +1310,8 @@ const submitForm = async () => {
         },
       });
     } catch (error) {
-      // If the request fails with a 401 Unauthorized error (token expired), attempt to refresh the token
+      // Handle token refresh logic if required
       if (error.response && error.response.status === 401) {
-        // Attempt to refresh the token
         const refreshResponse = await axios.post('http://localhost:8055/auth/refresh', {
           refresh_token: refreshToken,
         });
@@ -1322,11 +1320,11 @@ const submitForm = async () => {
           const newAccessToken = refreshResponse.data.data.access_token;
           const newRefreshToken = refreshResponse.data.data.refresh_token;
 
-          // Store new tokens in localStorage
+          // Update tokens in localStorage
           localStorage.setItem('auth_token', newAccessToken);
           localStorage.setItem('refresh_token', newRefreshToken);
 
-          // Retry the PATCH request with the new access token
+          // Retry the PATCH request
           response = await axios.patch(`http://localhost:8055/items/farmers/${farmerId}`, farmer.value, {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,
@@ -1339,28 +1337,29 @@ const submitForm = async () => {
           return;
         }
       } else {
-        // Handle other errors
         console.error('Error updating farmer:', error.response ? error.response.data : error.message);
         alert('An error occurred while updating the farmer.');
         return;
       }
     }
 
-    // Log activity with email and reference number
+    // Log activity
     logActivity(email, `Updated farmer with reference number: ${farmer.value.reference_number}`);
 
     // Show success alert
     alertMessage.value = 'Farmer Updated Successfully!';
 
-    // Redirect to farmers index page on success
+    // Optionally redirect or allow the user to stay
     setTimeout(() => {
-      router.push('/farmers/index'); // Adjust this path according to your routing setup
-    }, 5000); // Redirect after 2 seconds
+      // Uncomment the following line to redirect, or leave it commented to stay on the page
+      // router.push('/farmers/index'); 
+    }, 2000);
   } catch (error) {
     console.error('Error updating farmer:', error.response ? error.response.data : error.message);
     alert('An error occurred while updating the farmer.');
   }
 };
+
 
     // Close the alert and navigate to farmers index
     const closeAlert = () => {
