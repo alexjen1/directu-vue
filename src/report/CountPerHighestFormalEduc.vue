@@ -1,149 +1,101 @@
 <template>
-    <div class="report_count-container">
-      <Navbar />
-      <div class="content-box" id="reportContent">
-        <h1>Farmer Report Search by Highest Formal Education</h1>
-        <div>
-          <div class="input">
-            <label for="education">Select Education Level(s):</label>
-            <div class="selected-education-container">
-              <div class="selected-education">
-                <!-- Display selected education levels as tags -->
-                <span v-for="education in selectedEducationLevels" :key="education" class="tag">
-                  {{ education }}
-                  <button @click="removeEducation(education)">x</button>
-                </span>
-              </div>
-              <!-- Download Button -->
-              <button class="btn" style="background-color: #343248; border: 1px solid white; color: white;  margin-left: 90%;" @click="downloadPDF">Download PDF</button>
-            </div>
-            <select v-model="selectedEducationLevel" @change="addEducation" required spellcheck="false" class="black-select">
-              <option disabled value="">Select Education Level</option>
-              <option v-for="education in educationLevels" :key="education" :value="education">
-                {{ education }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div v-if="selectedEducationLevels.length > 0 && farmers.length > 0" class="total-count">
-        <h2>Total Farmers: {{ farmers.length }}</h2>
+  <div class="report_count-container">
+    <Navbar />
+    <div class="content-box" id="reportContent">
+      <div>
       </div>
-  
-        <!-- Display farmers for the selected education levels -->
-        <div v-if="farmers.length > 0">
-          <h2>Farmers with {{ selectedEducationLevels.join(', ') }} education:</h2>
-          <div class="table-responsive">
-            <table class="table">
-              <thead class="table-primary">
-                <tr>
-                  <th>RSBA No.</th>
-                  <th>Surname</th>
-                  <th>First Name</th>
-                  <th>Middle Name</th>
-                  <th>Extension Name</th>
-                  <th>Contact No.</th>
-                  <th>Education Level</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="farmer in farmers" :key="farmer.id">
-                  <td>{{ farmer.reference_number }}</td>
-                  <td>{{ farmer.surname }}</td>
-                  <td>{{ farmer.first_name }}</td>
-                  <td>{{ farmer.middle_name }}</td>
-                  <td>{{ farmer.extension_name }}</td>
-                  <td>{{ farmer.mobile_number }}</td>
-                  <td>{{ farmer.highest_formal_education }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  
-        <!-- Message when no farmers found -->
-        <div v-else-if="selectedEducationLevels.length > 0">
-          <p>No farmers found with {{ selectedEducationLevels.join(', ') }} education.</p>
+
+      <!-- Display farmers for each education level -->
+      <div v-if="farmers.length > 0">
+        <p style="color: black;">Total Count: {{ farmers.length }}</p>
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="table-primary">
+              <tr>
+                <th>Education Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="farmer in farmers" :key="farmer.id">
+                <td>{{ farmer.highest_formal_education }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <!-- Message when no farmers found -->
+      <div v-else>
+        <p>No farmers found for the displayed education levels.</p>
+      </div>
+      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
     </div>
-  </template>
-  
-  <script setup>
-  import Navbar from '@/components/Navbar.vue';
-  import { ref, onMounted } from 'vue';
-  import axios from 'axios';
-  import html2pdf from 'html2pdf.js';
-  
-  const selectedEducationLevels = ref([]);
-  const selectedEducationLevel = ref('');
-  const educationLevels = ref([]);
-  const farmers = ref([]);
-  
-  const token = localStorage.getItem('auth_token');
-  
-  const fetchEducationLevels = async () => {
-    try {
-      const response = await axios.get(
-        'http://localhost:8055/items/farmers?fields=highest_formal_education',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-          },
-        }
-      );
-  
-      const educationList = response.data.data.map(farmer => farmer.highest_formal_education);
-      educationLevels.value = [...new Set(educationList)];
-    } catch (error) {
-      console.error('Error fetching education levels:', error);
-    }
-  };
-  
-  const addEducation = () => {
-    if (selectedEducationLevel.value && !selectedEducationLevels.value.includes(selectedEducationLevel.value)) {
-      selectedEducationLevels.value.push(selectedEducationLevel.value);
-      selectedEducationLevel.value = '';
-      fetchFarmersByEducation();
-    }
-  };
-  
-  const removeEducation = (education) => {
-    const index = selectedEducationLevels.value.indexOf(education);
-    if (index > -1) {
-      selectedEducationLevels.value.splice(index, 1);
-      fetchFarmersByEducation();
-    }
-  };
-  
-  const fetchFarmersByEducation = async () => {
-    farmers.value = []; // Clear previous data to reorder based on selection
-    try {
-      if (selectedEducationLevels.value.length > 0) {
-        for (const education of selectedEducationLevels.value) {
-          const response = await axios.get(
-            `http://localhost:8055/items/farmers?filter[highest_formal_education]=${education}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, 
-              },
-            }
-          );
-          farmers.value = [...farmers.value, ...response.data.data];
-        }
-      } else {
-        farmers.value = [];
+  </div>
+</template>
+
+<script setup>
+import Navbar from '@/components/Navbar.vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import html2pdf from 'html2pdf.js';
+
+const educationLevels = ref([]);
+const farmers = ref([]);
+
+const token = localStorage.getItem('auth_token');
+
+// Fetch all available education levels
+const fetchEducationLevels = async () => {
+  try {
+    const response = await axios.get(
+      'http://localhost:8055/items/farmers?fields=highest_formal_education',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    } catch (error) {
-      console.error('Error fetching farmers:', error);
+    );
+
+    // Get all education levels from the farmers
+    const educationList = response.data.data.map(farmer => farmer.highest_formal_education);
+    educationLevels.value = [...new Set(educationList)];
+    
+    fetchFarmersByEducation();
+  } catch (error) {
+    console.error('Error fetching education levels:', error);
+  }
+};
+
+// Fetch farmers for each education level
+const fetchFarmersByEducation = async () => {
+  farmers.value = []; // Clear previous data
+  try {
+    if (educationLevels.value.length > 0) {
+      for (const education of educationLevels.value) {
+        const response = await axios.get(
+          `http://localhost:8055/items/farmers?filter[highest_formal_education]=${education}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        farmers.value = [...farmers.value, ...response.data.data];
+      }
+    } else {
       farmers.value = [];
     }
-  };
-  
-  onMounted(() => {
-    fetchEducationLevels();
-  });
-  
-  // PDF Download Function
+  } catch (error) {
+    console.error('Error fetching farmers:', error);
+    farmers.value = [];
+  }
+};
+
+onMounted(() => {
+  fetchEducationLevels();
+});
+
+// PDF Download Function
 const downloadPDF = async () => {
   const element = document.getElementById('reportContent');
   
@@ -160,28 +112,16 @@ const downloadPDF = async () => {
     const farmersPage = farmers.value.slice(i, i + maxRowsPerPage);
     
     pageContent.innerHTML = `
-      <h1 style="color: black;">Farmer Report by Education Level - Page ${(i / maxRowsPerPage) + 1}</h1>
+      <h1 style="color: black;">Farmer Report by Farming Activity - Page ${(i / maxRowsPerPage) + 1}</h1>
       <table class="table" style="border-collapse: collapse; width: 100%;">
         <thead class="table-primary" style="background-color: #007bff; color: black;">
           <tr>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">RSBA No.</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Surname</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">First Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Middle Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Extension Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Contact No.</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Education Level</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Education Level</th>
           </tr>
         </thead>
         <tbody>
           ${farmersPage.map(farmer => `
             <tr>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.reference_number}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.surname}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.first_name}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.middle_name}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.extension_name}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.mobile_number}</td>
               <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.highest_formal_education}</td>
             </tr>
           `).join('')}
@@ -213,7 +153,8 @@ const downloadPDF = async () => {
       });
   }
 };
-  </script>
+</script>
+
   
   <style scoped>
   .report_count-container {
@@ -221,16 +162,16 @@ const downloadPDF = async () => {
     flex-direction: column;
     min-height: 100vh;
     width: 100vw;
-    background-color: #262735;
+    background-color: #f2f4f7;
     overflow: hidden;
   }
   
   .content-box {
     position: relative;
     padding: 2rem;
-    background-color: #343248;
+    background-color: #f2f4f7;
     margin-top: 2rem;
-    border: 1px solid #343248;
+    border: 1px solid #f2f4f7;
     border-radius: 8px;
     max-height: 80vh; /* Set a max height for the content box */
     overflow-y: auto; /* Enable vertical scrolling */
@@ -239,13 +180,13 @@ const downloadPDF = async () => {
 
   
   h1 {
-    color: white;
+    color: black;
     margin-bottom: 2rem;
     font-size: 2rem;
     text-align: left;
   }
   h2 {
-    color: white;
+    color: black;
   }
   
   /* Style the search input */
@@ -309,24 +250,43 @@ const downloadPDF = async () => {
   }
   
   .table-primary {
-    background-color: #647f9c;
+    background-color: #387e90;
     color: white;
   }
-  
-  .table th,
-  .table td {
-    padding: 0.75rem;
-    text-align: left;
-    border: 1px solid #ddd;
+  .table th {
+    color: black;
+    background-color: white;
   }
-  
+  .table td {
+  border-bottom: 1px solid #d7d7d7;
+  border-left: none; 
+  border-right: none;
+}
+
+.table td:first-child {
+  border-left: 1px solid #F5F5F5; 
+}
+
+.table td:last-child {
+  border-right: 1px solid #F5F5F5;
+}
+.table th {
+  border-top: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
+  border-left: none; 
+  border-right: none;
+}
+
+.table thead th {
+  border-top: 1px solid white;
+  border-bottom: 1px solid white; 
+}
   .table th {
     font-weight: bold;
   }
   
-  /* New style for table data text */
   .table td {
-    color: white; /* Set text color to black */
+    color: black;
   }
   
   /* Style for action buttons */

@@ -2,71 +2,33 @@
   <div class="report_count-container">
     <Navbar />
     <div class="content-box" id="reportContent">
-      <h1>Farmer Report Search by Barangay</h1>
       <div>
-        <div class="filter-dropdown">
-          <label for="barangay">Select Barangay(s):</label>
-          <div class="selected-barangays-container">
-            <div class="selected-barangays">
-              <!-- Display selected barangays as tags -->
-              <span v-for="barangay in selectedBarangays" :key="barangay" class="tag">
-                {{ barangay }}
-                <button @click="removeBarangay(barangay)">x</button>
-              </span>
-            </div>
-            
-          </div>
-          <select v-model="selectedBarangay" @change="addBarangay" required spellcheck="false" class="black-select">
-            <option disabled value="">Select Barangay</option>
-            <option v-for="barangay in barangays" :key="barangay" :value="barangay">
-              {{ barangay }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <!-- Download Button -->
-      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
-      
-      <!-- Display total count of farmers for selected barangays -->
-      <div v-if="selectedBarangays.length > 0 && farmers.length > 0" class="total-count">
-        <h2>Total Farmers: {{ farmers.length }}</h2>
       </div>
 
-      <!-- Display farmers for the selected barangays -->
+      <!-- Display farmers and their farming activities -->
       <div v-if="farmers.length > 0">
-        <h2>Farmers in {{ selectedBarangays.join(', ') }}:</h2>
+        <p style="color: black;">Total Count: {{ farmers.length }}</p>
         <div class="table-responsive">
           <table class="table">
             <thead class="table-primary">
               <tr>
-                <th>RSBA No.</th>
-                <th>Surname</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Extension Name</th>
-                <th>Contact No.</th>
                 <th>Barangay</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="farmer in farmers" :key="farmer.id">
-                <td>{{ farmer.reference_number }}</td>
-                <td>{{ farmer.surname }}</td>
-                <td>{{ farmer.first_name }}</td>
-                <td>{{ farmer.middle_name }}</td>
-                <td>{{ farmer.extension_name }}</td>
-                <td>{{ farmer.mobile_number }}</td>
                 <td>{{ farmer.barangay }}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
-      <!-- Message when no farmers found -->
-      <div v-else-if="selectedBarangays.length > 0">
-        <p>No farmers found in {{ selectedBarangays.join(', ') }}.</p>
+      <div v-else>
+        <p>No farmers found.</p>
       </div>
+      
+      <!-- Download Button -->
+      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
     </div>
   </div>
 </template>
@@ -77,74 +39,30 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
-const selectedBarangays = ref([]);
-const selectedBarangay = ref('');
-const barangays = ref([]);
 const farmers = ref([]);
 
 const token = localStorage.getItem('auth_token');
 
-const fetchBarangays = async () => {
+// Fetching farmers from the database
+const fetchFarmers = async () => {
   try {
     const response = await axios.get(
-      'http://localhost:8055/items/farmers?fields=barangay',
+      'http://localhost:8055/items/farmers',
       {
         headers: {
           Authorization: `Bearer ${token}`, 
         },
       }
     );
-
-    const barangayList = response.data.data.map(farmer => farmer.barangay);
-    barangays.value = [...new Set(barangayList)];
-  } catch (error) {
-    console.error('Error fetching barangays:', error);
-  }
-};
-
-const addBarangay = () => {
-  if (selectedBarangay.value && !selectedBarangays.value.includes(selectedBarangay.value)) {
-    selectedBarangays.value.push(selectedBarangay.value);
-    selectedBarangay.value = '';
-    fetchFarmersByBarangay();
-  }
-};
-
-const removeBarangay = (barangay) => {
-  const index = selectedBarangays.value.indexOf(barangay);
-  if (index > -1) {
-    selectedBarangays.value.splice(index, 1);
-    fetchFarmersByBarangay();
-  }
-};
-
-const fetchFarmersByBarangay = async () => {
-  farmers.value = []; // Clear previous data to reorder based on selection
-  try {
-    if (selectedBarangays.value.length > 0) {
-      for (const barangay of selectedBarangays.value) {
-        const response = await axios.get(
-          `http://localhost:8055/items/farmers?filter[barangay]=${barangay}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, 
-            },
-          }
-        );
-        farmers.value = [...farmers.value, ...response.data.data];
-      }
-    } else {
-      farmers.value = [];
-    }
+    farmers.value = response.data.data; // Populate the farmers array with fetched data
   } catch (error) {
     console.error('Error fetching farmers:', error);
     farmers.value = [];
   }
 };
 
-
 onMounted(() => {
-  fetchBarangays();
+  fetchFarmers();
 });
 
 const downloadPDF = async () => {
@@ -163,28 +81,16 @@ const downloadPDF = async () => {
     const farmersPage = farmers.value.slice(i, i + maxRowsPerPage);
     
     pageContent.innerHTML = `
-      <h1 style="color: black;">Farmer Report by Barangay - Page ${(i / maxRowsPerPage) + 1}</h1>
+      <h1 style="color: black;">Farmer Report by Farming Activity - Page ${(i / maxRowsPerPage) + 1}</h1>
       <table class="table" style="border-collapse: collapse; width: 100%;">
         <thead class="table-primary" style="background-color: #007bff; color: black;">
           <tr>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">RSBA No.</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Surname</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">First Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Middle Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Extension Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Contact No.</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Barangay</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Barangay</th>
           </tr>
         </thead>
         <tbody>
           ${farmersPage.map(farmer => `
             <tr>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.reference_number}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.surname}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.first_name}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.middle_name}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.extension_name}</td>
-              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.mobile_number}</td>
               <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.barangay}</td>
             </tr>
           `).join('')}
@@ -197,7 +103,7 @@ const downloadPDF = async () => {
 
   const options = {
     margin: [0.1, 0.1, 0.1, 0.1],
-    filename: 'farmer_report_barangay.pdf',
+    filename: 'farmer_report_farming_activity.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { 
       scale: 2,
@@ -217,27 +123,24 @@ const downloadPDF = async () => {
   }
 };
 
-
 </script>
 
-
-  
   <style scoped>
   .report_count-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     width: 100vw;
-    background-color: #262735;
+    background-color: #f2f4f7;
     overflow: hidden;
   }
   
   .content-box {
     position: relative;
     padding: 2rem;
-    background-color: #343248;
+    background-color: #f2f4f7;
     margin-top: 2rem;
-    border: 1px solid #343248;
+    border: 1px solid #f2f4f7;
     border-radius: 8px;
     max-height: 80vh; /* Set a max height for the content box */
     overflow-y: auto; /* Enable vertical scrolling */
@@ -246,57 +149,13 @@ const downloadPDF = async () => {
 
   
   h1 {
-    color: white;
+    color: black;
     margin-bottom: 2rem;
     font-size: 2rem;
     text-align: left;
   }
   h2 {
-    color: white;
-  }
-  
-  /* Style the search input */
-  .input-field1 {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-  
-  .input-field1 input {
-    width: 100%;
-    max-width: 300px;
-    height: 2.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    padding: 0 1rem;
-    border: 1px solid black;
-    background: transparent;
     color: black;
-    outline: none;
-    transition: border 0.3s;
-  }
-  
-  .input-field1 label {
-    position: absolute;
-    top: 50%;
-    left: 1rem;
-    transform: translateY(-50%);
-    color: white;
-    font-size: 1rem;
-    pointer-events: none;
-    transition: 0.3s;
-  }
-  
-  input:focus {
-    border: 2px solid black;
-  }
-  
-  input:focus ~ label,
-  input:valid ~ label {
-    top: 0;
-    left: 1rem;
-    font-size: 0.875rem;
-    background: white;
-    padding: 0 2px;
   }
   
   .search-box {
@@ -316,24 +175,43 @@ const downloadPDF = async () => {
   }
   
   .table-primary {
-    background-color: #647f9c;
+    background-color: #387e90;
     color: white;
   }
-  
-  .table th,
-  .table td {
-    padding: 0.75rem;
-    text-align: left;
-    border: 1px solid #ddd;
+  .table th {
+    color: black;
+    background-color: white;
   }
-  
+  .table td {
+  border-bottom: 1px solid #d7d7d7;
+  border-left: none; 
+  border-right: none;
+}
+
+.table td:first-child {
+  border-left: 1px solid #F5F5F5; 
+}
+
+.table td:last-child {
+  border-right: 1px solid #F5F5F5;
+}
+.table th {
+  border-top: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
+  border-left: none; 
+  border-right: none;
+}
+
+.table thead th {
+  border-top: 1px solid white;
+  border-bottom: 1px solid white; 
+}
   .table th {
     font-weight: bold;
   }
   
-  /* New style for table data text */
   .table td {
-    color: white; /* Set text color to black */
+    color: black;
   }
   
   /* Style for action buttons */

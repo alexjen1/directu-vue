@@ -188,7 +188,7 @@ onMounted(fetchFarmingActivityData);
 
 #farmingActivityBarChart {
   width: 100%;
-  max-width: 900px;
+  max-width: 790px;
   height: 300px;
   margin-left: 0;
   margin-right: auto;

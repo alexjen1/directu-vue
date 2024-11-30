@@ -2,54 +2,21 @@
   <div class="report_count-container">
     <Navbar />
     <div class="content-box" id="reportContent">
-      <h1>Farmer Report Search by Farming Activity</h1>
       <div>
-        <div class="filter-dropdown">
-          <label for="farmingActivity">Select Farming Activity:</label>
-          <div class="selected-activities-container">
-            <div class="selected-activities">
-              <span v-for="activity in selectedActivities" :key="activity" class="tag">
-                {{ activity }}
-                <button @click="removeActivity(activity)">x</button>
-              </span>
-            </div>
-            
-          </div>
-          <select v-model="selectedActivity" @change="addActivity" required spellcheck="false" class="black-select">
-            <option disabled value="">Select Farming Activity</option>
-            <option v-for="activity in farmingActivities" :key="activity" :value="activity">
-              {{ activity }}
-            </option>
-          </select>
-        </div>
       </div>
-      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
 
       <!-- Display farmers for the selected activities -->
       <div v-if="filteredFarmers.length > 0">
-        <h2>Farmers engaged in {{ selectedActivities.join(', ') }}:</h2>
-        <p>Total Count: {{ totalFarmersCount }}</p> <!-- Total count display -->
+        <p style="color: black;">Total Count: {{ totalFarmersCount }}</p>
         <div class="table-responsive">
           <table class="table">
             <thead class="table-primary">
               <tr>
-                <th>RSBA No.</th>
-                <th>Surname</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Extension Name</th>
-                <th>Contact No.</th>
                 <th>Farming Activities</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="farmer in filteredFarmers" :key="farmer.id">
-                <td>{{ farmer.reference_number }}</td>
-                <td>{{ farmer.surname }}</td>
-                <td>{{ farmer.first_name }}</td>
-                <td>{{ farmer.middle_name }}</td>
-                <td>{{ farmer.extension_name }}</td>
-                <td>{{ farmer.mobile_number }}</td>
                 <td>{{ formatFarmingActivities(farmer) }}</td>
               </tr>
             </tbody>
@@ -57,9 +24,10 @@
         </div>
       </div>
 
-      <div v-else-if="selectedActivities.length > 0">
-        <p>No farmers found engaged in {{ selectedActivities.join(', ') }}.</p>
+      <div v-else-if="farmingActivities.length > 0">
+        <p>No farmers found engaged in these farming activities.</p>
       </div>
+      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
     </div>
   </div>
 </template>
@@ -70,17 +38,14 @@ import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
-const selectedActivities = ref([]);
-const selectedActivity = ref('');
 const farmingActivities = ref([]);
 const farmers = ref([]);
 
-// Computed property to filter farmers based on selected activities
+// Computed property to filter farmers based on farming activities
 const filteredFarmers = computed(() => {
-  if (selectedActivities.value.length === 0) return [];
   return farmers.value.filter(farmer =>
-    selectedActivities.value.some(activity =>
-      farmer.type_of_farming_activity.includes(activity)
+    farmer.type_of_farming_activity.some(activity =>
+      farmingActivities.value.includes(activity)
     )
   );
 });
@@ -90,6 +55,7 @@ const totalFarmersCount = computed(() => filteredFarmers.value.length);
 
 const token = localStorage.getItem('auth_token');
 
+// Fetch all farming activities from the backend
 const fetchFarmingActivities = async () => {
   try {
     const response = await axios.get(
@@ -111,23 +77,8 @@ const fetchFarmingActivities = async () => {
   }
 };
 
-const addActivity = () => {
-  if (selectedActivity.value && !selectedActivities.value.includes(selectedActivity.value)) {
-    selectedActivities.value.push(selectedActivity.value);
-    selectedActivity.value = ''; // Clear selection after adding
-    fetchFarmersByActivity();
-  }
-};
-
-const removeActivity = (activity) => {
-  const index = selectedActivities.value.indexOf(activity);
-  if (index > -1) {
-    selectedActivities.value.splice(index, 1);
-    fetchFarmersByActivity(); // Refetch farmers after removal
-  }
-};
-
-const fetchFarmersByActivity = async () => {
+// Fetch all farmers from the backend
+const fetchFarmers = async () => {
   try {
     const response = await axios.get(
       'http://localhost:8055/items/farmers',
@@ -154,6 +105,7 @@ const formatFarmingActivities = (farmer) => {
 
 onMounted(() => {
   fetchFarmingActivities();
+  fetchFarmers();
 });
 
 // PDF Download Function
@@ -171,24 +123,12 @@ const downloadPDF = async () => {
     <table class="table" style="border-collapse: collapse; width: 100%;">
     <thead class="table-primary" style="background-color: #007bff; color: black;">
       <tr>
-        <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">RSBA No.</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Surname</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">First Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Middle Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Extension Name</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Contact No.</th>
-            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: white;">Farming Activity</th>
+        <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Farming Activity</th>
       </tr>
     </thead>
     <tbody>
       ${filteredFarmersList.map(farmer => `
         <tr>
-          <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.reference_number}</td>
-          <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.surname}</td>
-          <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.first_name}</td>
-          <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.middle_name}</td>
-          <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.extension_name}</td>
-          <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.mobile_number}</td>
           <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${formatFarmingActivities(farmer)}</td>
         </tr>
       `).join('')}
@@ -216,6 +156,7 @@ const downloadPDF = async () => {
     });
 };
 </script>
+
   
   <style scoped>
   .report_count-container {
@@ -223,16 +164,16 @@ const downloadPDF = async () => {
     flex-direction: column;
     min-height: 100vh;
     width: 100vw;
-    background-color: #262735;
+    background-color: #f2f4f7;
     overflow: hidden;
   }
   
   .content-box {
     position: relative;
     padding: 2rem;
-    background-color: #343248;
+    background-color: #f2f4f7;
     margin-top: 2rem;
-    border: 1px solid #343248;
+    border: 1px solid #f2f4f7;
     border-radius: 8px;
     max-height: 80vh; /* Set a max height for the content box */
     overflow-y: auto; /* Enable vertical scrolling */
@@ -241,69 +182,18 @@ const downloadPDF = async () => {
 
   
   h1 {
-    color: white;
+    color: black;
     margin-bottom: 2rem;
     font-size: 2rem;
     text-align: left;
   }
   h2 {
-    color: white;
-  }
-  
-  /* Style the search input */
-  .input-field1 {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-  
-  .input-field1 input {
-    width: 100%;
-    max-width: 300px;
-    height: 2.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    padding: 0 1rem;
-    border: 1px solid black;
-    background: transparent;
     color: black;
-    outline: none;
-    transition: border 0.3s;
-  }
-  
-  .input-field1 label {
-    position: absolute;
-    top: 50%;
-    left: 1rem;
-    transform: translateY(-50%);
-    color: white;
-    font-size: 1rem;
-    pointer-events: none;
-    transition: 0.3s;
-  }
-  
-  input:focus {
-    border: 2px solid black;
-  }
-  
-  input:focus ~ label,
-  input:valid ~ label {
-    top: 0;
-    left: 1rem;
-    font-size: 0.875rem;
-    background: white;
-    padding: 0 2px;
-  }
-  
-  .search-box {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
+  } 
   
   .table-responsive {
     overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
   }
-  
   .table {
     width: 100%;
     margin-top: 1.5rem;
@@ -311,24 +201,43 @@ const downloadPDF = async () => {
   }
   
   .table-primary {
-    background-color: #647f9c;
+    background-color: #387e90;
     color: white;
   }
-  
-  .table th,
-  .table td {
-    padding: 0.75rem;
-    text-align: left;
-    border: 1px solid #ddd;
+  .table th {
+    color: black;
+    background-color: white;
   }
-  
+  .table td {
+  border-bottom: 1px solid #d7d7d7;
+  border-left: none; 
+  border-right: none;
+}
+
+.table td:first-child {
+  border-left: 1px solid #F5F5F5; 
+}
+
+.table td:last-child {
+  border-right: 1px solid #F5F5F5;
+}
+.table th {
+  border-top: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
+  border-left: none; 
+  border-right: none;
+}
+
+.table thead th {
+  border-top: 1px solid white;
+  border-bottom: 1px solid white; 
+}
   .table th {
     font-weight: bold;
   }
   
-  /* New style for table data text */
   .table td {
-    color: white; /* Set text color to black */
+    color: black;
   }
   
   /* Style for action buttons */
@@ -361,15 +270,6 @@ const downloadPDF = async () => {
   margin-left: 10px; /* Adds space between the tags and the button */
 }
 
-.tag {
-  display: inline-block;
-  background-color: lightgreen;
-  color: black;
-  border-radius: 15px;
-  padding: 5px 10px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-}
 
 .tag button {
   margin-left: 5px;
@@ -381,6 +281,9 @@ const downloadPDF = async () => {
 
 .input select {
   width: 20%;
+}
+.farming-activities-list{
+  color: black;
 }
   
   @media (max-width: 768px) {

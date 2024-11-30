@@ -11,19 +11,28 @@
       <br />
       <!-- Rest of the Dashboard -->
       <div class="charts-container">
-        <div class="chart-box">
-          <h1>Farming Activities</h1>
-          <FarmingActivityGraph />
+      <div class="chart-box">
+        <div class="icon-container" onclick="window.location.href='/farming-activity-report'">
+          <i class="fas fa-ellipsis-v"></i>
         </div>
+        <h1>Farming Activities</h1>
+        <FarmingActivityGraph />
       </div>
+    </div>
       <br />
       <br />
       <div class="charts-container">
         <div class="chart-box">
+          <div class="icon-container" onclick="window.location.href='/per-brgy-report'">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
           <h1>Count Per Barangay</h1>
           <BarangayBarGraph />
         </div>
         <div class="chart-box">
+          <div class="icon-container" onclick="window.location.href='/per-educational-level-report'">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
           <h1>Highest Formal Education</h1>
           <HighesFormalEduc />
         </div>
@@ -32,14 +41,23 @@
       <br />
       <div class="charts-container">
         <div class="chart-box">
+          <div class="icon-container" onclick="window.location.href='/per-gender-report'">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
           <h1>Gender</h1>
           <SexBarGraph />
         </div>
         <div class="chart-box">
+          <div class="icon-container" onclick="window.location.href='/per-religion-report'">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
           <h1>Religion</h1>
           <ReligionBarGraph />
         </div>
         <div class="chart-box">
+          <div class="icon-container" onclick="window.location.href='/per-civil-status-report'">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
           <h1>Civil Status</h1>
           <CivilStatusBarGraph />
         </div>
@@ -214,6 +232,16 @@ h1, h2 {
   transform: scale(1.2);
   cursor: pointer;
 }
+.icon-container {
+    font-size: 20px; 
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center; 
+    width: 100%; 
+    color: black; 
+    cursor: pointer;
+}
+
 
 @media (max-width: 768px) {
   .charts-container {
