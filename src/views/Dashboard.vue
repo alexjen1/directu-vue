@@ -3,13 +3,11 @@
     <Navbar />
     <div class="content">
       <br />
-      <!-- Total Farmers and Activity Counts -->
       <div class="total-farmers-box">
           <h1>Total Farmers: {{ farmersCount }}</h1>
         </div>
       <br />
       <br />
-      <!-- Rest of the Dashboard -->
       <div class="charts-container">
       <div class="chart-box">
         <div class="icon-container" onclick="window.location.href='/farming-activity-report'">

@@ -1,10 +1,10 @@
 <template>
   <div class="chart-container">
     <div class="chart pie-chart">
-      <canvas id="farmingActivityPieChart" width="600" height="400"></canvas> <!-- Pie Chart -->
+      <canvas id="farmingActivityPieChart" width="600" height="400"></canvas> 
     </div>
     <div class="chart">
-      <canvas id="farmingActivityBarChart" width="600" height="300"></canvas> <!-- Bar Chart -->
+      <canvas id="farmingActivityBarChart" width="600" height="300"></canvas> 
     </div>
   </div>
 </template>
@@ -13,19 +13,18 @@
 import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js';
 
-Chart.register(...registerables); // Register all Chart.js components
+Chart.register(...registerables); 
 
-const farmingActivityData = ref([]); // Reactive variable to hold farming activity data
-const farmingActivityLabels = ref([]); // Labels for the farming activity chart
+const farmingActivityData = ref([]); 
+const farmingActivityLabels = ref([]); 
 
-// Function to fetch farming activity data
 const fetchFarmingActivityData = async () => {
-  const token = localStorage.getItem('auth_token'); // Get auth token from local storage
+  const token = localStorage.getItem('auth_token'); 
   try {
     const response = await fetch('http://localhost:8055/items/farmers', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`, // Include the token for authorization
+        'Authorization': `Bearer ${token}`, 
         'Content-Type': 'application/json',
       },
     });
@@ -41,7 +40,7 @@ const fetchFarmingActivityData = async () => {
     const farmingActivityCount = {};
 
     farmers.forEach(farmer => {
-      const farmingActivity = farmer.type_of_farming_activity; // Adjust to match your field name
+      const farmingActivity = farmer.type_of_farming_activity; 
       farmingActivityCount[farmingActivity] = (farmingActivityCount[farmingActivity] || 0) + 1;
 
       if (farmer.other_crop_specify) {

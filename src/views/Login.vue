@@ -177,7 +177,7 @@ h1 {
 .logo {
     width: 100%; /* Make sure logo is responsive */
     height: auto; /* Automatically adjust height to maintain aspect ratio */
-    max-height: 500px; /* Limit the maximum height to 400px */
+    max-height: 550px; /* Limit the maximum height to 400px */
     border-radius: 8px; /* Optional: rounded corners for the image */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
 }

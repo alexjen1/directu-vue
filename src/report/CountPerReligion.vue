@@ -5,30 +5,34 @@
       <div>
       </div>
 
-      <!-- Display farmers and their farming activities -->
-      <div v-if="farmers.length > 0">
-        <p style="color: black;">Total Count: {{ farmers.length }}</p>
+      <!-- Display grouped farmers by religion -->
+      <div v-if="groupedFarmers.length > 0">
+        <p style="color: black;">Total Count: {{ groupedFarmers.length }}</p>
         <div class="table-responsive">
           <table class="table">
             <thead class="table-primary">
               <tr>
+                <th>#</th>
                 <th>Religion</th>
+                <th>Count</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="farmer in farmers" :key="farmer.id">
+              <tr v-for="(farmer, index) in groupedFarmers" :key="farmer.id">
+                <td>{{ index + 1 }}</td>
                 <td>{{ farmer.religion }}</td>
+                <td>{{ farmer.count }}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+      <!-- Message when no farmers found -->
       <div v-else>
         <p>No farmers found.</p>
       </div>
-      
-      <!-- Download Button -->
-      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
+      <!-- <button class="btnpdf" @click="downloadPDF">Download PDF</button> -->
     </div>
   </div>
 </template>
@@ -39,25 +43,41 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
-const farmers = ref([]);
-
+const groupedFarmers = ref([]); // To hold grouped farmers by religion
 const token = localStorage.getItem('auth_token');
 
-// Fetching farmers from the database
+// Fetch and group farmers by religion
 const fetchFarmers = async () => {
   try {
     const response = await axios.get(
-      'http://localhost:8055/items/farmers',
+      'http://localhost:8055/items/farmers?fields=religion', // Change `sex` to `religion`
       {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       }
     );
-    farmers.value = response.data.data; // Populate the farmers array with fetched data
+
+    // Group farmers by religion and count occurrences
+    const religionCounts = {};
+    response.data.data.forEach(farmer => {
+      const religion = farmer.religion || 'Unknown';
+      if (religionCounts[religion]) {
+        religionCounts[religion]++;
+      } else {
+        religionCounts[religion] = 1;
+      }
+    });
+
+    // Transform the object into an array for rendering
+    groupedFarmers.value = Object.entries(religionCounts).map(([religion, count], index) => ({
+      id: index + 1, // Auto-incremented ID
+      religion,
+      count,
+    }));
   } catch (error) {
     console.error('Error fetching farmers:', error);
-    farmers.value = [];
+    groupedFarmers.value = [];
   }
 };
 
@@ -65,6 +85,7 @@ onMounted(() => {
   fetchFarmers();
 });
 
+// PDF Download Function
 const downloadPDF = async () => {
   const element = document.getElementById('reportContent');
   
@@ -76,22 +97,24 @@ const downloadPDF = async () => {
   // Prepare an array of pages
   const pages = [];
   
-  for (let i = 0; i < farmers.value.length; i += maxRowsPerPage) {
+  for (let i = 0; i < groupedFarmers.value.length; i += maxRowsPerPage) {
     const pageContent = document.createElement('div');
-    const farmersPage = farmers.value.slice(i, i + maxRowsPerPage);
+    const farmersPage = groupedFarmers.value.slice(i, i + maxRowsPerPage);
     
     pageContent.innerHTML = `
-      <h1 style="color: black;">Farmer Report by Religion - Page ${(i / maxRowsPerPage) + 1}</h1>
+      <h1 style="color: black;">Farmer Report - Page ${(i / maxRowsPerPage) + 1}</h1>
       <table class="table" style="border-collapse: collapse; width: 100%;">
         <thead class="table-primary" style="background-color: #007bff; color: black;">
           <tr>
             <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Religion</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Count</th>
           </tr>
         </thead>
         <tbody>
           ${farmersPage.map(farmer => `
             <tr>
               <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.religion}</td>
+              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.count}</td>
             </tr>
           `).join('')}
         </tbody>
@@ -122,193 +145,93 @@ const downloadPDF = async () => {
       });
   }
 };
-
 </script>
 
-  <style scoped>
-  .report_count-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100vw;
-    background-color: #f2f4f7;
-    overflow: hidden;
-  }
-  
-  .content-box {
-    position: relative;
-    padding: 2rem;
-    background-color: #f2f4f7;
-    margin-top: 2rem;
-    border: 1px solid #f2f4f7;
-    border-radius: 8px;
-    max-height: 80vh; /* Set a max height for the content box */
-    overflow-y: auto; /* Enable vertical scrolling */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+<style scoped>
+.report_count-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f2f4f7;
+  overflow: hidden;
 }
 
-  
-  h1 {
-    color: black;
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    text-align: left;
-  }
-  h2 {
-    color: black;
-  }
-  
-  .search-box {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-  
-  .table-responsive {
-    overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
-  }
-  
-  .table {
-    width: 100%;
-    margin-top: 1.5rem;
-    border-collapse: collapse;
-  }
-  
-  .table-primary {
-    background-color: #387e90;
-    color: white;
-  }
-  .table th {
-    color: black;
-    background-color: white;
-  }
-  .table td {
+.content-box {
+  position: relative;
+  padding: 2rem;
+  background-color: #f2f4f7;
+  margin-top: 2rem;
+  border: 1px solid #f2f4f7;
+  border-radius: 8px;
+  max-height: 80vh; /* Set a max height for the content box */
+  overflow-y: auto; /* Enable vertical scrolling */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: black;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  text-align: left;
+}
+
+h2 {
+  color: black;
+}
+
+/* Style the table */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-collapse: collapse;
+}
+
+.table-primary {
+  background-color: #387e90;
+  color: white;
+}
+
+.table th {
+  color: black;
+  background-color: white;
+}
+
+.table td {
   border-bottom: 1px solid #d7d7d7;
-  border-left: none; 
+  border-left: none;
   border-right: none;
 }
 
 .table td:first-child {
-  border-left: 1px solid #F5F5F5; 
+  border-left: 1px solid #F5F5F5;
 }
 
 .table td:last-child {
   border-right: 1px solid #F5F5F5;
 }
+
 .table th {
-  border-top: 1px solid #ddd; 
+  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  border-left: none; 
+  border-left: none;
   border-right: none;
 }
 
 .table thead th {
   border-top: 1px solid white;
-  border-bottom: 1px solid white; 
-}
-  .table th {
-    font-weight: bold;
-  }
-  
-  .table td {
-    color: black;
-  }
-  
-  /* Style for action buttons */
-  .action-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 1.5rem; /* Increase icon size */
-    margin-right: 0.5rem; /* Space between icons */
-  }
-  label {
-    margin-right: -100px;
-  }
-  select {
-    padding: 5px;
-    font-size: 14px;
-}
-.selected-barangays-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Adjusts space between elements */
+  border-bottom: 1px solid white;
 }
 
-.selected-barangays {
-  display: flex;
-  flex-wrap: wrap; /* Allows tags to wrap to the next line if needed */
+.table th {
+  font-weight: bold;
 }
 
-
-.tag {
-  display: inline-block;
-  background-color: lightgreen;
+.table td {
   color: black;
-  border-radius: 15px;
-  padding: 5px 10px;
-  margin-right: 5px;
-  margin-bottom: 5px;
 }
-
-.tag button {
-  margin-left: 5px;
-  background: none;
-  border: none;
-  color: black;
-  cursor: pointer;
-}
-
-.input select {
-  width: 20%;
-}
-  
-  @media (max-width: 768px) {
-    .content-box {
-      padding: 1.5rem;
-    }
-  
-    h1 {
-      font-size: 1.5rem;
-    }
-  
-    .search-box {
-      position: relative;
-      top: 0;
-      right: 0;
-      width: 100%;
-      margin-top: 1rem;
-    }
-  
-    .input-field input {
-      width: 100%;
-      max-width: 100%;
-    }
-  
-    .table th,
-    .table td {
-      font-size: 0.875rem; /* Smaller font size on smaller screens */
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .content-box {
-      padding: 1rem;
-    }
-  
-    h1 {
-      font-size: 1.25rem;
-    }
-  
-    .input-field input {
-      font-size: 0.875rem;
-    }
-  
-    .btn {
-      width: 100%; /* Full width on small screens */
-      text-align: center; /* Center text */
-      margin-left: 0; /* Reset margin */
-    }
-  }
-  </style>
-  
+</style>

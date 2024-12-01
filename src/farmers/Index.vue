@@ -4,8 +4,6 @@
     <div class="content-box">
       <h1>Farmers List</h1>
       <br>
-
-      <!-- Search Input -->
       <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3">
         <div class="input-field1 search-box">
           <input
@@ -21,7 +19,7 @@
 
         <div class="filter-dropdown">
           <select id="farmingActivityFilter" class="form-select" v-model="selectedMainLivelihood" @change="changePage(1)">
-            <option disabled value="">Select Main Livelihood</option>
+            <option disabled value="">Filter Main Livelihood</option>
             <option value="">All</option>
             <option v-for="activity in uniqueActivities" :key="activity" :value="activity">
               {{ activity }}
@@ -30,7 +28,7 @@
         </div>
         <div class="filter-dropdown">
           <select id="farmingActivityFilter" class="form-select" v-model="selectedbarangay" @change="changePage(1)">
-            <option disabled value="">Select Barangay</option>
+            <option disabled value="">Filter Barangay</option>
             <option value="">All</option>
             <option v-for="activity in uniquebarangay" :key="activity" :value="activity">
               {{ activity }}
@@ -39,7 +37,7 @@
         </div>
         <div class="filter-dropdown">
           <select id="farmingActivityFilter" class="form-select" v-model="selectedGender" @change="changePage(1)">
-            <option disabled value="">Select Gender</option>
+            <option disabled value="">Filter Gender</option>
             <option value="">All</option>
             <option v-for="activity in uniqueGender" :key="activity" :value="activity">
               {{ activity }}
@@ -48,7 +46,7 @@
         </div>
         <div class="filter-dropdown">
           <select id="farmingActivityFilter" class="form-select" v-model="selectedFarmingActivity" @change="changePage(1)">
-            <option disabled value="">Select Farming Activity</option>
+            <option disabled value="">Filter Farming Activity</option>
             <option value="">All</option>
             <option v-for="activity in uniqueFarmingActivity" :key="activity" :value="activity">
               {{ activity }}
@@ -111,8 +109,7 @@
                 <button class="action-button option" @click="toggleOptions(farmer.id)">
                   <i class="fa-solid fa-ellipsis-vertical"></i>
                 </button>
-
-                <!-- Option Text that will appear below -->
+                
                 <div v-if="showOptions[farmer.id]" class="option-text">
                   <button1 @click="downloadFarmerPDF(farmer.id)"><i class="fas fa-download"></i> Download</button1>
                   <br>
@@ -2422,7 +2419,7 @@ onBeforeUnmount(() => {
     background-color: white;
     padding: 8px;
     margin-top: 10px;
-    margin-left: -25px;
+    margin-left: 35px;
     position: absolute;
     cursor: pointer;
     width: 120px;

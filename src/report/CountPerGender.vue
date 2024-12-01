@@ -5,19 +5,23 @@
       <div>
       </div>
 
-      <!-- Display farmers for all available sexes -->
-      <div v-if="farmers.length > 0">
-        <p style="color: black;">Total Count: {{ farmers.length }}</p>
+      <!-- Display grouped farmers by sex -->
+      <div v-if="groupedFarmers.length > 0">
+        <p style="color: black;">Total Count: {{ groupedFarmers.length }}</p>
         <div class="table-responsive">
           <table class="table">
             <thead class="table-primary">
               <tr>
+                <th>#</th>
                 <th>Gender</th>
+                <th>Count</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="farmer in farmers" :key="farmer.id">
+              <tr v-for="(farmer, index) in groupedFarmers" :key="farmer.id">
+                <td>{{ index + 1 }}</td>
                 <td>{{ farmer.sex }}</td>
+                <td>{{ farmer.count }}</td>
               </tr>
             </tbody>
           </table>
@@ -28,7 +32,7 @@
       <div v-else>
         <p>No farmers found.</p>
       </div>
-      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
+      <!-- <button class="btnpdf" @click="downloadPDF">Download PDF</button> -->
     </div>
   </div>
 </template>
@@ -39,50 +43,46 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
-const sexes = ref([]);
-const farmers = ref([]);
-
+const groupedFarmers = ref([]); // To hold grouped farmers by gender
 const token = localStorage.getItem('auth_token');
 
-const fetchSexes = async () => {
+// Fetch and group farmers by sex
+const fetchFarmers = async () => {
   try {
     const response = await axios.get(
       'http://localhost:8055/items/farmers?fields=sex',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, 
-        },
-      }
-    );
-
-    const sexList = response.data.data.map(farmer => farmer.sex);
-    sexes.value = [...new Set(sexList)];
-    fetchFarmers();
-  } catch (error) {
-    console.error('Error fetching sexes:', error);
-  }
-};
-
-const fetchFarmers = async () => {
-  farmers.value = []; // Clear previous data
-  try {
-    const response = await axios.get(
-      'http://localhost:8055/items/farmers',
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-    farmers.value = response.data.data;
+
+    // Group farmers by sex and count occurrences
+    const sexCounts = {};
+    response.data.data.forEach(farmer => {
+      const sex = farmer.sex || 'Unknown';
+      if (sexCounts[sex]) {
+        sexCounts[sex]++;
+      } else {
+        sexCounts[sex] = 1;
+      }
+    });
+
+    // Transform the object into an array for rendering
+    groupedFarmers.value = Object.entries(sexCounts).map(([sex, count], index) => ({
+      id: index + 1, // Auto-incremented ID
+      sex,
+      count,
+    }));
   } catch (error) {
     console.error('Error fetching farmers:', error);
-    farmers.value = [];
+    groupedFarmers.value = [];
   }
 };
 
 onMounted(() => {
-  fetchSexes();
+  fetchFarmers();
 });
 
 // PDF Download Function
@@ -97,26 +97,28 @@ const downloadPDF = async () => {
   // Prepare an array of pages
   const pages = [];
   
-  for (let i = 0; i < farmers.value.length; i += maxRowsPerPage) {
+  for (let i = 0; i < groupedFarmers.value.length; i += maxRowsPerPage) {
     const pageContent = document.createElement('div');
-    const farmersPage = farmers.value.slice(i, i + maxRowsPerPage);
+    const farmersPage = groupedFarmers.value.slice(i, i + maxRowsPerPage);
     
     pageContent.innerHTML = `
       <h1 style="color: black;">Farmer Report - Page ${(i / maxRowsPerPage) + 1}</h1>
       <table class="table" style="border-collapse: collapse; width: 100%;">
-      <thead class="table-primary" style="background-color: #007bff; color: black;">
-        <tr>
-          <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Gender</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${farmersPage.map(farmer => `
+        <thead class="table-primary" style="background-color: #007bff; color: black;">
           <tr>
-            <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.sex}</td>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Gender</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">Count</th>
           </tr>
-        `).join('')}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          ${farmersPage.map(farmer => `
+            <tr>
+              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.sex}</td>
+              <td style="padding: 0.75rem; text-align: left; border: 1px solid black; color: black;">${farmer.count}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
     `;
     
     pages.push(pageContent);

@@ -3,13 +3,9 @@
     <Navbar />
     <div class="content-box">
       <h1>User Activity Log</h1>
-
-      <!-- Admin Action Button -->
       <div v-if="isAdmin" class="admin-actions mb-3">
         <button @click="performAdminAction" class="admin-action-btn">Admin Action</button>
       </div>
-
-      <!-- Search Inputs for From and To Dates -->
       <div class="search">
         <div class="input-field1 search-box">
           <input type="date" v-model="searchFrom" name="searchFrom" id="searchFrom" />
@@ -20,8 +16,6 @@
           <label for="searchTo">To Date:</label>
         </div>
       </div>
-
-      <!-- Pagination Controls -->
       <div class="pagination-controls mb-3">
         <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="pagination-btn">
           Previous
@@ -31,8 +25,6 @@
           Next
         </button>
       </div>
-
-      <!-- Activity Log Table -->
       <div class="table-responsive">
         <table class="table">
           <thead class="table-primary">
@@ -51,8 +43,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- Success Alert -->
       <div v-if="alertMessage" class="alert-box">
         <i class="fa-regular fa-circle-check fa-5x" style="color: #63E6BE;"></i>
         <h1>Success</h1>

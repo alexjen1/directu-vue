@@ -2,22 +2,23 @@
   <div class="report_count-container">
     <Navbar />
     <div class="content-box" id="reportContent">
-      <div>
-      </div>
-
-      <!-- Display farmers for each education level -->
-      <div v-if="farmers.length > 0">
-        <p style="color: black;">Total Count: {{ farmers.length }}</p>
+      <!-- Display grouped farmers by education level -->
+      <div v-if="groupedFarmers.length > 0">
+        <p style="color: black;">Total Count: {{ groupedFarmers.length }}</p>
         <div class="table-responsive">
           <table class="table">
             <thead class="table-primary">
               <tr>
+                <th>#</th>
                 <th>Education Level</th>
+                <th>Count</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="farmer in farmers" :key="farmer.id">
-                <td>{{ farmer.highest_formal_education }}</td>
+              <tr v-for="farmer in groupedFarmers" :key="farmer.id">
+                <td>{{ farmer.id }}</td>
+                <td>{{ farmer.education }}</td>
+                <td>{{ farmer.count }}</td>
               </tr>
             </tbody>
           </table>
@@ -28,24 +29,21 @@
       <div v-else>
         <p>No farmers found for the displayed education levels.</p>
       </div>
-      <button class="btnpdf" @click="downloadPDF">Download PDF</button>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import Navbar from '@/components/Navbar.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import html2pdf from 'html2pdf.js';
 
-const educationLevels = ref([]);
-const farmers = ref([]);
-
+const groupedFarmers = ref([]); // To hold grouped farmers data
 const token = localStorage.getItem('auth_token');
 
-// Fetch all available education levels
-const fetchEducationLevels = async () => {
+// Fetch all farmers and group them by education level
+const fetchGroupedFarmers = async () => {
   try {
     const response = await axios.get(
       'http://localhost:8055/items/farmers?fields=highest_formal_education',
@@ -56,45 +54,31 @@ const fetchEducationLevels = async () => {
       }
     );
 
-    // Get all education levels from the farmers
-    const educationList = response.data.data.map(farmer => farmer.highest_formal_education);
-    educationLevels.value = [...new Set(educationList)];
-    
-    fetchFarmersByEducation();
-  } catch (error) {
-    console.error('Error fetching education levels:', error);
-  }
-};
-
-// Fetch farmers for each education level
-const fetchFarmersByEducation = async () => {
-  farmers.value = []; // Clear previous data
-  try {
-    if (educationLevels.value.length > 0) {
-      for (const education of educationLevels.value) {
-        const response = await axios.get(
-          `http://localhost:8055/items/farmers?filter[highest_formal_education]=${education}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        farmers.value = [...farmers.value, ...response.data.data];
+    // Group farmers by highest_formal_education and count occurrences
+    const educationCounts = {};
+    response.data.data.forEach(farmer => {
+      const education = farmer.highest_formal_education || 'Unknown';
+      if (educationCounts[education]) {
+        educationCounts[education]++;
+      } else {
+        educationCounts[education] = 1;
       }
-    } else {
-      farmers.value = [];
-    }
+    });
+
+    // Transform into an array of objects for rendering
+    groupedFarmers.value = Object.entries(educationCounts).map(([education, count], index) => ({
+      id: index + 1, // Auto-incremented ID
+      education,
+      count,
+    }));
   } catch (error) {
-    console.error('Error fetching farmers:', error);
-    farmers.value = [];
+    console.error('Error fetching grouped farmers:', error);
   }
 };
 
 onMounted(() => {
-  fetchEducationLevels();
+  fetchGroupedFarmers();
 });
-
 // PDF Download Function
 const downloadPDF = async () => {
   const element = document.getElementById('reportContent');
