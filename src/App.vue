@@ -41,7 +41,7 @@ html, body {
 }
 
 .input-field input {
-  width: 450px;
+  width: 350px;
   height: 60px;
   border-radius: 6px;
   font-size: 18px;
@@ -81,7 +81,7 @@ input:valid ~ label {
   display: flex;
   flex-wrap: wrap;
   margin-left: 55px;
-  gap: 10px 100px; /* Gap between the input fields: 10px vertical, 20px horizontal */
+  gap: 10px 60px; /* Gap between the input fields: 10px vertical, 20px horizontal */
 }
 .input-field-container {
   display: flex;
@@ -94,7 +94,7 @@ input:valid ~ label {
 }
 
 .input-field select {
-    width: 450px;
+    width: 350px;
     height: 60px;
     border-radius: 6px;
     font-size: 18px;
@@ -225,7 +225,7 @@ input:valid ~ label {
   margin-right: 5px; /* Space between checkbox and label text */
 }
 .check-box {
-  margin: 1rem 0; /* Add some margin for spacing */
+  margin: 35px; /* Add some margin for spacing */
   padding: 0.5rem; /* Add some padding */
   background-color: #f8f9fa; /* Light background color */
   border: 1px solid #ced4da; /* Light border */

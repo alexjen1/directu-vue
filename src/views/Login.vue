@@ -72,6 +72,7 @@ const togglePasswordVisibility = () => {
 };
 
 const logActivity = async (email, action) => {
+ // const auth_token = 'AFw4qrw2-w0Moc4GknbzohwpjUN8YUn3'; 
   const token = localStorage.getItem('auth_token'); 
   try {
     await axios.post('http://localhost:8055/items/activity_logs', {
@@ -102,12 +103,13 @@ const login = async () => {
       password: password.value,
     });
 
-    const accessToken = response.data.data.access_token; 
-    const refreshToken = response.data.data.refresh_token;  // Assuming the refresh token is in the response
+    const accessToken = 'AFw4qrw2-w0Moc4GknbzohwpjUN8YUn3'; 
+    // const accessToken = response.data.data.access_token; 
+    // const refreshToken = response.data.data.refresh_token; 
 
     // Store both the access token and refresh token in localStorage
     localStorage.setItem('auth_token', accessToken); 
-    localStorage.setItem('refresh_token', refreshToken);  // Store refresh token
+    // localStorage.setItem('refresh_token', refreshToken);  
     localStorage.setItem('email', email.value); 
 
     logActivity(email.value, "Login successfully");

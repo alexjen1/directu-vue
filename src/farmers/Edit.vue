@@ -15,7 +15,7 @@
           </button>
         </router-link>
         
-        <router-link to="#">
+        <!-- <router-link to="#">
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 2 }"
@@ -35,7 +35,7 @@
           >
             Personal Info [3]
           </button>
-        </router-link>
+        </router-link> -->
 
         <router-link to="#">
           <button
@@ -82,8 +82,6 @@
                 />
                 <label>Reference Number:</label>
               </div>
-            </div>
-              <div class="row mb-3">
               <div class="input-field">
                 <input
                   type="text"
@@ -155,39 +153,93 @@
                 <label>STREET/SITIO/SUBDV.:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.barangay"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.barangay" required spellcheck="false" class="black-select" >
+                  <option value="Alitao">Alitao</option>
+                  <option value="Alsam Ibaba">Alsam Ibaba</option>
+                  <option value="Alsam Ilaya">Alsam Ilaya</option>
+                  <option value="Alupay">Alupay</option>
+                  <option value="Angeles Zone I (Poblacion)">Angeles Zone I (Poblacion)</option>
+                  <option value="Angeles Zone II">Angeles Zone II</option>
+                  <option value="Angeles Zone III">Angeles Zone III</option>
+                  <option value="Angeles Zone IV">Angeles Zone IV</option>
+                  <option value="Angustias Zone I (Poblacion)">Angustias Zone I (Poblacion)</option>
+                  <option value="Angustias Zone II">Angustias Zone II</option>
+                  <option value="Angustias Zone III">Angustias Zone III</option>
+                  <option value="Angustias Zone IV">Angustias Zone IV</option>
+                  <option value="Anos">Anos</option>
+                  <option value="Ayaas">Ayaas</option>
+                  <option value="Baguio">Baguio</option>
+                  <option value="Banilad">Banilad</option>
+                  <option value="Ibabang Bukal">Ibabang Bukal</option>
+                  <option value="Ilayang Bukal">Ilayang Bukal</option>
+                  <option value="Calantas">Calantas</option>
+                  <option value="Calumpang">Calumpang</option>
+                  <option value="Camaysa">Camaysa</option>
+                  <option value="Dapdap">Dapdap</option>
+                  <option value="Kanlurang Domoit">Kanlurang Domoit</option>
+                  <option value="Silangang Domoit">Silangang Domoit</option>
+                  <option value="Gibanga">Gibanga</option>
+                  <option value="Ibas">Ibas</option>
+                  <option value="Ilasan Ibaba">Ilasan Ibaba</option>
+                  <option value="Ilasan Ilaya">Ilasan Ilaya</option>
+                  <option value="Ipilan">Ipilan</option>
+                  <option value="Isabang">Isabang</option>
+                  <option value="Katigan Kanluran">Katigan Kanluran</option>
+                  <option value="Katigan Silangan">Katigan Silangan</option>
+                  <option value="Lakawan">Lakawan</option>
+                  <option value="Lalo">Lalo</option>
+                  <option value="Lawigue">Lawigue</option>
+                  <option value="Lita">Lita</option>
+                  <option value="Malaoa">Malaoa</option>
+                  <option value="Masin">Masin</option>
+                  <option value="Mate">Mate</option>
+                  <option value="Mateuna">Mateuna</option>
+                  <option value="Mayowe">Mayowe</option>
+                  <option value="Ibabang Nangka">Ibabang Nangka</option>
+                  <option value="Ilayang Nangka">Ilayang Nangka</option>
+                  <option value="Opias">Opias</option>
+                  <option value="Ibabang Palale">Ibabang Palale</option>
+                  <option value="Ilayang Palale">Ilayang Palale</option>
+                  <option value="Kanlurang Palale">Kanlurang Palale</option>
+                  <option value="Silangang Palale">Silangang Palale</option>
+                  <option value="Pandakaki">Pandakaki</option>
+                  <option value="Pook">Pook</option>
+                  <option value="Potol">Potol</option>
+                  <option value="San Diego Zone I (Poblacion)">San Diego Zone I (Poblacion)</option>
+                  <option value="San Diego Zone II (Poblacion)">San Diego Zone II (Poblacion)</option>
+                  <option value="San Diego Zone III">San Diego Zone III</option>
+                  <option value="San Diego Zone IV">San Diego Zone IV</option>
+                  <option value="San Isidro Zone I (Poblacion)">San Isidro Zone I (Poblacion)</option>
+                  <option value="San Isidro Zone II">San Isidro Zone II</option>
+                  <option value="San Isidro Zone III">San Isidro Zone III</option>
+                  <option value="San Isidro Zone IV">San Isidro Zone IV</option>
+                  <option value="San Roque Zone I (Poblacion)">San Roque Zone I (Poblacion)</option>
+                  <option value="San Roque Zone II">San Roque Zone II</option>
+                  <option value="Talolong">Talolong</option>
+                  <option value="Tamlong">Tamlong</option>
+                  <option value="Tongko">Tongko</option>
+                  <option value="Valencia">Valencia</option>
+                  <option value="Wakas">Wakas</option>
+                </select>
                 <label>BARANGAY:</label>
+                <span class="arrow-down"></span>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.municipality_city"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.municipality_city" required spellcheck="false" class="black-select">
+                  <option value="Tayabas City">Tayabas City</option>
+                </select>
                 <label>MUNICIPALITY/CITY:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.province"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.province" required spellcheck="false" class="black-select">
+                  <option value="Quezon Province">Quezon Province</option>
+                </select>
                 <label>PROVINCE:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.region"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.region" required spellcheck="false" class="black-select">
+                  <option value="IV-A">IV-A</option>
+                </select>
                 <label>Region:</label>
               </div>
               <div class="input-field">
@@ -199,13 +251,6 @@
                 />
                 <label>MOBILE NUMBER:</label>
               </div>
-            </div>
-          </form>
-        </div>
-
-        <!-- Personal Information II -->
-        <div v-if="isHovered === 2" id="personalInfoII" class="personal-info-section">
-            <div class="row mb-3">
               <div class="input-field">
                 <input
                   type="text"
@@ -305,14 +350,15 @@
                 <select v-model="farmer.household_heads" spellcheck="false" class="black-select">
                   <option value="yes">yes</option>
                   <option value="no">no</option>
-                  <option v-if="farmer.household_heads && !['yes', 'no',].includes(farmer.household_heads)" :value="farmer.household_heads">
+                  <option v-if="farmer.household_heads && !['yes', 'no'].includes(farmer.household_heads)" :value="farmer.household_heads">
                     {{ farmer.household_heads }}
                   </option>
                 </select>
                 <label>HOUSEHOLD HEADS:</label>
                 <span class="arrow-down"></span>
               </div>
-              <div class="input-field">
+              
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="text"
                   v-model="farmer.if_no_name_of_household_heads"
@@ -320,7 +366,7 @@
                 />
                 <label>IF NO, NAME OF HOUSEHOLD HEADS:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="text"
                   v-model="farmer.relationship"
@@ -328,7 +374,7 @@
                 />
                 <label>RELATIONSHIP:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="text"
                   v-model="farmer.no_of_living_household_members"
@@ -336,7 +382,7 @@
                 />
                 <label>NO. OF LIVING HOUSEHOLD HEADS:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="text"
                   v-model="farmer.no_of_male"
@@ -344,7 +390,7 @@
                 />
                 <label>NO. OF MALE:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="text"
                   v-model="farmer.no_of_female"
@@ -352,10 +398,139 @@
                 />
                 <label>NO. OF FEMALE:</label>
               </div>
+              
+              <div class="input-field">
+                <select v-model="farmer.highest_formal_education" spellcheck="false" class="black-select">
+                  <option value="pre-school">pre-school</option>
+                  <option value="elementary">elementary</option>
+                  <option value="high school (non K-12)">high school (non K-12)</option>
+                  <option value="junior high school (K-12)">junior high school (K-12)</option>
+                  <option value="senior high school (K-12)">senior high school (K-12)</option>
+                  <option value="college">college</option>
+                  <option value="vocational">vocational</option>
+                  <option value="post-graduate">post-graduate</option>
+                  <option value="none">none</option>
+                  <option value="Other">Other</option>
+                  <option v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate', 'Other'].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education">
+                    {{ farmer.highest_formal_education }}
+                  </option>
+                </select>
+                <label>HIGHEST FORMAL EDUCATION:</label>
+                <span class="arrow-down"></span>
+              </div>
+              <div v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate','none' ].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education" class="input-field">
+                <input type="text" v-model="farmer.highest_formal_education" spellcheck="false" />
+                <label>Please specify your Highest Formal Educ:</label>
+              </div>
+              <div class="input-field">
+                <select v-model="farmer.person_with_disability" spellcheck="false" class="black-select">
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                  <option v-if="farmer.person_with_disability && !['yes', 'no',].includes(farmer.person_with_disability)" :value="farmer.person_with_disability">
+                    {{ farmer.person_with_disability }}
+                  </option>
+                </select>
+                <label>PERSON WITH DISABILITY:</label>
+                <span class="arrow-down"></span>
+              </div>
+              <div class="input-field">
+                <select v-model="farmer.IVps_beneficiary" spellcheck="false" class="black-select">
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                  <option v-if="farmer.IVps_beneficiary && !['yes', 'no',].includes(farmer.IVps_beneficiary)" :value="farmer.IVps_beneficiary">
+                    {{ farmer.IVps_beneficiary }}
+                  </option>
+                </select>
+                <label>IVps BENEFICIARY:</label>
+                <span class="arrow-down"></span>
+              </div>
+              <div class="input-field">
+                <select v-model="farmer.member_of_an_indiginous_group" spellcheck="false" class="black-select">
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                  <option v-if="farmer.member_of_an_indiginous_group && !['yes', 'no',].includes(farmer.member_of_an_indiginous_group)" :value="farmer.member_of_an_indiginous_group">
+                    {{ farmer.member_of_an_indiginous_group }}
+                  </option>
+                </select>
+                <label>MEMBER OF INDIGINOUS GROUP:</label>
+                <span class="arrow-down"></span>
+              </div>
+              <div v-if="showAdditionalInputIndi" class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.member_of_an_indiginous_group_if_yes_specify"
+                  spellcheck="false"
+                />
+                <label>SPECIFY YOUR INDIGINOUS GROUP:</label>
+              </div>
+              <div class="input-field">
+                <select v-model="farmer.with_government_id" spellcheck="false" class="black-select">
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                  <option v-if="farmer.with_government_id && !['yes', 'no',].includes(farmer.with_government_id)" :value="farmer.with_government_id">
+                    {{ farmer.with_government_id }}
+                  </option>
+                </select>
+                <label>WITH GOVERNMENT ID:</label>
+                <span class="arrow-down"></span>
+              </div>
+              <div v-if="showAdditionalInputID" class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.if_yes_specify_id_type"
+                  spellcheck="false"
+                />
+                <label>SPECIFY YOUR ID:</label>
+              </div>
+              <div v-if="showAdditionalInputID" class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.id_number"
+                  spellcheck="false"
+                />
+                <label>ID NUMBER:</label>
+              </div>
+              <div class="input-field">
+                <select v-model="farmer.member_of_any_farmers_association_cooperative" spellcheck="false" class="black-select">
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                  <option v-if="farmer.member_of_any_farmers_association_cooperative && !['yes', 'no',].includes(farmer.member_of_any_farmers_association_cooperative)" :value="farmer.member_of_any_farmers_association_cooperative">
+                    {{ farmer.member_of_any_farmers_association_cooperative }}
+                  </option>
+                </select>
+                <label>MEMBER OF ANY FARMERS ASSOCIATION:</label>
+                <span class="arrow-down"></span>
+              </div>
+              <div v-if="showAdditionalInputFarmerAsso" class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.if_yes_spefify_farmers_association"
+                  spellcheck="false"
+                />
+                <label>SPECIFY YOUR FARMERS ASSOCIATION:</label>
+              </div>
+              <div class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.person_to_notify_in_case_of_emergency"
+                  spellcheck="false"
+                />
+                <label>PERSON TO NOTIFY INCASE OF IMERGENCY:</label>
+              </div>
+              <div class="input-field">
+                <input
+                  type="text"
+                  v-model="farmer.contact_number"
+                  spellcheck="false"
+                />
+                <label>CONTACT NUMBER:</label>
+              </div>
             </div>
+          </form>
         </div>
 
-        <!-- Personal Information III -->
+
+        <!-- Personal Information III
         <div v-if="isHovered === 3" id="personalInfoIII" class="personal-info-section">
             <div class="row mb-3">
               <div class="input-field">
@@ -485,16 +660,16 @@
                 <label>CONTACT NUMBER:</label>
               </div>            
             </div>
-          </div>
+          </div> -->
 
           <!-- Personal Information IV -->
         <div v-if="isHovered === 4" id="personalInfoIV" class="personal-info-section">
           <div class="row mb-3">
+            <h1 style="color: black;">Main Livelihood</h1>
             <nav class="navbar">
             <div class="navbar-content">
               <div class="checkbox-group">
                 <div class="checkbox-list">
-                  <label>Main Livelihood:</label>
                   <label v-for="option in livelihoodOptions" :key="option">
                     <input type="checkbox" :value="option" v-model="farmer.main_livelihood" />
                     {{ option }}
@@ -504,44 +679,36 @@
             </div>
           </nav>
         <!-- Farming Activity checkboxes -->
-          <div class="checkbox-group">
+        <div class="check-box">
             <label class="farming-activity-label">TYPE OF FARMING ACTIVITY:</label>
-            <div class="check-box">
               <label v-for="activity in farmingActivityOptions" :key="activity">
                 <input type="checkbox" :value="activity" v-model="farmer.type_of_farming_activity" />
                 {{ activity.replace('_', ' ').toLowerCase() }} <!-- Format activity names -->
               </label>
-            </div>
           </div>
           <!-- Conditional checkbox group for farmworkers -->
-          <div class="checkbox-group" >
+          <div class="check-box">
             <label class="farming-activity-label">FOR FARMWORKERS:</label>
-            <div class="check-box">
               <label v-for="task in farmworkerTaskOptions" :key="task">
                 <input type="checkbox" :value="task" v-model="farmer.farmworkers_kind_of_work" />
                 {{ task.replace('_', ' ').toLowerCase() }} <!-- Format task names -->
               </label>
-            </div>
           </div>
           <!-- Conditional checkbox group for fisherfolk -->
-          <div class="checkbox-group">
+          <div class="check-box">
             <label class="farming-activity-label">FOR FISHERFOLK:</label>
-            <div class="check-box">
               <label v-for="task in fishfolkTaskOptions" :key="task">
                 <input type="checkbox" :value="task" v-model="farmer.for_fisherfolk" />
                 {{ task.replace('_', ' ').toLowerCase() }} <!-- Format task names -->
               </label>
-            </div>
           </div>
           <!-- Conditional checkbox group for fisherfolk -->
-          <div class="checkbox-group">
+          <div class="check-box">
             <label class="farming-activity-label">AGRI YOUTH:</label>
-            <div class="check-box">
               <label v-for="task in agriYouthTaskOptions" :key="task">
                 <input type="checkbox" :value="task" v-model="farmer.for_agri_youth" />
                 {{ task.replace('_', ' ').toLowerCase() }} <!-- Format task names -->
               </label>
-            </div>
           </div>
           
           </div>
@@ -1079,7 +1246,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue'; 
 import { useRouter, useRoute } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import axios from 'axios';
@@ -1090,6 +1257,7 @@ const isHovered = ref(1);
 const alertMessage = ref(''); 
 const showFarmTable2 = ref(false);
 const showFarmTable3 = ref(false); 
+// const showAdditionalInput = ref(false);
 
 let clickCount = 0; 
 
@@ -1155,7 +1323,7 @@ const farmer = ref({
   civil_status: '',
   name_of_spouse_if_married: '',
   mothers_maiden_name: '',
-  household_heads: '',
+  household_heads: 'no',
   if_no_name_of_household_heads: '',
   relationship: '',
   no_of_living_household_members: '',
@@ -1164,7 +1332,8 @@ const farmer = ref({
   highest_formal_education: '',
   person_with_disability: '',
   IVps_beneficiary: '',
-  member_of_an_indiginous_group: '',
+  member_of_an_indiginous_group: 'no',
+  member_of_an_indiginous_group_if_yes_specify: '',
   with_government_id: '',
   if_yes_specify_id_type: '',
   id_number: '',
@@ -1187,6 +1356,29 @@ const farmer = ref({
 
 });
 
+const showAdditionalInput = ref(false);
+const showAdditionalInputIndi = ref(false);
+const showAdditionalInputID = ref(false);
+const showAdditionalInputFarmerAsso = ref(false);
+
+// Watch for changes in the household_heads value
+watch(
+  () => ({
+    householdHeads: farmer.value.household_heads,
+    indigenousGroup: farmer.value.member_of_an_indiginous_group,
+    governmentID: farmer.value.with_government_id,
+    farmersAssociation: farmer.value.member_of_any_farmers_association_cooperative
+  }),
+  ({ householdHeads, indigenousGroup, governmentID, farmersAssociation }) => {
+    showAdditionalInput.value = householdHeads === 'yes';
+    showAdditionalInputIndi.value = indigenousGroup === 'yes';
+    showAdditionalInputID.value = governmentID === 'yes';
+    showAdditionalInputFarmerAsso.value = farmersAssociation === 'yes';
+  },
+  { immediate: true }
+);
+
+
 
 // List of checkboxes for main livelihood
 const livelihoodOptions = [
@@ -1198,17 +1390,17 @@ const livelihoodOptions = [
 const farmingActivityOptions = [
   'rice',
   'corn',
-  'other_crop',
-  'livestock',
-  'poultry',
-  'type_of_farming_activities_other'
+  'Other crops / specify',
+  'Livestock / specify',
+  'Poultry / specify',
+  'Other, please specify'
 ];
 const farmworkerTaskOptions = [
   'land preparation',
   'planting / transplanting',
   'cultivation',
   'harvesting',
-  'for_farmworkers_other'
+  'Other, please specify'
 ];
 const fishfolkTaskOptions = [
   'fish capture',
@@ -1216,14 +1408,14 @@ const fishfolkTaskOptions = [
   'gleaning',
   'fish processing',
   'fish vending',
-  'for_fishfolk_other'
+  'Other, please specify'
 ];
 const agriYouthTaskOptions = [
   'part of a farming household',
   'attending attended formal agri fishery related course',
   'attending attended non formal agri fishery related course',
   'participated in any agricultural activity program',
-  'for_agri_youth_other'
+  'Other, please specify'
 ];
 
 const AncestralDomainTaskOptions = [

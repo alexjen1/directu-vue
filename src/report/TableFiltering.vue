@@ -46,7 +46,7 @@
 
       <!-- Farmers table -->
       <div v-if="!loading && filteredFarmers.length > 0 && selectedColumns.length > 0" class="table-responsive">
-        <h2>Displaying Columns: {{ selectedColumns.join(', ') }}</h2>
+        <!-- <h2>Displaying Columns: {{ selectedColumns.join(', ') }}</h2> -->
         <table class="table" id="farmersTable">
           <thead class="table-primary">
             <tr>
@@ -89,7 +89,7 @@ import html2pdf from 'html2pdf.js'; // Import html2pdf.js
 const farmers = ref([]);
 const availableColumns = ref([]);
 const selectedColumn = ref('');
-const selectedColumns = ref([]);
+const selectedColumns = ref(['reference_number', 'surname', 'first_name', 'middle_name', 'extension_name']); // Default selected columns
 const loading = ref(false);
 const searchQueries = ref(['', '', '', '', '']); // Array for up to 5 search queries
 const token = localStorage.getItem('auth_token');
@@ -189,7 +189,6 @@ onMounted(() => {
 });
 </script>
 
-  
   <style scoped>
     .report_count-container {
       display: flex;
@@ -265,7 +264,7 @@ onMounted(() => {
   }
     
     .table-responsive {
-    margin-top: 20px;
+    margin-top: -20px;
     overflow-x: auto;
   }
     

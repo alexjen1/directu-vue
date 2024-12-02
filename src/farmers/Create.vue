@@ -11,11 +11,11 @@
             @mouseleave="resetHover"
             @click="changeHover(1)"
           >
-            Personal Info [1]
+            Personal Info
           </button>
         </router-link>
         
-        <router-link to="#">
+        <!-- <router-link to="#">
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 2 }"
@@ -35,7 +35,7 @@
           >
             Personal Info [3]
           </button>
-        </router-link>
+        </router-link> -->
 
         <router-link to="#">
           <button
@@ -85,6 +85,7 @@
                 <input
                   type="text"
                   v-model="farmer.reference_number"
+                  required
                   spellcheck="false"
                 />
                 <label>Reference Number:</label>
@@ -92,8 +93,6 @@
               <!-- <div v-if="farmer.image" class="image-preview" style="margin-top: -60px; margin-left: 10px">
                 <img :src="farmer.image" alt="Selected Image" width="220" height="150" />
               </div> -->
-              </div>
-              <div class="row mb-3">
               <div class="input-field">
                 <input
                   type="text"
@@ -126,6 +125,7 @@
                   type="text"
                   v-model="farmer.extension_name"
                   spellcheck="false"
+                  required
                 />
                 <label>EXTENSION NAME:</label>
               </div>
@@ -161,39 +161,93 @@
                 <label>STREET/SITIO/SUBDV.:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.barangay"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.barangay" required spellcheck="false" class="black-select" >
+                  <option value="Alitao">Alitao</option>
+                  <option value="Alsam Ibaba">Alsam Ibaba</option>
+                  <option value="Alsam Ilaya">Alsam Ilaya</option>
+                  <option value="Alupay">Alupay</option>
+                  <option value="Angeles Zone I (Poblacion)">Angeles Zone I (Poblacion)</option>
+                  <option value="Angeles Zone II">Angeles Zone II</option>
+                  <option value="Angeles Zone III">Angeles Zone III</option>
+                  <option value="Angeles Zone IV">Angeles Zone IV</option>
+                  <option value="Angustias Zone I (Poblacion)">Angustias Zone I (Poblacion)</option>
+                  <option value="Angustias Zone II">Angustias Zone II</option>
+                  <option value="Angustias Zone III">Angustias Zone III</option>
+                  <option value="Angustias Zone IV">Angustias Zone IV</option>
+                  <option value="Anos">Anos</option>
+                  <option value="Ayaas">Ayaas</option>
+                  <option value="Baguio">Baguio</option>
+                  <option value="Banilad">Banilad</option>
+                  <option value="Ibabang Bukal">Ibabang Bukal</option>
+                  <option value="Ilayang Bukal">Ilayang Bukal</option>
+                  <option value="Calantas">Calantas</option>
+                  <option value="Calumpang">Calumpang</option>
+                  <option value="Camaysa">Camaysa</option>
+                  <option value="Dapdap">Dapdap</option>
+                  <option value="Kanlurang Domoit">Kanlurang Domoit</option>
+                  <option value="Silangang Domoit">Silangang Domoit</option>
+                  <option value="Gibanga">Gibanga</option>
+                  <option value="Ibas">Ibas</option>
+                  <option value="Ilasan Ibaba">Ilasan Ibaba</option>
+                  <option value="Ilasan Ilaya">Ilasan Ilaya</option>
+                  <option value="Ipilan">Ipilan</option>
+                  <option value="Isabang">Isabang</option>
+                  <option value="Katigan Kanluran">Katigan Kanluran</option>
+                  <option value="Katigan Silangan">Katigan Silangan</option>
+                  <option value="Lakawan">Lakawan</option>
+                  <option value="Lalo">Lalo</option>
+                  <option value="Lawigue">Lawigue</option>
+                  <option value="Lita">Lita</option>
+                  <option value="Malaoa">Malaoa</option>
+                  <option value="Masin">Masin</option>
+                  <option value="Mate">Mate</option>
+                  <option value="Mateuna">Mateuna</option>
+                  <option value="Mayowe">Mayowe</option>
+                  <option value="Ibabang Nangka">Ibabang Nangka</option>
+                  <option value="Ilayang Nangka">Ilayang Nangka</option>
+                  <option value="Opias">Opias</option>
+                  <option value="Ibabang Palale">Ibabang Palale</option>
+                  <option value="Ilayang Palale">Ilayang Palale</option>
+                  <option value="Kanlurang Palale">Kanlurang Palale</option>
+                  <option value="Silangang Palale">Silangang Palale</option>
+                  <option value="Pandakaki">Pandakaki</option>
+                  <option value="Pook">Pook</option>
+                  <option value="Potol">Potol</option>
+                  <option value="San Diego Zone I (Poblacion)">San Diego Zone I (Poblacion)</option>
+                  <option value="San Diego Zone II (Poblacion)">San Diego Zone II (Poblacion)</option>
+                  <option value="San Diego Zone III">San Diego Zone III</option>
+                  <option value="San Diego Zone IV">San Diego Zone IV</option>
+                  <option value="San Isidro Zone I (Poblacion)">San Isidro Zone I (Poblacion)</option>
+                  <option value="San Isidro Zone II">San Isidro Zone II</option>
+                  <option value="San Isidro Zone III">San Isidro Zone III</option>
+                  <option value="San Isidro Zone IV">San Isidro Zone IV</option>
+                  <option value="San Roque Zone I (Poblacion)">San Roque Zone I (Poblacion)</option>
+                  <option value="San Roque Zone II">San Roque Zone II</option>
+                  <option value="Talolong">Talolong</option>
+                  <option value="Tamlong">Tamlong</option>
+                  <option value="Tongko">Tongko</option>
+                  <option value="Valencia">Valencia</option>
+                  <option value="Wakas">Wakas</option>
+                </select>
                 <label>BARANGAY:</label>
+                <span class="arrow-down"></span>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.municipality_city"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.municipality_city" required spellcheck="false" class="black-select">
+                  <option value="Tayabas City">Tayabas City</option>
+                </select>
                 <label>MUNICIPALITY/CITY:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.province"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.province" required spellcheck="false" class="black-select">
+                  <option value="Quezon Province">Quezon Province</option>
+                </select>
                 <label>PROVINCE:</label>
               </div>
               <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.region"
-                  required
-                  spellcheck="false"
-                />
+                <select v-model="farmer.region" required spellcheck="false" class="black-select">
+                  <option value="IV-A">IV-A</option>
+                </select>
                 <label>Region:</label>
               </div>
               <div class="input-field">
@@ -205,12 +259,6 @@
                 />
                 <label>MOBILE NUMBER:</label>
               </div>
-            </div>
-        </div>
-
-        
-        <div v-if="isHovered === 2" id="personalInfoII" class="personal-info-section">
-            <div class="row mb-3">
               <div class="input-field">
                 <input
                   type="text"
@@ -318,8 +366,6 @@
             </div>
 
             <div v-if="showAdditionalInput" class="input-field">
-              <div class="input-field-container">
-              <div class="input-field">
                 <input
                   type="number"
                   v-model="farmer.if_no_name_of_household_heads" 
@@ -327,7 +373,7 @@
                 />
                 <label>IF NO. OF HOUSEHOLD HEADS:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="text"
                   v-model="farmer.relationship" 
@@ -335,7 +381,7 @@
                 />
                 <label>RELATIONSHIP:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="number"
                   v-model="farmer.no_of_living_household_members" 
@@ -343,7 +389,7 @@
                 />
                 <label>NO. OF LIVING HOUSEHOLD MEMBERS:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="number"
                   v-model="farmer.no_of_male" 
@@ -351,7 +397,7 @@
                 />
                 <label>NO. OF MALE:</label>
               </div>
-              <div class="input-field">
+              <div v-if="showAdditionalInput" class="input-field">
                 <input
                   type="number"
                   v-model="farmer.no_of_female" 
@@ -359,15 +405,7 @@
                 />
                 <label>NO. OF FEMALE:</label>
               </div>
-            </div>
-
-            </div>
-            </div>
-        </div>
-        
-        <div v-if="isHovered === 3" id="personalInfoIII" class="personal-info-section">
-          <div class="row mb-3">
-          <div class="input-field">
+              <div class="input-field">
                 <select v-model="selectedHighestFormalEduc" required spellcheck="false" class="black-select" >
                   <option value="pre-school">pre-school</option>
                   <option value="elementary">elementary</option>
@@ -452,7 +490,7 @@
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
-              <label>MEMBER OF ANY FARMERS ASSOCIATION:</label>
+              <label>FARMERS' ASSOCIATION MEMBER:</label>
               <span class="arrow-down"></span>
             </div>
             <div class="input-field" v-if="selectedMemberOfFarmersAssociation === 'yes'">
@@ -470,7 +508,7 @@
                   required
                   spellcheck="false"
                 />
-                <label>PERSON TO NOTIFY INCASE OF IMERGENCY:</label>
+                <label>EMERGENCY CONTACT PERSON:</label>
               </div>
               <div class="input-field">
                 <input
@@ -481,17 +519,17 @@
                 />
                 <label>CONTACT NUMBER:</label>
               </div>
+            </div>
           </div>
-        </div>
-
+        
         
         <div v-if="isHovered === 4" id="personalInfoIV" class="personal-info-section">
           <div class="row mb-3">
+            <h1 style="color: black;">Main Livelihood</h1>
             <nav class="navbar">
             <div class="navbar-content">
               <div class="checkbox-group">
                 <div class="checkbox-list">
-                  <label>Main Livelihood:</label>
                   <label>
                     <input type="checkbox" value="farmer" v-model="selectedMainLivelihood" />
                     Farmer
@@ -513,9 +551,8 @@
             </div>
           </nav>
           
-          <div class="checkbox-group" v-if="selectedMainLivelihood.includes('farmer')">
-            <label class="farming-activity-label">TYPE OF FARMING ACTIVITY:</label>
             <div class="check-box">
+              <label class="farming-activity-label">TYPE OF FARMING ACTIVITY:</label>
               <label>
                 <input type="checkbox" value="rice" v-model="selectedFarmingActivity" />
                 Rice
@@ -541,10 +578,9 @@
                 Other, please specify
               </label>
             </div>
-          </div>
-          <div class="checkbox-group" v-if="selectedMainLivelihood.includes('farmworker/laborer')">
-            <label class="farming-activity-label">FOR FARMWORKERS:</label>
+
             <div class="check-box">
+              <label class="farming-activity-label">FOR FARMWORKERS:</label>
               <label>
                 <input type="checkbox" value="land preparation" v-model="selectedFarmorker" />
                 land preparation
@@ -566,10 +602,9 @@
                 Other, please specify
               </label>
             </div>
-          </div>
-          <div class="checkbox-group" v-if="selectedMainLivelihood.includes('fisherfolk')">
-            <label class="farming-activity-label">FOR FISHERFOLK:</label>
+
             <div class="check-box">
+              <label class="farming-activity-label">FOR FISHERFOLK:</label>
               <label>
                 <input type="checkbox" value="fish capture" v-model="selectedFishfolk" />
                 fish capture
@@ -595,10 +630,9 @@
                 Other, please specify
               </label>
             </div>
-          </div>
-          <div class="checkbox-group" v-if="selectedMainLivelihood.includes('agri youth')">
-            <label class="farming-activity-label">FOR AGRI YOUTH:</label>
+
             <div class="check-box">
+              <label class="farming-activity-label">FOR AGRI YOUTH:</label>
               <label>
                 <input type="checkbox" value="part of a farming household" v-model="selectedForAgriYouth" />
                 part of a farming household
@@ -620,7 +654,6 @@
                 Other, please specify
               </label>
             </div>
-          </div>
         </div>
               <div class="row mb-3">
                 <div class="input-field" v-if="selectedFarmingActivity.includes('type_of_farming_activities_other')">
@@ -1326,9 +1359,9 @@ const farmer = ref({
   house_lot_bldg_no_purok: '',
   street_sitio_subdv: '',
   barangay: '',
-  municipality_city: '',
-  province: '',
-  region: '',
+  municipality_city: 'Tayabas City',
+  province: 'Quezon Province',
+  region: 'IV-A',
   mobile_number: '',
   landline_number: '',
   date_of_birth: '',

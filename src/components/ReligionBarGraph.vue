@@ -52,7 +52,7 @@
   const createReligionBarChart = () => {
     const ctx = document.getElementById('religionBarChart').getContext('2d');
     new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: religionLabels.value,
         datasets: [{
