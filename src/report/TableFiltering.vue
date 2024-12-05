@@ -4,37 +4,47 @@
     <div class="content-box" id="reportContent">
       <h1>Farmer Filtering</h1>
 
-      <!-- Multiple Search Inputs (up to 5) -->
+      <!-- Single Search Input -->
       <div class="search-box-container">
-        <div v-for="(query, index) in searchQueries" :key="index" class="input-field1 search-box">
+        <div class="input-field1 search-box">
           <input
             type="text"
-            v-model="searchQueries[index]"
-            :name="'search' + index"
-            :id="'search' + index"
+            v-model="searchQuery"
+            name="searchQuery"
+            id="searchQuery"
             required
             spellcheck="false"
           />
-          <label :for="'search' + index">Filter by Column {{ index + 1 }}:</label>
+          <label for="searchQuery">Search by Column:</label>
+        </div>
+
+        <!-- Dropdown for selecting multiple columns -->
+        <div class="filter-dropdown">
+          <div class="selected-columns-container">
+            <div class="selected-columns">
+              <!-- Display selected columns as tags -->
+              <span v-for="column in selectedColumns" :key="column" class="tag">
+                {{ column }}
+                <button @click="removeColumn(column)">x</button>
+              </span>
+            </div>
+          </div>
+          <select v-model="selectedColumn" @change="addColumn" required spellcheck="false" class="black-select">
+            <option disabled value="">Select Column</option>
+            <option v-for="column in availableColumns" :key="column" :value="column">
+              {{ column }}
+            </option>
+          </select>
         </div>
       </div>
 
-      <!-- Dropdown for selecting multiple columns -->
-      <div class="filter-dropdown">
-        <label for="columns">Select Columns to Display:</label>
-        <div class="selected-columns-container">
-          <div class="selected-columns">
-            <!-- Display selected columns as tags -->
-            <span v-for="column in selectedColumns" :key="column" class="tag">
-              {{ column }}
-              <button @click="removeColumn(column)">x</button>
-            </span>
-          </div>
-        </div>
-        <select v-model="selectedColumn" @change="addColumn" required spellcheck="false" class="black-select">
-          <option disabled value="">Select Column</option>
-          <option v-for="column in availableColumns" :key="column" :value="column">
-            {{ column }}
+      <!-- Dropdown for selecting value from the last selected column -->
+      <div v-if="lastSelectedColumn" class="filter-dropdown">
+        <select v-model="selectedValue" @change="filterBySelectedValue" class="black-select1">
+          <option disabled value="">Select {{ lastSelectedColumn }}</option>
+          <option value="">All</option>
+          <option v-for="value in uniqueValues" :key="value" :value="value">
+            {{ value }}
           </option>
         </select>
       </div>
@@ -44,9 +54,15 @@
         Loading farmers...
       </div>
 
+      <div v-if="selectedColumns.length > 0">
+        <div class="download-buttons-container">
+          <button @click="downloadPDF" class="btn btn-primary btn-margin">Download as PDF</button>
+          <button @click="downloadCSV" class="btn btn-secondary">Export as CSV</button>
+        </div>
+      </div>
+
       <!-- Farmers table -->
       <div v-if="!loading && filteredFarmers.length > 0 && selectedColumns.length > 0" class="table-responsive">
-        <!-- <h2>Displaying Columns: {{ selectedColumns.join(', ') }}</h2> -->
         <table class="table" id="farmersTable">
           <thead class="table-primary">
             <tr>
@@ -71,11 +87,6 @@
         <p>No farmers found.</p>
       </div>
 
-      <!-- Download button -->
-      <div v-if="selectedColumns.length > 0">
-        <button @click="downloadPDF" class="btn btn-primary btn-margin">Download as PDF</button>
-        <button @click="downloadCSV" class="btn btn-secondary">Export as CSV</button>
-      </div>
     </div>
   </div>
 </template>
@@ -91,8 +102,16 @@ const availableColumns = ref([]);
 const selectedColumn = ref('');
 const selectedColumns = ref(['reference_number', 'surname', 'first_name', 'middle_name', 'extension_name']); // Default selected columns
 const loading = ref(false);
-const searchQueries = ref(['', '', '', '', '']); // Array for up to 5 search queries
+const searchQuery = ref(''); // Single search query instead of an array
 const token = localStorage.getItem('auth_token');
+const selectedValue = ref('');
+ const lastSelectedColumn = ref('');
+const uniqueValues = computed(() => {
+  const lastColumn = lastSelectedColumn.value;
+  if (!lastColumn) return [];
+  const values = new Set(farmers.value.map(farmer => farmer[lastColumn]));
+  return Array.from(values);
+});
 
 // Fetch farmers and columns
 const fetchFarmers = async () => {
@@ -118,17 +137,18 @@ const fetchFarmers = async () => {
   }
 };
 
-// Filter farmers based on selected columns and search queries
+// Filter farmers based on selected columns and search query
 const filteredFarmers = computed(() => {
   return farmers.value
     .filter(farmer => {
-      return searchQueries.value.every(query => {
-        return query ? selectedColumns.value.some(column => {
-          const fieldValue = farmer[column];
-          // Check for exact match, case-insensitive
-          return fieldValue ? fieldValue.toString().toLowerCase() === query.toLowerCase() : false;
-        }) : true;
-      });
+      const matchesSearch = searchQuery.value ? selectedColumns.value.some(column => {
+        const fieldValue = farmer[column];
+        return fieldValue ? fieldValue.toString().toLowerCase().includes(searchQuery.value.toLowerCase()) : false;
+      }) : true;
+
+      const matchesValue = selectedValue.value ? farmer[lastSelectedColumn.value] === selectedValue.value : true;
+
+      return matchesSearch && matchesValue;
     })
     .map(farmer => {
       const filteredFarmer = {};
@@ -142,8 +162,10 @@ const filteredFarmers = computed(() => {
 // Add selected column to the list
 const addColumn = () => {
   if (selectedColumn.value && !selectedColumns.value.includes(selectedColumn.value)) {
+    lastSelectedColumn.value = selectedColumn.value; // Set the last selected column
     selectedColumns.value.push(selectedColumn.value);
     selectedColumn.value = ''; // Reset the dropdown
+    selectedValue.value = ''; // Reset the value dropdown
   }
 };
 
@@ -152,7 +174,16 @@ const removeColumn = (column) => {
   const index = selectedColumns.value.indexOf(column);
   if (index > -1) {
     selectedColumns.value.splice(index, 1);
+    if (lastSelectedColumn.value === column) {
+      lastSelectedColumn.value = ''; // Reset last selected column if removed
+      selectedValue.value = ''; // Reset the value dropdown
+    }
   }
+};
+
+// Filter by selected value from the last selected column
+const filterBySelectedValue = () => {
+  // This function is called when a value is selected from the last column dropdown
 };
 
 // Download the table data as a PDF using html2pdf.js
@@ -189,81 +220,120 @@ onMounted(() => {
 });
 </script>
 
-  <style scoped>
-    .report_count-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      width: 100vw;
-      background-color: #f2f4f7;
-      overflow: hidden;
-    }
-    
-    .content-box {
-      position: relative;
-      padding: 2rem;
-      background-color: #f2f4f7;
-      margin-top: 2rem;
-      border-radius: 8px;
-      max-height: 80vh; /* Set a max height for the content box */
-      overflow-y: auto; /* Enable vertical scrolling */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-    
-    h1 {
-      color: black;
-      margin-bottom: 2rem;
-      font-size: 2rem;
-      text-align: left;
-    }
-    h2 {
-      color: black;
-    } 
-    .input-field1 {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-  
-  .input-field1 input {
-    width: 100%;
-    max-width: 300px;
-    height: 2.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    padding: 0 1rem;
-    border: 1px solid black;
-    background: transparent;
-    color: black;
-    outline: none;
-    transition: border 0.3s;
-  }
-  
-  .input-field1 label {
-    position: absolute;
-    top: 50%;
-    left: 1rem;
-    transform: translateY(-50%);
-    color: black;
-    font-size: 1rem;
-    pointer-events: none;
-    transition: 0.3s;
-  }
-  
-  input:focus {
-    border-color: #63e6be;
-    box-shadow: 0 0 5px rgba(99, 230, 190, 0.5);
-  }
-  
-  input:focus ~ label,
-  input:valid ~ label {
-    top: 0;
-    left: 1rem;
-    font-size: 0.875rem;
-    background: #f2f4f7;
-    padding: 0 2px;
-  }
-    
-    .table-responsive {
+<style scoped>
+.report_count-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f2f4f7;
+  overflow: hidden;
+}
+
+.content-box {
+  position: relative;
+  padding: 2rem;
+  background-color: #f2f4f7;
+  margin-top: 2rem;
+  border-radius: 8px;
+  max-height: 80vh; /* Set a max height for the content box */
+  overflow-y: auto; /* Enable vertical scrolling */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: black;
+  font-size: 2rem;
+  text-align: left;
+}
+
+.input-field1 {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.input-field1 input {
+  width: 100%;
+  max-width: 300px;
+  height: 2.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  padding: 0 1rem;
+  border: 1px solid black;
+  background: transparent;
+  color: black;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.input-field1 label {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: black;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: #63e6be;
+  box-shadow: 0 0 5px rgba(99, 230, 190, 0.5);
+}
+
+input:focus ~ label,
+input:valid ~ label {
+  top: 0;
+  left: 1rem;
+  font-size: 0.875rem;
+  background: #f2f4f7;
+  padding: 0 2px;
+}
+
+.search-box-container {
+  display: flex;
+  align-items: center; /* Align search box and dropdown */
+  gap: 20px;
+}
+
+.search-box {
+  flex: 1 1 20%; /* Adjust width based on need */
+  top: -15px;
+}
+
+.filter-dropdown {
+  flex: 1 1 60%; /* Adjust width based on need */
+}
+
+.selected-columns-container {
+  margin-bottom: 1rem;
+}
+
+.selected-columns .tag {
+  display: inline-block;
+  background-color: lightgreen;
+  color: black;
+  padding: 4px 8px;
+  margin: 2px;
+  border-radius: 4px;
+}
+
+.selected-columns button {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+}
+
+.download-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.table-responsive {
     margin-top: -20px;
     overflow-x: auto;
   }
@@ -309,62 +379,19 @@ onMounted(() => {
   .table th {
     font-weight: bold;
   }
-  
-  /* New style for table data text */
-  .table td {
-    color: black;
-  }
-    
-    /* Style for action buttons */
-    .action-button {
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-size: 1.5rem; /* Increase icon size */
-      margin-right: 0.5rem; /* Space between icons */
-    }
-    label {
-      margin-right: -100px;
-    }
-    select {
-      padding: 5px;
-      font-size: 14px;
-  }
-  .selected-columns-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-  .selected-columns {
-    white-space: nowrap; /* Prevent wrapping */
-  }
-  .selected-columns .tag {
-    display: inline-block;
-    background-color: lightgreen;
-    color: black;
-    border-radius: 15px;
-    padding: 5px 10px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-  }
-  
-  .selected-columns .tag button {
-    margin-left: 5px;
-    background: none;
-    border: none;
-    color: black;
-    cursor: pointer;
-  }
-  
-  
-  .input select {
-    width: 20%;
-  }
-  .btn {
-        width: 9%; /* Full width on small screens */
-        text-align: center; /* Center text */
-        
-      }
+
+.loading-spinner {
+  font-size: 1.5rem;
+  color: #007bff;
+  text-align: center;
+}
+.download-buttons-container {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 10px; /* Space between buttons */
+  margin-bottom: 20px; /* Optional: Adds space between the buttons and table */
+}
+
     .btn {
       padding: 0.5rem 1rem;
       border-radius: 4px;
@@ -395,53 +422,45 @@ onMounted(() => {
     .btn-margin {
         margin-right: 10px; /* Adjust the value as needed */
     }
-    
-    @media (max-width: 768px) {
-      .content-box {
-        padding: 1.5rem;
-      }
-    
-      h1 {
-        font-size: 1.5rem;
-      }
-    
-      .search-box {
-        position: relative;
-        top: 0;
-        right: 0;
-        width: 100%;
-        margin-top: 1rem;
-      }
-    
-      .input-field input {
-        width: 100%;
-        max-width: 100%;
-      }
-    
-      .table th,
-      .table td {
-        font-size: 0.875rem; /* Smaller font size on smaller screens */
-      }
+    .black-select {
+      background-color: #f2f4f7; 
+      color: black; /* White text */
+      border: 1px solid black; /* Light border */
+      padding: 8px 12px; /* Padding for better spacing */
+      border-radius: 6px; /* Rounded corners */
+      font-size: 16px; /* Adjust font size */
+      appearance: none; /* Remove default select styles in some browsers */
+      cursor: pointer; 
+      height: 2.5rem;
     }
-    
-    @media (max-width: 576px) {
-      .content-box {
-        padding: 1rem;
-      }
-    
-      h1 {
-        font-size: 1.25rem;
-      }
-    
-      .input-field input {
-        font-size: 0.875rem;
-      }
-    
-      .btn {
-        width: 100%; /* Full width on small screens */
-        text-align: center; /* Center text */
-        margin-left: 0; /* Reset margin */
-      }
+    .black-select1 {
+      background-color: #f2f4f7; 
+      color: black; /* White text */
+      border: 1px solid black; /* Light border */
+      padding: 8px 12px; /* Padding for better spacing */
+      border-radius: 6px; /* Rounded corners */
+      font-size: 16px; /* Adjust font size */
+      appearance: none;
+      cursor: pointer; 
+      height: 2.5rem;
+      margin-top: -50px;
+      width: 87%;
     }
-    </style>
-    
+
+    .black-select:focus {
+      outline: none; /* Remove default focus outline */
+      border-color: #63e6be; /* Green border on focus */
+      box-shadow: 0 0 5px rgba(99, 230, 190, 0.5);
+    }
+
+    .black-select option {
+      background-color: white; /* Option background */
+      color: black; /* Option text color */
+    }
+
+    .black-select option:checked {
+      background-color: #ccc; /* Highlight selected option */
+      color: black; /* Change text color of selected option */
+    }
+
+</style>

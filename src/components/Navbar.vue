@@ -12,7 +12,7 @@
 
         <router-link to="/farmers/index" class="nav-link">
           <span class="nav-text">
-            <i class="fas fa-user"></i> Farmers Info
+            <i style="margin-right: 5px;" class="fa-solid fa-users"></i>Farmers Info
           </span>
         </router-link>
 

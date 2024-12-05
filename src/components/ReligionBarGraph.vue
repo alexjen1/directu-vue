@@ -58,8 +58,7 @@
         datasets: [{
           label: 'Religions',
           data: religionData.value,
-          backgroundColor: '#46cab6', 
-          borderColor: '#387e90',       
+          backgroundColor: '#46cab6',        
           borderWidth: 1,
         }],
       },

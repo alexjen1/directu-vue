@@ -7,22 +7,17 @@
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 1 }"
-            @mouseover="setHover(1)"
-            @mouseleave="resetHover"
-            @click="changeHover(1)"
           >
-            Personal Info [1]
+            Personal Info
           </button>
         </router-link>
-        
-        <!-- <router-link to="#">
+
+        <router-link to="#">
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 2 }"
-            @mouseover="setHover(2)"
-            @click="changeHover(2)"
           >
-            Personal Info [2]
+            Farm Profile
           </button>
         </router-link>
 
@@ -30,29 +25,6 @@
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 3 }"
-            @mouseover="setHover(3)"
-            @click="changeHover(3)"
-          >
-            Personal Info [3]
-          </button>
-        </router-link> -->
-
-        <router-link to="#">
-          <button
-            class="nav-button"
-            :class="{ 'hover-green': isHovered === 4 }"
-            @mouseover="setHover(4)"
-            @click="changeHover(4)"
-          >
-            Farm Profile
-          </button>
-        </router-link>
-        <router-link to="#">
-          <button
-            class="nav-button"
-            :class="{ 'hover-green': isHovered === 5 }"
-            @mouseover="setHover(5)"
-            @click="changeHover(5)"
           >
             Farm Profile II
           </button>
@@ -526,144 +498,13 @@
                 <label>CONTACT NUMBER:</label>
               </div>
             </div>
+            <button class="next-button" style="display: block; margin: 0 auto;" @click="changeHover(2)">Next</button>
           </form>
         </div>
 
 
-        <!-- Personal Information III
-        <div v-if="isHovered === 3" id="personalInfoIII" class="personal-info-section">
-            <div class="row mb-3">
-              <div class="input-field">
-                <select v-model="farmer.highest_formal_education" spellcheck="false" class="black-select">
-                  <option value="pre-school">pre-school</option>
-                  <option value="elementary">elementary</option>
-                  <option value="high school (non K-12)">high school (non K-12)</option>
-                  <option value="junior high school (K-12)">junior high school (K-12)</option>
-                  <option value="senior high school (K-12)">senior high school (K-12)</option>
-                  <option value="college">college</option>
-                  <option value="vocational">vocational</option>
-                  <option value="post-graduate">post-graduate</option>
-                  <option value="none">none</option>
-                  <option value="Other">Other</option>
-                  <option v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate', 'Other'].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education">
-                    {{ farmer.highest_formal_education }}
-                  </option>
-                </select>
-                <label>HIGHEST FORMAL EDUCATION:</label>
-                <span class="arrow-down"></span>
-              </div>
-              <div v-if="farmer.highest_formal_education && !['pre-school', 'elementary','high school (non K-12)','junior high school (K-12)','senior high school (K-12)','college','vocational','post-graduate','none' ].includes(farmer.highest_formal_education)" :value="farmer.highest_formal_education" class="input-field">
-                <input type="text" v-model="farmer.highest_formal_education" spellcheck="false" />
-                <label>Please specify your Highest Formal Educ:</label>
-              </div>
-              <div class="input-field">
-                <select v-model="farmer.person_with_disability" spellcheck="false" class="black-select">
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                  <option v-if="farmer.person_with_disability && !['yes', 'no',].includes(farmer.person_with_disability)" :value="farmer.person_with_disability">
-                    {{ farmer.person_with_disability }}
-                  </option>
-                </select>
-                <label>PERSON WITH DISABILITY:</label>
-                <span class="arrow-down"></span>
-              </div>
-              <div class="input-field">
-                <select v-model="farmer.IVps_beneficiary" spellcheck="false" class="black-select">
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                  <option v-if="farmer.IVps_beneficiary && !['yes', 'no',].includes(farmer.IVps_beneficiary)" :value="farmer.IVps_beneficiary">
-                    {{ farmer.IVps_beneficiary }}
-                  </option>
-                </select>
-                <label>IVps BENEFICIARY:</label>
-                <span class="arrow-down"></span>
-              </div>
-              <div class="input-field">
-                <select v-model="farmer.member_of_an_indiginous_group" spellcheck="false" class="black-select">
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                  <option v-if="farmer.member_of_an_indiginous_group && !['yes', 'no',].includes(farmer.member_of_an_indiginous_group)" :value="farmer.member_of_an_indiginous_group">
-                    {{ farmer.member_of_an_indiginous_group }}
-                  </option>
-                </select>
-                <label>MEMBER OF INDIGINOUS GROUP:</label>
-                <span class="arrow-down"></span>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.member_of_an_indiginous_group_if_yes_specify"
-                  spellcheck="false"
-                />
-                <label>SPECIFY YOUR INDIGINOUS GROUP:</label>
-              </div>
-              <div class="input-field">
-                <select v-model="farmer.with_government_id" spellcheck="false" class="black-select">
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                  <option v-if="farmer.with_government_id && !['yes', 'no',].includes(farmer.with_government_id)" :value="farmer.with_government_id">
-                    {{ farmer.with_government_id }}
-                  </option>
-                </select>
-                <label>WITH GOVERNMENT ID:</label>
-                <span class="arrow-down"></span>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.if_yes_specify_id_type"
-                  spellcheck="false"
-                />
-                <label>SPECIFY YOUR ID:</label>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.id_number"
-                  spellcheck="false"
-                />
-                <label>ID NUMBER:</label>
-              </div>
-              <div class="input-field">
-                <select v-model="farmer.member_of_any_farmers_association_cooperative" spellcheck="false" class="black-select">
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                  <option v-if="farmer.member_of_any_farmers_association_cooperative && !['yes', 'no',].includes(farmer.member_of_any_farmers_association_cooperative)" :value="farmer.member_of_any_farmers_association_cooperative">
-                    {{ farmer.member_of_any_farmers_association_cooperative }}
-                  </option>
-                </select>
-                <label>MEMBER OF ANY FARMERS ASSOCIATION:</label>
-                <span class="arrow-down"></span>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.if_yes_spefify_farmers_association"
-                  spellcheck="false"
-                />
-                <label>SPECIFY YOUR FARMERS ASSOCIATION:</label>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.person_to_notify_in_case_of_emergency"
-                  spellcheck="false"
-                />
-                <label>PERSON TO NOTIFY INCASE OF IMERGENCY:</label>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.contact_number"
-                  spellcheck="false"
-                />
-                <label>CONTACT NUMBER:</label>
-              </div>            
-            </div>
-          </div> -->
-
           <!-- Personal Information IV -->
-        <div v-if="isHovered === 4" id="personalInfoIV" class="personal-info-section">
+        <div v-if="isHovered === 2" id="personalInfoIV" class="personal-info-section">
           <div class="row mb-3">
             <h1 style="color: black;">Main Livelihood</h1>
             <nav class="navbar">
@@ -680,37 +521,125 @@
           </nav>
         <!-- Farming Activity checkboxes -->
         <div class="check-box">
-            <label class="farming-activity-label">TYPE OF FARMING ACTIVITY:</label>
-              <label v-for="activity in farmingActivityOptions" :key="activity">
-                <input type="checkbox" :value="activity" v-model="farmer.type_of_farming_activity" />
-                {{ activity.replace('_', ' ').toLowerCase() }} <!-- Format activity names -->
-              </label>
+          <label class="farming-activity-label">TYPE OF FARMING ACTIVITY:</label>
+          <div v-for="activity in farmingActivityOptions" :key="activity">
+            <label>
+              <input 
+                type="checkbox" 
+                :value="activity" 
+                v-model="farmer.type_of_farming_activity" 
+              />
+              {{ activity.replace('_', ' ').toLowerCase() }} <!-- Format activity names -->
+            </label>
+            
+            <!-- Input box for "Other crops" -->
+            <div v-if="activity === 'Other crops' && farmer.type_of_farming_activity.includes('Other crops')" class="input-field2">
+              <input 
+                type="text" 
+                id="otherCrops" 
+                v-model="farmer.other_crop_specify" 
+                placeholder="Please Specify" 
+              />
+            </div>
+            <div v-if="activity === 'Livestock' && farmer.type_of_farming_activity.includes('Livestock')" class="input-field2">
+              <input 
+                type="text" 
+                id="otherCrops" 
+                v-model="farmer.livestock_specify" 
+                placeholder="Please Specify" 
+              />
+            </div>
+            <div v-if="activity === 'Poultry' && farmer.type_of_farming_activity.includes('Poultry')" class="input-field2">
+              <input 
+                type="text" 
+                id="otherCrops" 
+                v-model="farmer.poultry_specify" 
+                placeholder="Please Specify" 
+              />
+            </div>
+            <div v-if="activity === 'Other, please specify' && farmer.type_of_farming_activity.includes('Other, please specify')" class="input-field2">
+              <input 
+                type="text" 
+                id="otherCrops" 
+                v-model="farmer.type_of_farming_activities_other" 
+                placeholder="Please Specify" 
+              />
+            </div>
           </div>
-          <!-- Conditional checkbox group for farmworkers -->
-          <div class="check-box">
-            <label class="farming-activity-label">FOR FARMWORKERS:</label>
-              <label v-for="task in farmworkerTaskOptions" :key="task">
-                <input type="checkbox" :value="task" v-model="farmer.farmworkers_kind_of_work" />
-                {{ task.replace('_', ' ').toLowerCase() }} <!-- Format task names -->
-              </label>
+        </div>
+
+        <div class="check-box">
+          <label class="farming-activity-label">FOR FARMWORKERS:</label>
+          <div v-for="task in farmworkerTaskOptions" :key="task">
+            <label>
+              <input 
+                type="checkbox" 
+                :value="task" 
+                v-model="farmer.farmworkers_kind_of_work" 
+              />
+              {{ task.replace('_', ' ').toLowerCase() }}
+            </label>
+            
+            <!-- Input box for "Other, please specify" -->
+            <div v-if="task === 'Other, please specify' && farmer.farmworkers_kind_of_work.includes('Other, please specify')" class="input-field2">
+              <input 
+                type="text" 
+                id="otherTask" 
+                v-model="farmer.for_farmworkers_other" 
+                placeholder="Please Specify" 
+              />
+            </div>
           </div>
-          <!-- Conditional checkbox group for fisherfolk -->
-          <div class="check-box">
-            <label class="farming-activity-label">FOR FISHERFOLK:</label>
-              <label v-for="task in fishfolkTaskOptions" :key="task">
-                <input type="checkbox" :value="task" v-model="farmer.for_fisherfolk" />
-                {{ task.replace('_', ' ').toLowerCase() }} <!-- Format task names -->
-              </label>
+        </div>
+
+        <div class="check-box">
+          <label class="farming-activity-label">FOR FISHERFOLK:</label>
+          <div v-for="task in fishfolkTaskOptions" :key="task">
+            <label>
+              <input 
+                type="checkbox" 
+                :value="task" 
+                v-model="farmer.for_fisherfolk" 
+              />
+              {{ task.replace('_', ' ').toLowerCase() }}
+            </label>
+            
+            <!-- Input box for "Other, please specify" -->
+            <div v-if="task === 'Other, please specify' && farmer.for_fisherfolk.includes('Other, please specify')" class="input-field2">
+              <input 
+                type="text" 
+                id="otherFishfolkTask" 
+                v-model="farmer.for_fishfolk_other" 
+                placeholder="Please Specify" 
+              />
+            </div>
           </div>
-          <!-- Conditional checkbox group for fisherfolk -->
+        </div>
+
           <div class="check-box">
             <label class="farming-activity-label">AGRI YOUTH:</label>
-              <label v-for="task in agriYouthTaskOptions" :key="task">
-                <input type="checkbox" :value="task" v-model="farmer.for_agri_youth" />
-                {{ task.replace('_', ' ').toLowerCase() }} <!-- Format task names -->
+            <div v-for="task in agriYouthTaskOptions" :key="task">
+              <label>
+                <input 
+                  type="checkbox" 
+                  :value="task" 
+                  v-model="farmer.for_agri_youth" 
+                />
+                {{ task.replace('_', ' ').toLowerCase() }}
               </label>
+              
+              <!-- Input box for "Other, please specify" -->
+              <div v-if="task === 'Other, please specify' && farmer.for_agri_youth.includes('Other, please specify')" class="input-field2">
+                <input 
+                  type="text" 
+                  id="otherAgriYouthTask" 
+                  v-model="farmer.for_agri_youth_other" 
+                  placeholder="Please Specify" 
+                />
+              </div>
+            </div>
           </div>
-          
+      
           </div>
           <div class="row mb-3">
             <div class="input-field" v-if="Array.isArray(farmer.type_of_farming_activity) && farmer.type_of_farming_activity.includes('type_of_farming_activities_other')">
@@ -722,62 +651,14 @@
               <label>Other, For Type of Activity:</label>
             </div>
 
-            <div class="input-field" v-if="Array.isArray(farmer.type_of_farming_activity) && farmer.type_of_farming_activity.includes('other_crop')">
-              <input
-                type="text"
-                v-model="farmer.other_crop_specify"
-                spellcheck="false"
-              />
-              <label>Other, Crops Specify:</label>
-            </div>
-
-            <div class="input-field" v-if="Array.isArray(farmer.type_of_farming_activity) && farmer.type_of_farming_activity.includes('livestock')">
-              <input
-                type="text"
-                v-model="farmer.livestock_specify"
-                spellcheck="false"
-              />
-              <label>Other, Livestocks Specify:</label>
-            </div>
-
-            <div class="input-field" v-if="Array.isArray(farmer.type_of_farming_activity) && farmer.type_of_farming_activity.includes('poultry')">
-              <input
-                type="text"
-                v-model="farmer.poultry_specify"
-                spellcheck="false"
-              />
-              <label>Other, Poultry Specify:</label>
-            </div>
-
-            <div class="input-field" v-if="Array.isArray(farmer.farmworkers_kind_of_work) && farmer.farmworkers_kind_of_work.includes('for_farmworkers_other')">
-              <input
-                type="text"
-                v-model="farmer.for_farmworkers_other"
-                spellcheck="false"
-              />
-              <label>Other, For Farmworker:</label>
-            </div>
-
-            <div class="input-field" v-if="Array.isArray(farmer.for_fisherfolk) && farmer.for_fisherfolk.includes('for_fishfolk_other')">
-              <input
-                type="text"
-                v-model="farmer.for_fishfolk_other"
-                spellcheck="false"
-              />
-              <label>Other, For Fishfolk:</label>
-            </div>          
-            <div class="input-field" v-if="Array.isArray(farmer.for_agri_youth) && farmer.for_agri_youth.includes('for_agri_youth_other')">
-              <input
-                type="text"
-                v-model="farmer.for_agri_youth_other"
-                spellcheck="false"
-              />
-              <label>Other, For Agri Youth:</label>
-            </div>
           </div>
+          <div class="button-container">
+          <button class="preview-button" @click="changeHover(1)">Preview</button>
+          <button class="next-button" @click="changeHover(3)">Next</button>
+        </div>
         </div>
 
-        <div v-if="isHovered === 5" id="personalInfoIV" class="personal-info-section">
+        <div v-if="isHovered === 3" id="personalInfoIV" class="personal-info-section">
           <button type="button" @click="addFarmTable" class="add-farm-table-button">Add Farm Parcel No.</button>
           <form @submit.prevent="submitForm">
             <div class="table-container">
@@ -1229,9 +1110,11 @@
                         </tr>
                     </tbody>
                 </table>
-              
+                <div class="button-container">
+                  <button class="preview1-button" @click="changeHover(2)">Preview</button>
+                  <button type="submit" class="submit-button" >Update</button> 
+                </div>
             </div>
-            <button type="submit" class="submit-button" style="display: block; margin: 0 auto;">Update</button>
           </form>
         </div>
         <div v-if="alertMessage" class="alert-box">
@@ -1390,10 +1273,10 @@ const livelihoodOptions = [
 const farmingActivityOptions = [
   'rice',
   'corn',
-  'Other crops / specify',
-  'Livestock / specify',
-  'Poultry / specify',
-  'Other, please specify'
+  'Other crops',
+  'Livestock',
+  'Poultry',
+  'Other, please specify',
 ];
 const farmworkerTaskOptions = [
   'land preparation',
@@ -1559,13 +1442,8 @@ const submitForm = async () => {
       router.push('/farmers/index'); // Navigate to the farmers index page
     };
 
-// Function to handle hover state
-const setHover = (index) => {
-  isHovered.value = index;
-};
-
-const resetHover = () => {
-  isHovered.value = 1;
+    const changeHover = (index) => {
+  isHovered.value = index; 
 };
 </script>
 
@@ -1614,14 +1492,12 @@ const resetHover = () => {
 }
 
 .submit-button {
-  margin-top: 20px;
   background-color: green;
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  cursor: pointer; /* Pointer on hover */
+  transition: background-color 0.3s ease; /* Smooth transition */
 }
 
 .submit-button:hover {
@@ -1730,6 +1606,10 @@ select:valid ~ label {
     padding: 0 2px;
     background: #f2f4f7;
     }
+    input:focus {
+    outline: none; /* Remove the green outline entirely */
+    box-shadow: 0 0 5px #f8f9fa; /* Add a light green glow instead */
+}
 input:focus ~ label,
 input:valid ~ label {
   top: 0;
@@ -1762,5 +1642,52 @@ input:valid ~ label {
   background-color: #46cab6; /* Darker shade for hover effect */
   border-color: #46cab6;
   color: #f0f0f0; /* Light gray color for text on hover */
+}
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 10px; /* Add spacing between buttons */
+  margin-top: 20px;
+}
+
+.next-button {
+  background-color: #387e90;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.preview-button {
+  background-color: #888888;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.preview1-button {
+  background-color: #888888;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  height: 30%;
+}
+.input-field2 input {
+    width: 210px;
+    height: auto;
+    font-size: 15px;
+    padding: 5px 0;
+    border: none;
+    border-bottom: 1px solid black;
+    background: transparent;
+    color: black;
+    outline: none; /* Removes the default focus outline */
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none; /* Remove default arrow for Safari */
+    transition: border-color 0.3s ease; /* Smooth transition for focus effect */
 }
 </style>

@@ -89,7 +89,7 @@ const createFarmingActivityCharts = () => {
 
   // Create Pie Chart
   new Chart(pieCtx, {
-    type: 'pie', 
+    type: 'pie',
     data: {
       labels: farmingActivityLabels.value,
       datasets: [{
@@ -113,9 +113,13 @@ const createFarmingActivityCharts = () => {
           position: 'right',
           labels: {
             color: 'black',
+            font: {
+              family: 'Arial',
+              size: 10, // Adjust font size for pie chart legend
+            },
           },
         },
-      },
+      }
     },
   });
 
@@ -127,7 +131,7 @@ const createFarmingActivityCharts = () => {
       datasets: [{
         label: 'Farming Activities Count',
         data: farmingActivityData.value,
-        backgroundColor: chartColors, // Multiple colors for bars
+        backgroundColor: chartColors,
         borderColor: 'black',
         borderWidth: .3,
       }],
@@ -144,6 +148,18 @@ const createFarmingActivityCharts = () => {
         x: {
           ticks: {
             color: 'black',
+            font: {
+              size: 8, // Reduced font size for x-axis labels
+            },
+            maxRotation: 45, // Rotate labels to prevent overlap
+            minRotation: 45, // Ensure labels are rotated for readability
+            callback: function(value) {
+              // Truncate long labels
+              if (value.length > 15) {
+                return value.slice(0, 15) + '...'; // Truncate to 15 characters
+              }
+              return value;
+            }
           }
         }
       },
@@ -158,6 +174,7 @@ const createFarmingActivityCharts = () => {
     },
   });
 };
+
 
 onMounted(fetchFarmingActivityData);
 </script>
@@ -181,15 +198,13 @@ onMounted(fetchFarmingActivityData);
 }
 
 #farmingActivityPieChart {
-  width: 100%;
-  height: 400px;
-}
+  width: 100%; /* Full width */
+  max-width: 900px; /* Set a max width for the chart */
+  height: 400px; /* Set a fixed height for the chart */}
 
 #farmingActivityBarChart {
-  width: 100%;
-  max-width: 790px;
-  height: 300px;
-  margin-left: 0;
-  margin-right: auto;
+  width: 100%; /* Full width */
+  max-width: 900px; /* Set a max width for the chart */
+  height: 400px; /* Set a fixed height for the chart */
 }
 </style>

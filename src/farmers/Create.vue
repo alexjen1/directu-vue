@@ -7,22 +7,17 @@
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 1 }"
-            @mouseover="setHover(1)"
-            @mouseleave="resetHover"
-            @click="changeHover(1)"
           >
             Personal Info
           </button>
         </router-link>
-        
-        <!-- <router-link to="#">
+
+        <router-link to="#">
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 2 }"
-            @mouseover="setHover(2)"
-            @click="changeHover(2)"
           >
-            Personal Info [2]
+            Farm Profile
           </button>
         </router-link>
 
@@ -30,43 +25,10 @@
           <button
             class="nav-button"
             :class="{ 'hover-green': isHovered === 3 }"
-            @mouseover="setHover(3)"
-            @click="changeHover(3)"
-          >
-            Personal Info [3]
-          </button>
-        </router-link> -->
-
-        <router-link to="#">
-          <button
-            class="nav-button"
-            :class="{ 'hover-green': isHovered === 4 }"
-            @mouseover="setHover(4)"
-            @click="changeHover(4)"
-          >
-            Farm Profile
-          </button>
-        </router-link>
-        <router-link to="#">
-          <button
-            class="nav-button"
-            :class="{ 'hover-green': isHovered === 5 }"
-            @mouseover="setHover(5)"
-            @click="changeHover(5)"
           >
             Farm Profile II
           </button>
         </router-link>
-        <!-- <router-link to="#">
-          <button
-            class="nav-button"
-            :class="{ 'hover-green': isHovered === 6 }"
-            @mouseover="setHover(6)"
-            @click="changeHover(6)"
-          >
-            Uploads (id,image)
-          </button>
-        </router-link> -->
       </div>
       <br>
       <br>
@@ -90,9 +52,6 @@
                 />
                 <label>Reference Number:</label>
               </div>
-              <!-- <div v-if="farmer.image" class="image-preview" style="margin-top: -60px; margin-left: 10px">
-                <img :src="farmer.image" alt="Selected Image" width="220" height="150" />
-              </div> -->
               <div class="input-field">
                 <input
                   type="text"
@@ -520,10 +479,11 @@
                 <label>CONTACT NUMBER:</label>
               </div>
             </div>
+            <button class="next-button" style="display: block; margin: 0 auto;" @click="changeHover(2)">Next</button>
           </div>
         
         
-        <div v-if="isHovered === 4" id="personalInfoIV" class="personal-info-section">
+        <div v-if="isHovered === 2" id="personalInfoIV" class="personal-info-section">
           <div class="row mb-3">
             <h1 style="color: black;">Main Livelihood</h1>
             <nav class="navbar">
@@ -563,20 +523,60 @@
               </label>
               <label>
                 <input type="checkbox" value="other_crop" v-model="selectedFarmingActivity" />
-                Other crops / specify
+                Other crops,
               </label>
+              <div class="input-field2" v-if="selectedFarmingActivity.includes('other_crop')">
+              <div class="input-field2">
+                <input
+                  type="text"
+                  v-model="farmer.other_crop_specify" 
+                  spellcheck="false"
+                  placeholder="Please Specify"
+                />
+              </div>
+            </div> 
               <label>
                 <input type="checkbox" value="livestock" v-model="selectedFarmingActivity" />
                 Livestock / specify
               </label>
+              <div class="input-field2" v-if="selectedFarmingActivity.includes('livestock')">
+              <div class="input-field2">
+                <input
+                  type="text"
+                  v-model="farmer.livestock_specify" 
+                  spellcheck="false"
+                  placeholder="Please Specify"
+                />
+              </div>
+            </div>
               <label>
                 <input type="checkbox" value="poultry" v-model="selectedFarmingActivity" />
-                Poultry / specify
+                Poultry,
               </label>
+              <div class="input-field2" v-if="selectedFarmingActivity.includes('poultry')">
+              <div class="input-fiel2">
+                <input
+                  type="text"
+                  v-model="farmer.poultry_specify" 
+                  spellcheck="false"
+                  placeholder="Please Specify"
+                />
+              </div>
+            </div>
               <label>
                 <input type="checkbox" value="type_of_farming_activities_other" v-model="selectedFarmingActivity" />
-                Other, please specify
+                Other
               </label>
+              <div class="input-field2" v-if="selectedFarmingActivity.includes('type_of_farming_activities_other')">
+                <div class="input-fiel2">
+                  <input
+                    type="text"
+                    v-model="farmer.type_of_farming_activities_other" 
+                    spellcheck="false"
+                    placeholder="Other, For Type of Activity"
+                  />
+                </div>
+              </div>
             </div>
 
             <div class="check-box">
@@ -601,6 +601,16 @@
                 <input type="checkbox" value="for_farmworkers_other" v-model="selectedFarmorker" />
                 Other, please specify
               </label>
+              <div class="input-field2" v-if="selectedFarmorker.includes('for_farmworkers_other')">
+              <div class="input-field2">
+                <input
+                  type="text"
+                  v-model="farmer.for_farmworkers_other" 
+                  spellcheck="false"
+                  placeholder="Other, For Farmworker"
+                />
+              </div>
+            </div>
             </div>
 
             <div class="check-box">
@@ -629,6 +639,16 @@
                 <input type="checkbox" value="for_fishfolk_other" v-model="selectedFishfolk" />
                 Other, please specify
               </label>
+              <div class="input-field2" v-if="selectedFishfolk.includes('for_fishfolk_other')">
+              <div class="input-field2">
+                <input
+                  type="text"
+                  v-model="farmer.for_fishfolk_other" 
+                  spellcheck="false"
+                  placeholder="Other, For Fishfolk"
+                />
+              </div>
+            </div>
             </div>
 
             <div class="check-box">
@@ -653,85 +673,26 @@
                 <input type="checkbox" value="for_agri_youth_other" v-model="selectedForAgriYouth" />
                 Other, please specify
               </label>
-            </div>
-        </div>
-              <div class="row mb-3">
-                <div class="input-field" v-if="selectedFarmingActivity.includes('type_of_farming_activities_other')">
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.type_of_farming_activities_other" 
-                  spellcheck="false"
-                />
-                <label>Other, For Type of Activity:</label>
-              </div>
-            </div>
-              <div class="input-field" v-if="selectedFarmingActivity.includes('other_crop')">
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.other_crop_specify" 
-                  spellcheck="false"
-                />
-                <label>Other, Crops Specify:</label>
-              </div>
-            </div>
-            <div class="input-field" v-if="selectedFarmingActivity.includes('livestock')">
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.livestock_specify" 
-                  spellcheck="false"
-                />
-                <label>Other, Livestocks Specify:</label>
-              </div>
-            </div>
-            <div class="input-field" v-if="selectedFarmingActivity.includes('poultry')">
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.poultry_specify" 
-                  spellcheck="false"
-                />
-                <label>Other, Poultry Specify:</label>
-              </div>
-            </div>
-            <div class="input-field" v-if="selectedFarmorker.includes('for_farmworkers_other')">
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.for_farmworkers_other" 
-                  spellcheck="false"
-                />
-                <label>Other, For Farmworker:</label>
-              </div>
-            </div>
-            <div class="input-field" v-if="selectedFishfolk.includes('for_fishfolk_other')">
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.for_fishfolk_other" 
-                  spellcheck="false"
-                />
-                <label>Other, For Fishfolk:</label>
-              </div>
-            </div>
-            <div class="input-field" v-if="selectedForAgriYouth.includes('for_agri_youth_other')">
-              <div class="input-field">
+              <div class="input-field2" v-if="selectedForAgriYouth.includes('for_agri_youth_other')">
+              <div class="input-field2">
                 <input
                   type="text"
                   v-model="farmer.for_agri_youth_other" 
                   spellcheck="false"
+                  placeholder="Other, For Agri Youth"
+                  class="input-placeholder-space2"
                 />
-                <label>Other, For Agri Youth:</label>
               </div>
             </div>
-
-
-          </div>
+            </div>
+        </div>
+        <div class="button-container">
+          <button class="preview-button" @click="changeHover(1)">Preview</button>
+          <button class="next-button" @click="changeHover(3)">Next</button>
+        </div>
         </div>
 
-        <div v-if="isHovered === 5" id="personalInfoIV" class="personal-info-section">
+        <div v-if="isHovered === 3" id="personalInfoIV" class="personal-info-section">
           <button type="button" @click="addFarmTable" class="add-farm-table-button">Add Farm Parcel No.</button>
             <div class="table-container">
                 <!-- Table 1 -->
@@ -1171,18 +1132,15 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>         
+                </table> 
+                <div class="button-container">
+                  <button class="preview1-button" @click="changeHover(2)">Preview</button>
+                  <button type="submit" class="submit-button" >Submit</button> 
+                </div> 
+                <!-- <button class="preview-button" @click="changeHover(2)">Preview</button>
+                <button type="submit" class="submit-button" style="display: block; margin: 0 auto;">Submit</button>       -->
             </div>
         </div>
-
-        <!-- <div v-if="isHovered === 6" id="personalInfoI" class="personal-info-section">
-            <div class="row mb-3">
-              <input type="file" @change="onImageSelected" accept="image/*" />
-              <div v-if="farmer.image" class="image-preview" style="margin-top: -60px; margin-left: 10px">
-                <img :src="farmer.image" alt="Selected Image" width="220" height="150" />
-              </div>
-              </div>
-        </div> -->
 
         <div v-if="alertMessage" class="alert-box">
           <i class="fa-regular fa-circle-check fa-5x" style="color: #63E6BE;"></i>
@@ -1190,7 +1148,7 @@
           <p>{{ alertMessage }}</p>
           <button @click="closeAlert">Ok</button>
         </div>
-        <button type="submit" class="submit-button" style="display: block; margin: 0 auto;">Submit</button>
+        
       </form>
       </div>
     
@@ -1419,15 +1377,15 @@ const farmer = ref({
 });
 // Image upload handling
 // const onImageSelected = (event) => {
-//   const file = event.target.files[0];
-//   if (file) {
-//     const reader = new FileReader();
-//     reader.onload = (e) => {
-//       farmer.value.image = e.target.result; // Set the base64 image to farmer
-//     };
-//     reader.readAsDataURL(file); // Convert image to base64 string
-//   }
-// };
+//    const file = event.target.files[0];
+//    if (file) {
+//      const reader = new FileReader();
+//      reader.onload = (e) => {
+//        farmer.value.image = e.target.result; // Set the base64 image to farmer
+//      };
+//      reader.readAsDataURL(file); // Convert image to base64 string
+//    }
+//  };
 // Add this reactive variable
 const showAdditionalInput = ref(false); // Initialize to false
 
@@ -1489,18 +1447,10 @@ watch(selectedForAgriYouth, (newVal) => {
   farmer.value.for_agri_youth = newVal; // Update based on selected checkboxes
 });
 
-// Function to set hover state
-const setHover = (index) => {
-  isHovered.value = index; // Set the hover state to the index of the button
-};
-
 const changeHover = (index) => {
-  isHovered.value = index; // Change hover when button is clicked
+  isHovered.value = index; 
 };
 
-const resetHover = () => {
-  isHovered.value = 1; // Optional: Reset hover if needed
-};
 // Function to log activity (email, time, and action) to localStorage
 const logActivity = async (email, action) => {
   const token = localStorage.getItem('auth_token'); 
@@ -1683,15 +1633,48 @@ const closeAlert = () => {
 }
 
 .submit-button {
-  margin-top: 20px;
   background-color: green;
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
   cursor: pointer; /* Pointer on hover */
   transition: background-color 0.3s ease; /* Smooth transition */
 }
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 10px; /* Add spacing between buttons */
+  margin-top: 20px;
+}
+
+.next-button {
+  background-color: #387e90;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.preview-button {
+  background-color: #888888;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.preview1-button {
+  background-color: #888888;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  height: 30%;
+}
+
 
 .submit-button:hover {
   background-color: darkgreen; /* Darker shade on hover */
@@ -1760,6 +1743,23 @@ const closeAlert = () => {
     appearance: none; /* Remove default arrow */
     -webkit-appearance: none; /* Remove default arrow for Safari */
 }
+
+
+.input-field2 input {
+    width: 210px;
+    height: auto;
+    font-size: 15px;
+    padding: 5px 0;
+    border: none;
+    border-bottom: 1px solid black;
+    background: transparent;
+    color: black;
+    outline: none; /* Removes the default focus outline */
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none; /* Remove default arrow for Safari */
+    transition: border-color 0.3s ease; /* Smooth transition for focus effect */
+}
+
 .input-field2 textarea {
     width: 150px;
     height: 350px;
@@ -1813,8 +1813,10 @@ select:valid ~ label {
     }
 
   input:focus {
-  border: 2px solid lightgreen;
+    outline: none; /* Remove the green outline entirely */
+    box-shadow: 0 0 5px #f8f9fa; /* Add a light green glow instead */
 }
+
 
 input:focus ~ label,
 input:valid ~ label {

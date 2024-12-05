@@ -96,29 +96,91 @@
                 <button class="action-button edit" @click="editFarmer(farmer.id)">
                   <i class="fas fa-edit"></i>
                 </button>
-                <!-- <button class="action-button delete" @click="deleteFarmer(farmer.id)">
-                  <i class="fas fa-trash-alt"></i>
-                </button> -->
-                <!-- <button class="action-button download" @click="downloadFarmerPDF(farmer.id)">
-                  <i class="fas fa-download"></i>
-                </button> -->
-                <!-- <button class="action-button edit" @click="showFarmer(farmer.id)">
-                  <i class="fas fa-eye"></i>
-                </button> -->
-                <!-- Option Button -->
                 <button class="action-button option" @click="toggleOptions(farmer.id)">
                   <i class="fa-solid fa-ellipsis-vertical"></i>
                 </button>
                 
                 <div v-if="showOptions[farmer.id]" class="option-text">
-                  <button1 @click="downloadFarmerPDF(farmer.id)"><i class="fas fa-download"></i> Download</button1>
-                  <br>
+                  <button @click="downloadFarmerPDF(farmer.id)" class="delete-button"><i class="fas fa-download"></i> Download</button>
+                  <!-- <br> -->
                   <!-- <button1 @click="showFarmer(farmer.id)"><i class="fas fa-book"></i> Show</button1> -->
-                  <button1 @click="showMaintenance">
+                  <!-- <button1 @click="showMaintenance">
                     <i class="fas fa-book"></i> Show
-                  </button1>
+                  </button1> -->
                   <br>
-                  <button1 @click="deleteFarmer(farmer.id)"><i class="fas fa-trash-alt"></i> Delete</button1>
+                  <button @click="deleteFarmer(farmer.id)" class="delete-button"><i class="fas fa-trash-alt"></i> Delete</button>
+                  <br>
+                  <button @click="uploadImage(farmer.id)" class="delete-button"><i class="fas fa-download"></i> Image(2x2)</button>
+                  <br>
+                  <button @click="initiateIdUpload(farmer.id)" class="delete-button"><i class="fas fa-download"></i> Upload ID</button>
+                  <div v-if="showUploadModal" class="modal-overlay" @click.self="closeUploadModal">
+                    <div class="modal-content">
+                      <h3 >Upload Image for, {{ farmer.surname }}</h3>
+                      <p style="text-align: left;">Current Image</p>
+                      
+                      <div v-if="existingImageUrl && !imagePreview" class="existing-image">
+                        <img :src="existingImageUrl" alt="Farmer ID" />
+                      </div>
+
+                      <p style="text-align: left;">Select a file to upload:</p>
+                      
+                      <input type="file" @change="handleFileUpload" />
+                      
+                      <div v-if="imagePreview" class="image-preview">
+                        <img :src="imagePreview" alt="Selected ID" />
+                      </div>
+
+                      <div class="modal-actions">
+                        <button @click="confirmUpload">Upload</button>
+                        <button @click="closeUploadModal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-if="isUploadModalVisible" class="modal-overlay" @click.self="closeIdUploadModal">
+                    <div class="modal-content">
+                      <h3>Upload ID for, {{ farmer.surname }}</h3>
+                      
+                      <div class="id-upload-section">
+                        <p style="text-align: left;">Front ID</p>
+                        
+                        <!-- Display existing front ID if available -->
+                        <div v-if="existingFrontIdUrl && !frontIdPreview" class="existing-image">
+                          <img :src="existingFrontIdUrl" alt="Front of ID" />
+                        </div>
+
+                        <!-- Front ID File Input -->
+                        <input type="file" name="frontId" @change="handleFrontIdUpload" />
+                        
+                        <!-- Display front ID preview -->
+                        <div v-if="frontIdPreview" class="image-preview">
+                          <img :src="frontIdPreview" alt="Front ID Preview" />
+                        </div>
+                      </div>
+
+                      <div class="id-upload-section">
+                        <p style="text-align: left;">Back ID</p>
+                        
+                        <!-- Display existing back ID if available -->
+                        <div v-if="existingBackIdUrl && !backIdPreview" class="existing-image">
+                          <img :src="existingBackIdUrl" alt="Back of ID" />
+                        </div>
+
+                        <!-- Back ID File Input -->
+                        <input type="file" name="backId" @change="handleBackIdUpload" />
+                        
+                        <!-- Display back ID preview -->
+                        <div v-if="backIdPreview" class="image-preview">
+                          <img :src="backIdPreview" alt="Back ID Preview" />
+                        </div>
+                      </div>
+
+                      <div class="modal-actions">
+                        <button @click="confirmIdUpload">Upload</button>
+                        <button @click="closeIdUploadModal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -204,8 +266,242 @@ const selectedbarangay = ref('');
 const selectedGender = ref(''); 
 const selectedFarmingActivity = ref(''); 
 const selectedFarmers = ref([]);
+const showOptions = ref({});
+const showUploadModal = ref(false);
+const selectedFarmerId = ref(null);
+const imagePreview = ref(null); // For storing the image preview
+const existingImageUrl = ref(null); // For storing the existing image URL
+const uploadedImageUrl = ref(null); // For storing the uploaded image URL
+const fileUploadError = ref(null); // For storing any file upload errors
+const isUploadModalVisible = ref(false);
+const currentFarmerForUpload = ref(null);
+const frontIdPreview = ref(null);
+const backIdPreview = ref(null);
+const existingFrontIdUrl = ref(null);
+const existingBackIdUrl = ref(null);
+const uploadedFrontIdUrl = ref(null);
+const uploadedBackIdUrl = ref(null);
+const idUploadError = ref(null);
 
-const showOptions = ref({}); 
+// Function to open the modal and set the farmer ID
+const uploadImage = async (farmerId) => {
+  selectedFarmerId.value = farmerId;
+  showUploadModal.value = true;
+  imagePreview.value = null; // Reset image preview when opening the modal
+  existingImageUrl.value = null; // Reset existing image URL
+  
+  // Fetch the farmer data to check if an image exists
+  try {
+    const farmerResponse = await axios.get(`http://localhost:8055/items/farmers/${farmerId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Use the token from localStorage
+      },
+    });
+    
+    const farmerData = farmerResponse.data.data;
+    if (farmerData.image) {
+      existingImageUrl.value = `http://localhost:8055/assets/${farmerData.image}`; // Set the existing image URL
+    }
+  } catch (error) {
+    console.error("Error fetching farmer data:", error);
+  }
+};
+
+// Function to close the modal
+const closeUploadModal = () => {
+  showUploadModal.value = false;
+  selectedFarmerId.value = null;
+  imagePreview.value = null; // Clear the image preview when closing
+  existingImageUrl.value = null; // Reset the existing image URL
+};
+
+// Function to handle file upload and preview the image
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      imagePreview.value = reader.result; // Set the image preview
+    };
+    reader.readAsDataURL(file); // Read the file as a data URL
+  }
+};
+
+// Function to handle file upload and update the farmer record
+const confirmUpload = async () => {
+  const file = document.querySelector('input[type="file"]').files[0];
+  if (!file) {
+    alert('Please select a file first!');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', file); // Include file under 'image' key
+
+  try {
+    // Step 1: Upload the image
+    const uploadResponse = await axios.post('http://localhost:8055/files', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Use the token from localStorage
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (uploadResponse.status === 200) {
+      const imageID = uploadResponse.data.data.id; // Capture the uploaded file's ID
+      const imageUrl = `http://localhost:8055/assets/${imageID}`;
+      uploadedImageUrl.value = imageUrl;
+
+      // Step 2: Update the farmer record
+      const farmerId = selectedFarmerId.value; // Use the selected farmer ID
+      const farmerResponse = await axios.patch(
+        `http://localhost:8055/items/farmers/${farmerId}`, // Adjusted API endpoint
+        {
+          image: imageID, // Assign the uploaded image ID to the 'image' field
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Use the token from localStorage
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (farmerResponse.status === 200) {
+        alertMessage.value = 'Image uploaded  successfully!';
+        closeUploadModal(); // Close the modal after successful upload
+      } else {
+        throw new Error('Failed to update the farmer record.');
+      }
+    } else {
+      throw new Error('Failed to upload the file.');
+    }
+  } catch (error) {
+    fileUploadError.value = error.response?.data?.errors?.[0]?.message || 'An error occurred while uploading the file.';
+  }
+};
+
+// Function to open the modal and set the farmer ID
+const initiateIdUpload = async (farmerId) => {
+  currentFarmerForUpload.value = farmerId;
+  isUploadModalVisible.value = true;
+  frontIdPreview.value = null;
+  backIdPreview.value = null;
+  existingFrontIdUrl.value = null;
+  existingBackIdUrl.value = null;
+  
+  // Fetch the farmer data to check if ID images exist
+  try {
+    const farmerResponse = await axios.get(`http://localhost:8055/items/farmers/${farmerId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    const farmerData = farmerResponse.data.data;
+    if (farmerData.FrontID) {
+      existingFrontIdUrl.value = `http://localhost:8055/assets/${farmerData.FrontID}`;
+    }
+    if (farmerData.BackID) {
+      existingBackIdUrl.value = `http://localhost:8055/assets/${farmerData.BackID}`;
+    }
+  } catch (error) {
+    console.error("Error fetching farmer data:", error);
+  }
+};
+
+// Function to close the modal
+const closeIdUploadModal = () => {
+  isUploadModalVisible.value = false;
+  currentFarmerForUpload.value = null;
+  frontIdPreview.value = null;
+  backIdPreview.value = null;
+  existingFrontIdUrl.value = null;
+  existingBackIdUrl.value = null;
+};
+
+// Function to handle front ID file upload and preview
+const handleFrontIdUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      frontIdPreview.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+// Function to handle back ID file upload and preview
+const handleBackIdUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      backIdPreview.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+// Function to handle ID image uploads and update the farmer record
+const confirmIdUpload = async () => {
+  const frontIdFile = document.querySelector('input[name="frontId"]').files[0];
+  const backIdFile = document.querySelector('input[name="backId"]').files[0];
+
+  if (!frontIdFile || !backIdFile) {
+    alert('Please select both front and back ID images!');
+    return;
+  }
+
+  try {
+    // Upload Front ID
+    const frontIdFormData = new FormData();
+    frontIdFormData.append('image', frontIdFile);
+    const frontIdUploadResponse = await axios.post('http://localhost:8055/files', frontIdFormData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // Upload Back ID
+    const backIdFormData = new FormData();
+    backIdFormData.append('image', backIdFile);
+    const backIdUploadResponse = await axios.post('http://localhost:8055/files', backIdFormData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // Update Farmer Record with both ID images
+    const farmerId = currentFarmerForUpload.value;
+    const farmerUpdateResponse = await axios.patch(
+      `http://localhost:8055/items/farmers/${farmerId}`,
+      {
+        FrontID: frontIdUploadResponse.data.data.id,
+        BackID: backIdUploadResponse.data.data.id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (farmerUpdateResponse.status === 200) {
+      alertMessage.value = 'Both ID uploaded successfully!';
+      closeIdUploadModal();
+    } else {
+      throw new Error('Failed to update the farmer record.');
+    }
+  } catch (error) {
+    idUploadError.value = error.response?.data?.errors?.[0]?.message || 'An error occurred while uploading ID images.';
+    console.error(error);
+  }
+};
 
 // Method to toggle options dropdown for a specific farmer
 const toggleOptions = (farmerId) => {
@@ -635,6 +931,7 @@ const downloadFarmerPDF = async (id) => {
     return;
   }
   const {
+    image,
   enrollment_type,
   reference_number,
   surname,
@@ -760,6 +1057,24 @@ const downloadFarmerPDF = async (id) => {
   organic_practitioner3,
 } = farmer;
 
+
+let imageArrayBuffer = null;
+  if (farmer.image) {
+    try {
+      const imageResponse = await fetch(`http://localhost:8055/assets/${farmer.image}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Use your authentication token
+        },
+      });
+      
+      if (imageResponse.ok) {
+        const imageBlob = await imageResponse.blob();
+        imageArrayBuffer = await imageBlob.arrayBuffer();
+      }
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    }
+  }
   // Path to the existing PDF
   const filePath = '/src/assets/file/RSBSA_Enrollment-Form_032021.pdf';
 
@@ -819,6 +1134,20 @@ if (enrollment_type === "Updating") {
     size: 12,
     color: rgb(0, 0, 0), // Black color
   });
+  if (imageArrayBuffer) {
+    try {
+      const image = await pdfDoc.embedPng(imageArrayBuffer); // or embedJpg if it's a JPEG
+      firstPage.drawImage(image, {
+        x: 443, // adjust x coordinate
+        y: 742, // adjust y coordinate
+        width: 127, // set width to 200
+        height: 125, // set height to 200
+ // set desired height
+      });
+    } catch (error) {
+      console.error('Error embedding image:', error);
+    }
+  }
   firstPage.drawText(` ${first_name}`, {
     x: 300, 
     y: 715, 
@@ -2298,9 +2627,6 @@ onBeforeUnmount(() => {
     color: #387e90; 
   }
   
-  .delete {
-    color: #e88955; 
-  }
   .selecteddelete {
     color: white;
   }
@@ -2320,9 +2646,6 @@ onBeforeUnmount(() => {
     height: 35px;
     border-radius: 5px;
     margin-right: 79%;
-  }
-  .download{
-    color: #46cab6;
   }
   .option{
     color: #2d2d2d;
@@ -2419,10 +2742,10 @@ onBeforeUnmount(() => {
     background-color: white;
     padding: 8px;
     margin-top: 10px;
-    margin-left: 35px;
+    margin-left: 25px;
     position: absolute;
     cursor: pointer;
-    width: 120px;
+    width: 129px;
     border-radius: 7px;
   }
   button {
@@ -2432,8 +2755,72 @@ onBeforeUnmount(() => {
   cursor: pointer;
   font-size: 1em;
 }
-button1:hover {
-  color: #7e4ee6;
+.delete-button {
+    color: black;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    color: #7e4ee6; /* Change the text color to dark red on hover */
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modal-actions {
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  margin: 0 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.modal-actions button:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.existing-image img {
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 5px;
 }
   
   @media (max-width: 768px) {

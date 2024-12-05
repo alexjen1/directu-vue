@@ -10,7 +10,7 @@
       <br />
       <div class="charts-container">
       <div class="chart-box">
-        <div class="icon-container" onclick="window.location.href='/farming-activity-report'">
+        <div class="icon-container" onclick="window.location.href='/farming-activity'">
           <i class="fas fa-ellipsis-v"></i>
         </div>
         <h1>Farming Activities</h1>
@@ -21,14 +21,14 @@
       <br />
       <div class="charts-container">
         <div class="chart-box">
-          <div class="icon-container" onclick="window.location.href='/per-brgy-report'">
+          <div class="icon-container" onclick="window.location.href='/per-brgy'">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
           <h1>Count Per Barangay</h1>
           <BarangayBarGraph />
         </div>
         <div class="chart-box">
-          <div class="icon-container" onclick="window.location.href='/per-educational-level-report'">
+          <div class="icon-container" onclick="window.location.href='/per-educational-level'">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
           <h1>Highest Formal Education</h1>
@@ -39,21 +39,21 @@
       <br />
       <div class="charts-container">
         <div class="chart-box">
-          <div class="icon-container" onclick="window.location.href='/per-gender-report'">
+          <div class="icon-container" onclick="window.location.href='/per-gender'">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
           <h1>Gender</h1>
           <SexBarGraph />
         </div>
         <div class="chart-box">
-          <div class="icon-container" onclick="window.location.href='/per-religion-report'">
+          <div class="icon-container" onclick="window.location.href='/per-religion'">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
           <h1>Religion</h1>
           <ReligionBarGraph />
         </div>
         <div class="chart-box">
-          <div class="icon-container" onclick="window.location.href='/per-civil-status-report'">
+          <div class="icon-container" onclick="window.location.href='/per-civil-status'">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
           <h1>Civil Status</h1>
@@ -67,8 +67,8 @@
           <IndexGraph />
         </div>
         <div class="chart-box">
-          <h1>Farmers Date Created</h1>
-          <DateCreatedGraph/>
+          <h1>Member of Indiginous Group</h1>
+          <IndiginousgGroup/>
         </div>
       </div>
     </div>
@@ -89,7 +89,7 @@ import ReligionBarGraph from '@/components/ReligionBarGraph.vue';
 import CivilStatusBarGraph from '@/components/CivilStatusBarGraph.vue';
 import HighesFormalEduc from '@/components/HighesFormalEduc.vue';
 import IndexGraph from '@/components/IndexGraph.vue';
-import DateCreatedGraph from '@/components/DateCreatedGraph.vue';
+import IndiginousgGroup from '@/components/IndiginousgGroup.vue';
 
 const router = useRouter();
 const farmersCount = ref(0);
