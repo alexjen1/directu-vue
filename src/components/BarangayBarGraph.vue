@@ -35,7 +35,7 @@ const fetchBarangayData = async () => {
     // Grouping farmers by barangay
     const barangayCount = {};
     farmers.forEach(farmer => {
-      const barangay = farmer.barangay; // Adjust this to your actual field name
+      const barangay = farmer.barangay || "Not Specified";
       barangayCount[barangay] = (barangayCount[barangay] || 0) + 1;
     });
 

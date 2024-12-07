@@ -946,6 +946,7 @@ const downloadFarmerPDF = async (id) => {
   province,
   region,
   mobile_number,
+  date_of_birth,
   place_of_birth,
   place_of_birth_province_state,
   place_of_birth_country,
@@ -970,6 +971,7 @@ const downloadFarmerPDF = async (id) => {
   member_of_any_farmers_association_cooperative,
   if_yes_spefify_farmers_association,
   person_to_notify_in_case_of_emergency,
+  contact_number,
   main_livelihood,
   type_of_farming_activity,
   farmworkers_kind_of_work,
@@ -1128,6 +1130,18 @@ if (enrollment_type === "Updating") {
     color: rgb(0, 0, 0), // Black color
   });
 }
+firstPage.drawText(
+  `${String(reference_number).replace(
+    /(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)/,
+    '$1   $2    $3  $4    $5  $6    $7  $8  $9    $10  $11  $12   $13  $14  $15'
+  )}`,
+  {
+    x: 111,
+    y: 753,
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  }
+);
   firstPage.drawText(` ${surname}`, {
     x: 110, // (width)
     y: 715, //  (height)
@@ -1218,12 +1232,21 @@ if (sex === "female") {
     size: 10,
     color: rgb(0, 0, 0), // Black color
   });
-  firstPage.drawText(` ${mobile_number}`, {
-    x: 35, 
+  firstPage.drawText(` ${String(mobile_number).replace(/(\d{1})(?=\d)/g, '$1  ')}`, {
+    x: 42, 
     y: 591, 
     size: 10,
     color: rgb(0, 0, 0), // Black color
-  });
+  })
+  firstPage.drawText(
+  `${String(date_of_birth).split('-').reverse().join('-').split('-').slice(1,2).join('').split('').join('   ')}   ${String(date_of_birth).split('-').reverse().join('-').split('-').slice(0,1).join('').split('').join('   ')}   ${String(date_of_birth).split('-').reverse().join('-').split('-').slice(2).join('').split('').join('   ')}`,
+  {
+    x: 35,
+    y: 560,
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  }
+);
   firstPage.drawText(` ${place_of_birth}`, {
     x: 205, 
     y: 568,  
@@ -1532,6 +1555,13 @@ if (member_of_any_farmers_association_cooperative === "no") {
     size: 10,
     color: rgb(0, 0, 0), 
   });
+  firstPage.drawText(` ${String(contact_number).replace(/(\d{1})(?=\d)/g, '$1   ')}`, {
+    x: 407, 
+    y: 367, 
+    size: 11,
+    color: rgb(0, 0, 0), // Black color
+  })
+
 if (Array.isArray(main_livelihood) && main_livelihood.includes("farmer")) {
   firstPage.drawText("/", {
     x: 124, 
@@ -1726,6 +1756,18 @@ if (Array.isArray(for_agri_youth) && for_agri_youth.includes("participated in an
     color: rgb(0, 0, 0), // Black color
   });
 }
+firstPage.drawText(
+  `${String(reference_number).replace(
+    /(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)/,
+    '$1   $2    $3  $4    $5  $6    $7  $8  $9    $10  $11  $12   $13  $14  $15'
+  )}`,
+  {
+    x: 110,
+    y: 97,
+    size: 10,
+    color: rgb(0, 0, 0), // Black color
+  }
+);
   firstPage.drawText(` ${surname}`, {
     x: 110, // (width)
     y: 75, //  (height)

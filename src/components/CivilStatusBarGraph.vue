@@ -35,7 +35,7 @@
       // Grouping civil status
       const civilStatusCount = {};
       farmers.forEach(farmer => {
-        const civilStatus = farmer.civil_status; // Adjust to match your field name
+        const civilStatus = farmer.civil_status || "Not Specified";
         civilStatusCount[civilStatus] = (civilStatusCount[civilStatus] || 0) + 1;
       });
   

@@ -51,6 +51,7 @@
                   v-model="farmer.reference_number"
                   required
                   spellcheck="false"
+                  maxlength="15"
                 />
                 <label>Reference Number:</label>
               </div>
@@ -220,6 +221,7 @@
                   v-model="farmer.mobile_number"
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>MOBILE NUMBER:</label>
               </div>
@@ -494,6 +496,7 @@
                   type="text"
                   v-model="farmer.contact_number"
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>CONTACT NUMBER:</label>
               </div>
@@ -533,7 +536,7 @@
             </label>
             
             <!-- Input box for "Other crops" -->
-            <div v-if="activity === 'Other crops' && farmer.type_of_farming_activity.includes('Other crops')" class="input-field2">
+            <div v-if="activity === 'other_crop' && farmer.type_of_farming_activity.includes('other_crop')" class="input-field2">
               <input 
                 type="text" 
                 id="otherCrops" 
@@ -541,7 +544,7 @@
                 placeholder="Please Specify" 
               />
             </div>
-            <div v-if="activity === 'Livestock' && farmer.type_of_farming_activity.includes('Livestock')" class="input-field2">
+            <div v-if="activity === 'livestock' && farmer.type_of_farming_activity.includes('livestock')" class="input-field2">
               <input 
                 type="text" 
                 id="otherCrops" 
@@ -549,7 +552,7 @@
                 placeholder="Please Specify" 
               />
             </div>
-            <div v-if="activity === 'Poultry' && farmer.type_of_farming_activity.includes('Poultry')" class="input-field2">
+            <div v-if="activity === 'poultry' && farmer.type_of_farming_activity.includes('poultry')" class="input-field2">
               <input 
                 type="text" 
                 id="otherCrops" 
@@ -1273,9 +1276,9 @@ const livelihoodOptions = [
 const farmingActivityOptions = [
   'rice',
   'corn',
-  'Other crops',
-  'Livestock',
-  'Poultry',
+  'other_crop',
+  'livestock',
+  'poultry',
   'Other, please specify',
 ];
 const farmworkerTaskOptions = [

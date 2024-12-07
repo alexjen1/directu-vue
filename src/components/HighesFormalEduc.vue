@@ -35,7 +35,7 @@
       // Grouping farmers by highest formal education
       const educationCount = {};
       farmers.forEach(farmer => {
-        const education = farmer.highest_formal_education; // Adjust this to your actual field name
+        const education = farmer.highest_formal_education || "Not Specified";
         educationCount[education] = (educationCount[education] || 0) + 1;
       });
   

@@ -35,7 +35,7 @@
       // Grouping religions
       const religionCount = {};
       farmers.forEach(farmer => {
-        const religion = farmer.religion; // Adjust to match your field name
+        const religion = farmer.religion || "Not Specified";
         religionCount[religion] = (religionCount[religion] || 0) + 1;
       });
   

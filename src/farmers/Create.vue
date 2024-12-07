@@ -537,7 +537,7 @@
             </div> 
               <label>
                 <input type="checkbox" value="livestock" v-model="selectedFarmingActivity" />
-                Livestock / specify
+                Livestock,
               </label>
               <div class="input-field2" v-if="selectedFarmingActivity.includes('livestock')">
               <div class="input-field2">
@@ -766,23 +766,23 @@
                             </td>
                             <td>
                               <div class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_1" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa1_1"  spellcheck="false" step="any" />
                                 <label>Size (ha) (1):</label>
                               </div>
                               <div v-if="showSizeHa2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_2" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa1_2"  spellcheck="false" step="any" />
                                 <label>Size (ha) (2):</label>
                               </div>
                               <div v-if="showSizeHa3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_3" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa1_3"  spellcheck="false" step="any" />
                                 <label>Size (ha) (3):</label>
                               </div>
                               <div v-if="showSizeHa4" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_4" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa1_4"  spellcheck="false" step="any" />
                                 <label>Size (ha) (4):</label>
                               </div>
                               <div v-if="showSizeHa5" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_5" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa1_5"  spellcheck="false" step="any" />
                                 <label>Size (ha) (5):</label>
                               </div>
                               <!-- <div class="total-size">
@@ -791,23 +791,23 @@
                             </td>
                             <td>
                               <div class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_1" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head1_1" spellcheck="false" step="any" />
                                 <label>No. of Heads (1):</label>
                               </div>
                               <div v-if="showNoOfHeads2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_2" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head1_2" spellcheck="false" step="any" />
                                 <label>No. of Heads (2):</label>
                               </div>
                               <div v-if="showNoOfHeads3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_3" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head1_3" spellcheck="false" step="any" />
                                 <label>No. of Heads (3):</label>
                               </div>
                               <div v-if="showNoOfHeads4" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_4" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head1_4" spellcheck="false" step="any" />
                                 <label>No. of Heads (4):</label>
                               </div>
                               <div v-if="showNoOfHeads5" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_5" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head1_5" spellcheck="false" step="any" />
                                 <label>No. of Heads (5):</label>
                               </div>
                               
@@ -912,23 +912,23 @@
                             </td>
                             <td>
                               <div class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_1" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa2_1" spellcheck="false" step="any" />
                                 <label>Size (ha) (1):</label>
                               </div>
                               <div v-if="showSizeHa2_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_2" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa2_2" spellcheck="false" step="any" />
                                 <label>Size (ha) (2):</label>
                               </div>
                               <div v-if="showSizeHa3_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_3" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa2_3" spellcheck="false" step="any" />
                                 <label>Size (ha) (3):</label>
                               </div>
                               <div v-if="showSizeHa4_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_4" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa2_4" spellcheck="false" step="any" />
                                 <label>Size (ha) (4):</label>
                               </div>
                               <div v-if="showSizeHa5_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_5" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa2_5" spellcheck="false" step="any" />
                                 <label>Size (ha) (5):</label>
                               </div>
                               <!-- <div class="total-size">
@@ -937,23 +937,23 @@
                             </td>
                             <td>
                               <div class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_1" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head2_1" spellcheck="false" step="any" />
                                 <label>No. of Heads (1):</label>
                               </div>
                               <div v-if="showNoOfHeads2_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_2" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head2_2" spellcheck="false" step="any" />
                                 <label>No. of Heads (2):</label>
                               </div>
                               <div v-if="showNoOfHeads3_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_3" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head2_3" spellcheck="false" step="any" />
                                 <label>No. of Heads (3):</label>
                               </div>
                               <div v-if="showNoOfHeads4_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_4" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head2_4" spellcheck="false" step="any" />
                                 <label>No. of Heads (4):</label>
                               </div>
                               <div v-if="showNoOfHeads5_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_5" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head2_5" spellcheck="false" step="any" />
                                 <label>No. of Heads (5):</label>
                               </div>
                               
@@ -1058,23 +1058,23 @@
                             </td>
                             <td>
                               <div class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_1" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa3_1" spellcheck="false" step="any" />
                                 <label>Size (ha) (1):</label>
                               </div>
                               <div v-if="showSizeHa2_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_2" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa3_2" spellcheck="false" step="any" />
                                 <label>Size (ha) (2):</label>
                               </div>
                               <div v-if="showSizeHa3_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_3" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa3_3" spellcheck="false" step="any" />
                                 <label>Size (ha) (3):</label>
                               </div>
                               <div v-if="showSizeHa4_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_4" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa3_4" spellcheck="false" step="any" />
                                 <label>Size (ha) (4):</label>
                               </div>
                               <div v-if="showSizeHa5_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_5" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.sizeHa3_5" spellcheck="false" step="any" />
                                 <label>Size (ha) (5):</label>
                               </div>
                               <!-- <div class="total-size">
@@ -1083,23 +1083,23 @@
                             </td>
                             <td>
                               <div class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_1" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head3_1" spellcheck="false" step="any" />
                                 <label>No. of Heads (1):</label>
                               </div>
                               <div v-if="showNoOfHeads2_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_2" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head3_2" spellcheck="false" step="any" />
                                 <label>No. of Heads (2):</label>
                               </div>
                               <div v-if="showNoOfHeads3_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_3" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head3_3" spellcheck="false" step="any" />
                                 <label>No. of Heads (3):</label>
                               </div>
                               <div v-if="showNoOfHeads4_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_4" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head3_4" spellcheck="false" step="any" />
                                 <label>No. of Heads (4):</label>
                               </div>
                               <div v-if="showNoOfHeads5_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_5" required spellcheck="false" step="any" />
+                                <input type="number" v-model="farmer.no_of_head3_5" spellcheck="false" step="any" />
                                 <label>No. of Heads (5):</label>
                               </div>
                               
@@ -1359,21 +1359,7 @@ const farmer = ref({
   for_farmworkers_other: '',
   for_fishfolk_other: '',
   for_agri_youth_other: '',
-  no_of_head1_1:'0',
-  no_of_head1_2:'0',
-  no_of_head1_3:'0',
-  no_of_head1_4:'0',
-  no_of_head1_5:'0',
-  no_of_head2_1:'0',
-  no_of_head2_2:'0',
-  no_of_head2_3:'0',
-  no_of_head2_4:'0',
-  no_of_head2_5:'0',
-  no_of_head3_1:'0',
-  no_of_head3_2:'0',
-  no_of_head3_3:'0',
-  no_of_head3_4:'0',
-  no_of_head3_5:'0',
+
 });
 // Image upload handling
 // const onImageSelected = (event) => {
