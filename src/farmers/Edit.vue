@@ -33,7 +33,6 @@
       <br>
       <br>
       <div class="personal-info-sections">
-        <!-- Personal Information I -->
         <div v-if="isHovered === 1" id="personalInfoI" class="personal-info-section">
           <form @submit.prevent="submitForm">
             <div class="row mb-3">
@@ -92,7 +91,7 @@
                 <label>EXTENSION NAME:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.sex" spellcheck="false" class="black-select">
+                <select v-model="farmer.sex" spellcheck="false" class="black-select" required>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="Other">Other</option>
@@ -126,7 +125,7 @@
                 <label>STREET/SITIO/SUBDV.:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.barangay" required spellcheck="false" class="black-select" >
+                <select v-model="farmer.barangay" required spellcheck="false" class="black-select"  >
                   <option value="Alitao">Alitao</option>
                   <option value="Alsam Ibaba">Alsam Ibaba</option>
                   <option value="Alsam Ilaya">Alsam Ilaya</option>
@@ -270,7 +269,7 @@
                 <label>Country:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.religion" spellcheck="false" class="black-select">
+                <select v-model="farmer.religion" spellcheck="false" class="black-select" required>
                   <option value="christianity">Christianity</option>
                   <option value="islam">Islam</option>
                   <option value="Other">Other</option>
@@ -286,30 +285,29 @@
                 <label>Please specify your religion:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.civil_status" spellcheck="false" class="black-select">
+                <select v-model="farmer.civil_status" spellcheck="false" class="black-select" required>
                   <option value="single">single</option>
                   <option value="married">married</option>
                   <option value="widowed">widowed</option>
                   <option value="separated">separated</option>
                   <option value="Other">Other</option>
-                  <option v-if="farmer.civil_status && !['single', 'married','widowed','separated', 'Other'].includes(farmer.civil_status)" :value="farmer.civil_status">
+                  <option
+                    v-if="farmer.civil_status && !['single', 'married', 'widowed', 'separated', 'Other'].includes(farmer.civil_status)"
+                    :value="farmer.civil_status"
+                  >
                     {{ farmer.civil_status }}
                   </option>
                 </select>
                 <label>CIVIL STATUS:</label>
                 <span class="arrow-down"></span>
               </div>
+              <div v-if="farmer.civil_status === 'married'" class="input-field">
+                <input type="text" v-model="farmer.name_of_spouse_if_married" spellcheck="false" />
+                <label>NAME OF SPOUSE IF MARRIED:</label>
+              </div>
               <div v-if="farmer.civil_status && farmer.civil_status !== 'single' && farmer.civil_status !== 'married'  && farmer.civil_status !== 'widowed'&& farmer.civil_status !== 'separated'" class="input-field">
                 <input type="text" v-model="farmer.civil_status" spellcheck="false" />
                 <label>Please specify your civil status:</label>
-              </div>
-              <div class="input-field">
-                <input
-                  type="text"
-                  v-model="farmer.name_of_spouse_if_married"
-                  spellcheck="false"
-                />
-                <label>NAME OF SPOUSE IF MARRIED:</label>
               </div>
               <div class="input-field">
                 <input
@@ -321,7 +319,7 @@
                 <label>MOTHERS MAIDEN NAME:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.household_heads" spellcheck="false" class="black-select">
+                <select v-model="farmer.household_heads" spellcheck="false" class="black-select" required>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
                   <option v-if="farmer.household_heads && !['yes', 'no'].includes(farmer.household_heads)" :value="farmer.household_heads">
@@ -374,7 +372,7 @@
               </div>
               
               <div class="input-field">
-                <select v-model="farmer.highest_formal_education" spellcheck="false" class="black-select">
+                <select v-model="farmer.highest_formal_education" spellcheck="false" class="black-select" required>
                   <option value="pre-school">pre-school</option>
                   <option value="elementary">elementary</option>
                   <option value="high school (non K-12)">high school (non K-12)</option>
@@ -397,7 +395,7 @@
                 <label>Please specify your Highest Formal Educ:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.person_with_disability" spellcheck="false" class="black-select">
+                <select v-model="farmer.person_with_disability" spellcheck="false" class="black-select" required>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
                   <option v-if="farmer.person_with_disability && !['yes', 'no',].includes(farmer.person_with_disability)" :value="farmer.person_with_disability">
@@ -408,7 +406,7 @@
                 <span class="arrow-down"></span>
               </div>
               <div class="input-field">
-                <select v-model="farmer.IVps_beneficiary" spellcheck="false" class="black-select">
+                <select v-model="farmer.IVps_beneficiary" spellcheck="false" class="black-select" required>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
                   <option v-if="farmer.IVps_beneficiary && !['yes', 'no',].includes(farmer.IVps_beneficiary)" :value="farmer.IVps_beneficiary">
@@ -419,7 +417,7 @@
                 <span class="arrow-down"></span>
               </div>
               <div class="input-field">
-                <select v-model="farmer.member_of_an_indiginous_group" spellcheck="false" class="black-select">
+                <select v-model="farmer.member_of_an_indiginous_group" spellcheck="false" class="black-select" required>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
                   <option v-if="farmer.member_of_an_indiginous_group && !['yes', 'no',].includes(farmer.member_of_an_indiginous_group)" :value="farmer.member_of_an_indiginous_group">
@@ -438,7 +436,7 @@
                 <label>SPECIFY YOUR INDIGINOUS GROUP:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.with_government_id" spellcheck="false" class="black-select">
+                <select v-model="farmer.with_government_id" spellcheck="false" class="black-select" required>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
                   <option v-if="farmer.with_government_id && !['yes', 'no',].includes(farmer.with_government_id)" :value="farmer.with_government_id">
@@ -465,7 +463,7 @@
                 <label>ID NUMBER:</label>
               </div>
               <div class="input-field">
-                <select v-model="farmer.member_of_any_farmers_association_cooperative" spellcheck="false" class="black-select">
+                <select v-model="farmer.member_of_any_farmers_association_cooperative" spellcheck="false" class="black-select" required>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
                   <option v-if="farmer.member_of_any_farmers_association_cooperative && !['yes', 'no',].includes(farmer.member_of_any_farmers_association_cooperative)" :value="farmer.member_of_any_farmers_association_cooperative">
@@ -488,6 +486,7 @@
                   type="text"
                   v-model="farmer.person_to_notify_in_case_of_emergency"
                   spellcheck="false"
+                  required
                 />
                 <label>PERSON TO NOTIFY INCASE OF IMERGENCY:</label>
               </div>
@@ -497,6 +496,7 @@
                   v-model="farmer.contact_number"
                   spellcheck="false"
                   maxlength="10"
+                  required
                 />
                 <label>CONTACT NUMBER:</label>
               </div>
@@ -505,8 +505,6 @@
           </form>
         </div>
 
-
-          <!-- Personal Information IV -->
         <div v-if="isHovered === 2" id="personalInfoIV" class="personal-info-section">
           <div class="row mb-3">
             <h1 style="color: black;">Main Livelihood</h1>
@@ -522,7 +520,6 @@
               </div>
             </div>
           </nav>
-        <!-- Farming Activity checkboxes -->
         <div class="check-box">
           <label class="farming-activity-label">TYPE OF FARMING ACTIVITY:</label>
           <div v-for="activity in farmingActivityOptions" :key="activity">
@@ -532,7 +529,7 @@
                 :value="activity" 
                 v-model="farmer.type_of_farming_activity" 
               />
-              {{ activity.replace('_', ' ').toLowerCase() }} <!-- Format activity names -->
+              {{ activity.replace('_', ' ').toLowerCase() }} 
             </label>
             
             <!-- Input box for "Other crops" -->
@@ -582,8 +579,6 @@
               />
               {{ task.replace('_', ' ').toLowerCase() }}
             </label>
-            
-            <!-- Input box for "Other, please specify" -->
             <div v-if="task === 'Other, please specify' && farmer.farmworkers_kind_of_work.includes('Other, please specify')" class="input-field2">
               <input 
                 type="text" 
@@ -606,8 +601,6 @@
               />
               {{ task.replace('_', ' ').toLowerCase() }}
             </label>
-            
-            <!-- Input box for "Other, please specify" -->
             <div v-if="task === 'Other, please specify' && farmer.for_fisherfolk.includes('Other, please specify')" class="input-field2">
               <input 
                 type="text" 
@@ -630,8 +623,6 @@
                 />
                 {{ task.replace('_', ' ').toLowerCase() }}
               </label>
-              
-              <!-- Input box for "Other, please specify" -->
               <div v-if="task === 'Other, please specify' && farmer.for_agri_youth.includes('Other, please specify')" class="input-field2">
                 <input 
                   type="text" 
@@ -665,7 +656,6 @@
           <button type="button" @click="addFarmTable" class="add-farm-table-button">Add Farm Parcel No.</button>
           <form @submit.prevent="submitForm">
             <div class="table-container">
-                <!-- Table 1 -->
                 <table id="farmTable1">
                     <thead>
                         <tr>
@@ -1143,7 +1133,6 @@ const isHovered = ref(1);
 const alertMessage = ref(''); 
 const showFarmTable2 = ref(false);
 const showFarmTable3 = ref(false); 
-// const showAdditionalInput = ref(false);
 
 let clickCount = 0; 
 
@@ -1151,10 +1140,10 @@ const addFarmTable = () => {
   clickCount++;
   
   if (clickCount === 1) {
-    showFarmTable2.value = true; // First click
+    showFarmTable2.value = true; 
   } else if (clickCount === 2) {
-    showFarmTable3.value = true; // Second click
-    clickCount = 0; // Reset clickCount for future toggles
+    showFarmTable3.value = true; 
+    clickCount = 0; 
   }
 };
 
@@ -1187,7 +1176,6 @@ const totalSizeHa3 = computed(() => {
   );
 });
 
-// Data object to store farmer details
 const farmer = ref({
   enrollment_type: '',
   reference_number: '',
@@ -1247,7 +1235,6 @@ const showAdditionalInputIndi = ref(false);
 const showAdditionalInputID = ref(false);
 const showAdditionalInputFarmerAsso = ref(false);
 
-// Watch for changes in the household_heads value
 watch(
   () => ({
     householdHeads: farmer.value.household_heads,
@@ -1264,9 +1251,6 @@ watch(
   { immediate: true }
 );
 
-
-
-// List of checkboxes for main livelihood
 const livelihoodOptions = [
   'farmer',
   'farmworker/laborer',
@@ -1314,10 +1298,9 @@ const OwnershipTypeTaskOptions = [
   'Others'
 ];
 
-// Fetch farmer details from Directus database
 const fetchFarmerDetails = async () => {
   try {
-    const farmerId = route.params.id; // Assuming the route includes the farmer ID
+    const farmerId = route.params.id; 
     const token = localStorage.getItem('auth_token');
     
     if (!token) {
@@ -1331,7 +1314,6 @@ const fetchFarmerDetails = async () => {
       },
     });
 
-    // Set the fetched data to the farmer object
     Object.assign(farmer.value, response.data.data);
   } catch (error) {
     console.error('Error fetching farmer details:', error.response ? error.response.data : error.message);
@@ -1339,12 +1321,9 @@ const fetchFarmerDetails = async () => {
   }
 };
 
-// On mounted, fetch the farmer data
 onMounted(() => {
   fetchFarmerDetails();
 });
-
-// Function to log activity (email, time, and action) to localStorage
 const logActivity = async (email, action) => {
   const token = localStorage.getItem('auth_token'); 
   try {
@@ -1357,8 +1336,7 @@ const logActivity = async (email, action) => {
         Authorization: `Bearer ${token}`
       }
     });
-    
-    // Increment unread notifications
+
     const unreadCount = parseInt(localStorage.getItem('unread_notifications')) || 0;
     localStorage.setItem('unread_notifications', unreadCount + 1);
     
@@ -1380,7 +1358,6 @@ const submitForm = async () => {
 
     let response;
     try {
-      // Attempt PATCH request with the current token
       response = await axios.patch(`http://localhost:8055/items/farmers/${farmerId}`, farmer.value, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1388,7 +1365,6 @@ const submitForm = async () => {
         },
       });
     } catch (error) {
-      // Handle token refresh logic if required
       if (error.response && error.response.status === 401) {
         const refreshResponse = await axios.post('http://localhost:8055/auth/refresh', {
           refresh_token: refreshToken,
@@ -1398,11 +1374,9 @@ const submitForm = async () => {
           const newAccessToken = refreshResponse.data.data.access_token;
           const newRefreshToken = refreshResponse.data.data.refresh_token;
 
-          // Update tokens in localStorage
           localStorage.setItem('auth_token', newAccessToken);
           localStorage.setItem('refresh_token', newRefreshToken);
 
-          // Retry the PATCH request
           response = await axios.patch(`http://localhost:8055/items/farmers/${farmerId}`, farmer.value, {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,
@@ -1421,16 +1395,11 @@ const submitForm = async () => {
       }
     }
 
-    // Log activity
     logActivity(email, `Updated farmer with reference number: ${farmer.value.reference_number}`);
 
-    // Show success alert
     alertMessage.value = 'Farmer Updated Successfully!';
 
-    // Optionally redirect or allow the user to stay
     setTimeout(() => {
-      // Uncomment the following line to redirect, or leave it commented to stay on the page
-      // router.push('/farmers/index'); 
     }, 2000);
   } catch (error) {
     console.error('Error updating farmer:', error.response ? error.response.data : error.message);
@@ -1438,11 +1407,9 @@ const submitForm = async () => {
   }
 };
 
-
-    // Close the alert and navigate to farmers index
     const closeAlert = () => {
-      alertMessage.value = ''; // Clear the alert message
-      router.push('/farmers/index'); // Navigate to the farmers index page
+      alertMessage.value = ''; 
+      router.push('/farmers/index'); 
     };
 
     const changeHover = (index) => {
@@ -1451,7 +1418,6 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-/* Styling similar to create.vue */
 .edit-container {
   display: flex;
   flex-direction: column;
@@ -1468,7 +1434,7 @@ const submitForm = async () => {
   border-radius: 8px;
   height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto; 
 }
 
 .nav-buttons {
@@ -1499,8 +1465,8 @@ const submitForm = async () => {
   color: white;
   border: none;
   padding: 10px 20px;
-  cursor: pointer; /* Pointer on hover */
-  transition: background-color 0.3s ease; /* Smooth transition */
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
@@ -1509,7 +1475,7 @@ const submitForm = async () => {
 .farm-location-input {
     width: 450px;
     display: block;
-    margin: 5px auto 5px auto; /* Center horizontally */
+    margin: 5px auto 5px auto;
     height: 35px;
 }
 
@@ -1536,7 +1502,7 @@ const submitForm = async () => {
 }
 
 .add-farm-table-button:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #45a049;
 }
 .input-field1 {
     position: relative;
@@ -1553,8 +1519,8 @@ const submitForm = async () => {
     background: transparent;
     color: black;
     outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
+    appearance: none; 
+    -webkit-appearance: none; 
 }
 .input-field2 select {
     width: 150px;
@@ -1566,8 +1532,8 @@ const submitForm = async () => {
     background: transparent;
     color: black;
     outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
+    appearance: none; 
+    -webkit-appearance: none; 
 }
 .input-field3 textarea {
     width: 150px;
@@ -1579,8 +1545,8 @@ const submitForm = async () => {
     background: transparent;
     color: black;
     outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
+    appearance: none;
+    -webkit-appearance: none; 
 }
 .input-field1 label {
     position: absolute;
@@ -1610,8 +1576,8 @@ select:valid ~ label {
     background: #f2f4f7;
     }
     input:focus {
-    outline: none; /* Remove the green outline entirely */
-    box-shadow: 0 0 5px #f8f9fa; /* Add a light green glow instead */
+    outline: none; 
+    box-shadow: 0 0 5px #f8f9fa;
 }
 input:focus ~ label,
 input:valid ~ label {
@@ -1642,14 +1608,14 @@ input:valid ~ label {
   margin-bottom: 10px;
 }
 .add-crops:hover {
-  background-color: #46cab6; /* Darker shade for hover effect */
+  background-color: #46cab6; 
   border-color: #46cab6;
-  color: #f0f0f0; /* Light gray color for text on hover */
+  color: #f0f0f0;
 }
 .button-container {
   display: flex;
-  justify-content: center; /* Center the buttons horizontally */
-  gap: 10px; /* Add spacing between buttons */
+  justify-content: center; 
+  gap: 10px; 
   margin-top: 20px;
 }
 
@@ -1688,9 +1654,9 @@ input:valid ~ label {
     border-bottom: 1px solid black;
     background: transparent;
     color: black;
-    outline: none; /* Removes the default focus outline */
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
-    transition: border-color 0.3s ease; /* Smooth transition for focus effect */
+    outline: none; 
+    appearance: none; 
+    -webkit-appearance: none; 
+    transition: border-color 0.3s ease;
 }
 </style>

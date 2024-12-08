@@ -34,7 +34,6 @@
       <br>
       <div class="personal-info-sections">
         <form @submit.prevent="submitForm">
-        <!-- Personal Information I -->
         <div v-if="isHovered === 1" id="personalInfoI" class="personal-info-section">
             <div class="row mb-3">
               <div class="input-field">
@@ -49,6 +48,7 @@
                   v-model="farmer.reference_number"
                   required
                   spellcheck="false"
+                  maxlength="15"
                 />
                 <label>Reference Number:</label>
               </div>
@@ -215,6 +215,7 @@
                   v-model="farmer.mobile_number"
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>MOBILE NUMBER:</label>
               </div>
@@ -224,6 +225,7 @@
                   v-model="farmer.landline_number"
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>LANDLINE NUMBER:</label>
               </div>
@@ -475,11 +477,12 @@
                   v-model="farmer.contact_number" 
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>CONTACT NUMBER:</label>
               </div>
             </div>
-            <button class="next-button" style="display: block; margin: 0 auto;" @click="changeHover(2)">Next</button>
+            <button class="next-button" style="display: block; margin: 0 auto;" @click="validateInputs">Next</button>
           </div>
         
         
@@ -785,9 +788,6 @@
                                 <input type="number" v-model="farmer.sizeHa1_5"  spellcheck="false" step="any" />
                                 <label>Size (ha) (5):</label>
                               </div>
-                              <!-- <div class="total-size">
-                                <p>Total Size (ha): {{ totalSizeHa }}</p>
-                              </div> -->
                             </td>
                             <td>
                               <div class="input-field1">
@@ -931,9 +931,6 @@
                                 <input type="number" v-model="farmer.sizeHa2_5" spellcheck="false" step="any" />
                                 <label>Size (ha) (5):</label>
                               </div>
-                              <!-- <div class="total-size">
-                                <p>Total Size (ha): {{ totalSizeHa }}</p>
-                              </div> -->
                             </td>
                             <td>
                               <div class="input-field1">
@@ -987,7 +984,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <!-- Table 3 -->
                 <table v-if="showFarmTable3" id="farmTable3">
                     <thead>
                         <tr>
@@ -1077,9 +1073,6 @@
                                 <input type="number" v-model="farmer.sizeHa3_5" spellcheck="false" step="any" />
                                 <label>Size (ha) (5):</label>
                               </div>
-                              <!-- <div class="total-size">
-                                <p>Total Size (ha): {{ totalSizeHa }}</p>
-                              </div> -->
                             </td>
                             <td>
                               <div class="input-field1">
@@ -1137,8 +1130,6 @@
                   <button class="preview1-button" @click="changeHover(2)">Preview</button>
                   <button type="submit" class="submit-button" >Submit</button> 
                 </div> 
-                <!-- <button class="preview-button" @click="changeHover(2)">Preview</button>
-                <button type="submit" class="submit-button" style="display: block; margin: 0 auto;">Submit</button>       -->
             </div>
         </div>
 
@@ -1211,14 +1202,13 @@ const addFarmTable = () => {
   clickCount++;
   
   if (clickCount === 1) {
-    showFarmTable2.value = true; // First click
+    showFarmTable2.value = true; 
   } else if (clickCount === 2) {
-    showFarmTable3.value = true; // Second click
-    clickCount = 0; // Reset clickCount for future toggles
+    showFarmTable3.value = true; 
+    clickCount = 0; 
   }
 };
 const toggleCropInput = () => {
-      // Show inputs sequentially based on button clicks
       if (!showCropInput2.value && !showNoOfHeads2.value && !showSizeHa2.value) {
         showCropInput2.value = true;
         showNoOfHeads2.value = true;
@@ -1238,7 +1228,6 @@ const toggleCropInput = () => {
       } 
     };
     const toggleCropInput2 = () => {
-      // Show inputs sequentially based on button clicks
       if (!showCropInput2_2.value && !showNoOfHeads2_2.value && !showSizeHa2_2.value) {
         showCropInput2_2.value = true;
         showNoOfHeads2_2.value = true;
@@ -1258,7 +1247,6 @@ const toggleCropInput = () => {
       } 
     };
     const toggleCropInput3 = () => {
-      // Show inputs sequentially based on button clicks
       if (!showCropInput2_3.value && !showNoOfHeads2_3.value && !showSizeHa2_3.value) {
         showCropInput2_3.value = true;
         showNoOfHeads2_3.value = true;
@@ -1361,21 +1349,8 @@ const farmer = ref({
   for_agri_youth_other: '',
 
 });
-// Image upload handling
-// const onImageSelected = (event) => {
-//    const file = event.target.files[0];
-//    if (file) {
-//      const reader = new FileReader();
-//      reader.onload = (e) => {
-//        farmer.value.image = e.target.result; // Set the base64 image to farmer
-//      };
-//      reader.readAsDataURL(file); // Convert image to base64 string
-//    }
-//  };
-// Add this reactive variable
-const showAdditionalInput = ref(false); // Initialize to false
+const showAdditionalInput = ref(false); 
 
-// New reactive variables to handle selections
 const selectedSex = ref('');
 const selectedReligion = ref('');
 const selectedCivilStatus = ref('');
@@ -1407,37 +1382,41 @@ const selectedFarmType2 = ref('');
 const selectedOrganicPractitioner3 = ref('');
 const selectedFarmType3 = ref('');
 
-// Computed properties to check if "Other" is selected
 const isOtherSexSelected = computed(() => selectedSex.value === 'Other');
 const isOtherSelected = computed(() => selectedReligion.value === 'Other');
 const isOtherCivilStatusSelected = computed(() => selectedCivilStatus.value === 'Other');
 const isOtherHighestFormalEduc = computed(() => selectedHighestFormalEduc.value === 'Other');
 
-
-// Watch selectedMainLivelihood to update farmer's main livelihood
 watch(selectedMainLivelihood, (newVal) => {
-  farmer.value.main_livelihood = newVal; // Update based on selected checkboxes
+  farmer.value.main_livelihood = newVal; 
 });
-// Watch selectedFarmingActivity to update farmer's type_of_farming_activity
 watch(selectedFarmingActivity, (newVal) => {
-  farmer.value.type_of_farming_activity = newVal; // Update based on selected checkboxes
+  farmer.value.type_of_farming_activity = newVal; 
 });
 
 watch(selectedFarmorker, (newVal) => {
-  farmer.value.farmworkers_kind_of_work = newVal; // Update based on selected checkboxes
+  farmer.value.farmworkers_kind_of_work = newVal; 
 });
 watch(selectedFishfolk, (newVal) => {
-  farmer.value.for_fisherfolk = newVal; // Update based on selected checkboxes
+  farmer.value.for_fisherfolk = newVal; 
 });
 watch(selectedForAgriYouth, (newVal) => {
-  farmer.value.for_agri_youth = newVal; // Update based on selected checkboxes
+  farmer.value.for_agri_youth = newVal; 
 });
 
 const changeHover = (index) => {
   isHovered.value = index; 
 };
+const validateInputs = () => {
+      if (!farmer.value.enrollment_type || !farmer.value.reference_number || !farmer.value.surname || !farmer.value.first_name || !farmer.value.middle_name || !farmer.value.house_lot_bldg_no_purok
+      || !farmer.value.street_sitio_subdv || !farmer.value.mobile_number || !farmer.value.date_of_birth || !farmer.value.place_of_birth || !farmer.value.place_of_birth_province_state || !farmer.value.place_of_birth_country || !farmer.value.mothers_maiden_name
+      || !farmer.value.person_to_notify_in_case_of_emergency || !farmer.value.contact_number ) {
+        return;
+      }
+      changeHover(2); 
+    };
 
-// Function to log activity (email, time, and action) to localStorage
+
 const logActivity = async (email, action) => {
   const token = localStorage.getItem('auth_token'); 
   try {
@@ -1450,8 +1429,7 @@ const logActivity = async (email, action) => {
         Authorization: `Bearer ${token}`
       }
     });
-    
-    // Increment unread notifications
+
     const unreadCount = parseInt(localStorage.getItem('unread_notifications')) || 0;
     localStorage.setItem('unread_notifications', unreadCount + 1);
     
@@ -1459,10 +1437,8 @@ const logActivity = async (email, action) => {
     console.error('Failed to log activity:', error);
   }
 };
-// Function to submit the form
 const submitForm = async () => {
   try {
-    // Set farmer information based on selected values
     farmer.value.sex = selectedSex.value === 'Other' ? farmer.value.sex : selectedSex.value;
     farmer.value.religion = selectedReligion.value === 'Other' ? farmer.value.religion : selectedReligion.value;
     farmer.value.civil_status = selectedCivilStatus.value === 'Other' ? farmer.value.civil_status : selectedCivilStatus.value;
@@ -1494,7 +1470,6 @@ const submitForm = async () => {
     farmer.value.organic_practitioner3 = selectedOrganicPractitioner3.value;
     farmer.value.farm_type3 = selectedFarmType3.value;
 
-    // Retrieve token and email from localStorage
     const token = localStorage.getItem('auth_token');
     const refreshToken = localStorage.getItem('refresh_token');
     const email = localStorage.getItem('email');
@@ -1506,7 +1481,6 @@ const submitForm = async () => {
 
     let response;
     try {
-      // Attempt to make the POST request with the current access token
       response = await axios.post('http://localhost:8055/items/farmers', farmer.value, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1514,9 +1488,7 @@ const submitForm = async () => {
         },
       });
     } catch (error) {
-      // If the request fails with a 401 Unauthorized error (expired token), attempt to refresh the token
       if (error.response && error.response.status === 401) {
-        // Attempt to refresh the token
         const refreshResponse = await axios.post('http://localhost:8055/auth/refresh', {
           refresh_token: refreshToken,
         });
@@ -1525,11 +1497,9 @@ const submitForm = async () => {
           const newAccessToken = refreshResponse.data.data.access_token;
           const newRefreshToken = refreshResponse.data.data.refresh_token;
 
-          // Store new tokens in localStorage
           localStorage.setItem('auth_token', newAccessToken);
           localStorage.setItem('refresh_token', newRefreshToken);
 
-          // Retry the POST request with the new access token
           response = await axios.post('http://localhost:8055/items/farmers', farmer.value, {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,
@@ -1541,33 +1511,27 @@ const submitForm = async () => {
           return;
         }
       } else {
-        // Handle other errors
         console.error('Error creating farmer:', error.response ? error.response.data : error.message);
         alertMessage.value = 'An error occurred while creating the farmer.';
         return;
       }
     }
 
-    // Log activity with email and reference number
     logActivity(email, `Added farmer with reference number: ${farmer.value.reference_number}`);
 
-    // Show success alert
     alertMessage.value = 'Farmer Created Successfully!';
 
-    // Redirect to farmers index page on success
     setTimeout(() => {
       router.push('/farmers/index');
-    }, 2000); // Redirect after 5 seconds
+    }, 2000); 
   } catch (error) {
     console.error('Error submitting form:', error.response ? error.response.data : error.message);
     alertMessage.value = 'An error occurred while creating the farmer.';
   }
 };
 
-
-// Function to close the alert and navigate to farmers index
 const closeAlert = () => {
-  alertMessage.value = ''; // Clear the alert message
+  alertMessage.value = ''; 
   router.push('/farmers/index');
 };
 </script>
@@ -1578,10 +1542,10 @@ const closeAlert = () => {
 .create-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Full height */
-  width: 100vw; /* Full width */
+  height: 100vh; 
+  width: 100vw; 
   background-color: #f2f4f7;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden; 
 }
 
 .content-box {
@@ -1590,32 +1554,32 @@ const closeAlert = () => {
   background-color: #f2f4f7;
   margin-top: 2rem;
   border-radius: 8px;
-  height: auto; /* Allowing flexibility in height */
+  height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto; 
 }
 
 .nav-buttons {
   display: flex;
-  gap: 20px; /* Add space between buttons */
-  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  gap: 20px; 
+  flex-wrap: wrap; 
   margin-left: 60px;
 }
 
 .nav-button {
-  background-color: #387e90; /* Initial background */
-  color: white; /* Black text */
-  border: none; /* No border */
-  padding: 10px 20px; /* Padding for button */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Pointer on hover */
-  font-weight: bold; /* Bold text */
-  transition: background-color 0.3s; /* Smooth transition */
+  background-color: #387e90;
+  color: white; 
+  border: none;
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  cursor: pointer;
+  font-weight: bold; 
+  transition: background-color 0.3s; 
 }
 
 .hover-green {
-  background-color: #46cab6; /* Change background to green on hover */
-  color: white; /* Change text color to white */
+  background-color: #46cab6;
+  color: white; 
 }
 
 .submit-button {
@@ -1623,14 +1587,14 @@ const closeAlert = () => {
   color: white;
   border: none;
   padding: 10px 20px;
-  cursor: pointer; /* Pointer on hover */
-  transition: background-color 0.3s ease; /* Smooth transition */
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
 }
 
 .button-container {
   display: flex;
-  justify-content: center; /* Center the buttons horizontally */
-  gap: 10px; /* Add spacing between buttons */
+  justify-content: center; 
+  gap: 10px; 
   margin-top: 20px;
 }
 
@@ -1663,12 +1627,12 @@ const closeAlert = () => {
 
 
 .submit-button:hover {
-  background-color: darkgreen; /* Darker shade on hover */
+  background-color: darkgreen; 
 }
 .farm-location-input {
     width: 450px;
     display: block;
-    margin: 5px auto 5px auto; /* Center horizontally */
+    margin: 5px auto 5px auto;
     height: 35px;
 }
 
@@ -1695,12 +1659,11 @@ const closeAlert = () => {
 }
 
 .add-farm-table-button:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #45a049;
 }
 .input-field1 {
     position: relative;
     height: 70px;
-    /* height: 350px; */
 }
 
 .input-field1 select {
@@ -1711,8 +1674,8 @@ const closeAlert = () => {
     background: transparent;
     color: black;
     outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
+    appearance: none; 
+    -webkit-appearance: none; 
     width: 150px; 
     height: 50px;
 }
@@ -1726,8 +1689,8 @@ const closeAlert = () => {
     background: transparent;
     color: black;
     outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 
@@ -1740,10 +1703,10 @@ const closeAlert = () => {
     border-bottom: 1px solid black;
     background: transparent;
     color: black;
-    outline: none; /* Removes the default focus outline */
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
-    transition: border-color 0.3s ease; /* Smooth transition for focus effect */
+    outline: none; 
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.3s ease; 
 }
 
 .input-field2 textarea {
@@ -1756,17 +1719,17 @@ const closeAlert = () => {
     background: transparent;
     color: black;
     outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .input-field1 .icon {
     position: absolute;
-    right: 20px; /* Position the icon */
+    right: 20px; 
     top: 50%;
-    transform: translateY(-50%); /* Center the icon vertically */
-    font-size: 24px; /* Size of the icon */
-    pointer-events: none; /* Allow clicks on select */
+    transform: translateY(-50%); 
+    font-size: 24px;
+    pointer-events: none; 
 }
 
 
@@ -1799,10 +1762,9 @@ select:valid ~ label {
     }
 
   input:focus {
-    outline: none; /* Remove the green outline entirely */
-    box-shadow: 0 0 5px #f8f9fa; /* Add a light green glow instead */
+    outline: none;
+    box-shadow: 0 0 5px #f8f9fa; 
 }
-
 
 input:focus ~ label,
 input:valid ~ label {
@@ -1833,9 +1795,9 @@ input:valid ~ label {
   margin-bottom: 10px;
 }
 .add-crops:hover {
-  background-color: #46cab6; /* Darker shade for hover effect */
+  background-color: #46cab6;
   border-color: #46cab6;
-  color: #f0f0f0; /* Light gray color for text on hover */
+  color: #f0f0f0; 
 }
 
 </style>
