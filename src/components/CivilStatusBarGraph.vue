@@ -48,6 +48,13 @@
     }
   };
   
+  const chartColors = [
+    '#92c5da',
+    '#f0f8ff',
+    '#ff7f50',
+    '#ff6347',
+    '#ffd700',
+  ];
   // Function to create the civil status bar chart
   const createCivilStatusBarChart = () => {
     const ctx = document.getElementById('civilStatusBarChart').getContext('2d');
@@ -58,7 +65,7 @@
         datasets: [{
           label: 'Civil Status',
           data: civilStatusData.value,
-          backgroundColor: '#e88955', // Light red background  
+          backgroundColor: chartColors, 
           borderWidth: 1,
         }],
       },

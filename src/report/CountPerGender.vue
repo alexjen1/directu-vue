@@ -61,7 +61,7 @@ const fetchFarmers = async () => {
     // Group farmers by sex and count occurrences
     const sexCounts = {};
     response.data.data.forEach(farmer => {
-      const sex = farmer.sex || 'Unknown';
+      const sex = farmer.sex || 'Not Specified';
       if (sexCounts[sex]) {
         sexCounts[sex]++;
       } else {

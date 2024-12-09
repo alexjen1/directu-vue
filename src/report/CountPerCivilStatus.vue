@@ -61,7 +61,7 @@ const fetchFarmers = async () => {
     // Group farmers by civil_status and count occurrences
     const civilStatusCounts = {};
     response.data.data.forEach(farmer => {
-      const civilStatus = farmer.civil_status || 'Unknown';
+      const civilStatus = farmer.civil_status || 'Not Specified';
       if (civilStatusCounts[civilStatus]) {
         civilStatusCounts[civilStatus]++;
       } else {

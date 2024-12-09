@@ -61,7 +61,7 @@ const fetchFarmers = async () => {
     // Group farmers by religion and count occurrences
     const religionCounts = {};
     response.data.data.forEach(farmer => {
-      const religion = farmer.religion || 'Unknown';
+      const religion = farmer.religion || 'Not Specified';
       if (religionCounts[religion]) {
         religionCounts[religion]++;
       } else {

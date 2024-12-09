@@ -70,6 +70,7 @@ const createBarChart = () => {
           beginAtZero: true,
           ticks: {
             color: 'black', // Set Y-axis label color to white
+            precision: 0
           }
         },
         x: {

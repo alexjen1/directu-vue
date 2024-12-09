@@ -482,7 +482,7 @@
                 <label>CONTACT NUMBER:</label>
               </div>
             </div>
-            <button class="next-button" style="display: block; margin: 0 auto;" @click="validateInputs">Next</button>
+            <button class="next-button" style="display: block; margin: 0 auto;" @click="changeHover(2)">Next</button>
           </div>
         
         
@@ -1407,14 +1407,14 @@ watch(selectedForAgriYouth, (newVal) => {
 const changeHover = (index) => {
   isHovered.value = index; 
 };
-const validateInputs = () => {
-      if (!farmer.value.enrollment_type || !farmer.value.reference_number || !farmer.value.surname || !farmer.value.first_name || !farmer.value.middle_name || !farmer.value.house_lot_bldg_no_purok
-      || !farmer.value.street_sitio_subdv || !farmer.value.mobile_number || !farmer.value.date_of_birth || !farmer.value.place_of_birth || !farmer.value.place_of_birth_province_state || !farmer.value.place_of_birth_country || !farmer.value.mothers_maiden_name
-      || !farmer.value.person_to_notify_in_case_of_emergency || !farmer.value.contact_number ) {
-        return;
-      }
-      changeHover(2); 
-    };
+// const validateInputs = () => {
+//       if (!farmer.value.enrollment_type || !farmer.value.reference_number || !farmer.value.surname || !farmer.value.first_name || !farmer.value.middle_name || !farmer.value.house_lot_bldg_no_purok
+//       || !farmer.value.street_sitio_subdv || !farmer.value.mobile_number || !farmer.value.date_of_birth || !farmer.value.place_of_birth || !farmer.value.place_of_birth_province_state || !farmer.value.place_of_birth_country || !farmer.value.mothers_maiden_name
+//       || !farmer.value.person_to_notify_in_case_of_emergency || !farmer.value.contact_number ) {
+//         return;
+//       }
+//       changeHover(2); 
+//     };
 
 
 const logActivity = async (email, action) => {
