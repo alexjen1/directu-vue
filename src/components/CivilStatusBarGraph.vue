@@ -35,7 +35,7 @@
       // Grouping civil status
       const civilStatusCount = {};
       farmers.forEach(farmer => {
-        const civilStatus = farmer.civil_status; // Adjust to match your field name
+        const civilStatus = farmer.civil_status || "Not Specified";
         civilStatusCount[civilStatus] = (civilStatusCount[civilStatus] || 0) + 1;
       });
   
@@ -48,6 +48,13 @@
     }
   };
   
+  const chartColors = [
+    '#92c5da',
+    '#f0f8ff',
+    '#ff7f50',
+    '#ff6347',
+    '#ffd700',
+  ];
   // Function to create the civil status bar chart
   const createCivilStatusBarChart = () => {
     const ctx = document.getElementById('civilStatusBarChart').getContext('2d');
@@ -58,7 +65,7 @@
         datasets: [{
           label: 'Civil Status',
           data: civilStatusData.value,
-          backgroundColor: '#e88955', // Light red background  
+          backgroundColor: '#ff7f50', 
           borderWidth: 1,
         }],
       },
@@ -96,7 +103,6 @@
   <style scoped>
   #civilStatusBarChart {
     width: 100%; /* Full width */
-    max-width: 900px; /* Set a max width for the chart */
     height: 350px; /* Set a fixed height for the chart */
   }
   </style>

@@ -35,7 +35,7 @@
       // Grouping religions
       const religionCount = {};
       farmers.forEach(farmer => {
-        const religion = farmer.religion; // Adjust to match your field name
+        const religion = farmer.religion || "Not Specified";
         religionCount[religion] = (religionCount[religion] || 0) + 1;
       });
   
@@ -96,7 +96,6 @@
   <style scoped>
   #religionBarChart {
     width: 100%; /* Full width */
-    max-width: 900px; /* Set a max width for the chart */
     height: 350px; /* Set a fixed height for the chart */
   }
   </style>

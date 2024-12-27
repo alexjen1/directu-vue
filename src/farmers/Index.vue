@@ -200,7 +200,7 @@
       <div class="pagination-controls">
         <p>Rows Per Page: </p>
         <div class="show-entries-dropdown">
-          <select id="showEntries" class="form-select" v-model="entriesPerPage" @change="changePage(1)">
+          <select id="showEntries" class="form-select" v-model.number="entriesPerPage" @change="changePage(1)">
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="30">30</option>
@@ -223,7 +223,6 @@
         </button>
       </div>
 
-      <!-- Undo Alert -->
       <div v-if="showUndo" class="undo-alert">
         <p>Farmer deleted! <button @click="restoreDeletedFarmer">Undo</button></p>
       </div>
@@ -232,7 +231,6 @@
         <p>Farmer deleted! <button @click="restoreDeletedFarmersSelected">Undo Selected</button></p>
       </div>
 
-      <!-- Success Alert -->
       <div v-if="alertMessage" class="alert-box">
         <i class="fa-regular fa-circle-check fa-5x" style="color: #63E6BE;"></i>
         <h1>Success</h1>
@@ -269,10 +267,10 @@ const selectedFarmers = ref([]);
 const showOptions = ref({});
 const showUploadModal = ref(false);
 const selectedFarmerId = ref(null);
-const imagePreview = ref(null); // For storing the image preview
-const existingImageUrl = ref(null); // For storing the existing image URL
-const uploadedImageUrl = ref(null); // For storing the uploaded image URL
-const fileUploadError = ref(null); // For storing any file upload errors
+const imagePreview = ref(null); 
+const existingImageUrl = ref(null); 
+const uploadedImageUrl = ref(null); 
+const fileUploadError = ref(null);
 const isUploadModalVisible = ref(false);
 const currentFarmerForUpload = ref(null);
 const frontIdPreview = ref(null);
@@ -283,51 +281,46 @@ const uploadedFrontIdUrl = ref(null);
 const uploadedBackIdUrl = ref(null);
 const idUploadError = ref(null);
 
-// Function to open the modal and set the farmer ID
 const uploadImage = async (farmerId) => {
   selectedFarmerId.value = farmerId;
   showUploadModal.value = true;
-  imagePreview.value = null; // Reset image preview when opening the modal
-  existingImageUrl.value = null; // Reset existing image URL
+  imagePreview.value = null; 
+  existingImageUrl.value = null; 
   
-  // Fetch the farmer data to check if an image exists
   try {
     const farmerResponse = await axios.get(`http://localhost:8055/items/farmers/${farmerId}`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Use the token from localStorage
+        Authorization: `Bearer ${token}`, 
       },
     });
     
     const farmerData = farmerResponse.data.data;
     if (farmerData.image) {
-      existingImageUrl.value = `http://localhost:8055/assets/${farmerData.image}`; // Set the existing image URL
+      existingImageUrl.value = `http://localhost:8055/assets/${farmerData.image}`; 
     }
   } catch (error) {
     console.error("Error fetching farmer data:", error);
   }
 };
 
-// Function to close the modal
 const closeUploadModal = () => {
   showUploadModal.value = false;
   selectedFarmerId.value = null;
-  imagePreview.value = null; // Clear the image preview when closing
-  existingImageUrl.value = null; // Reset the existing image URL
+  imagePreview.value = null; 
+  existingImageUrl.value = null; 
 };
 
-// Function to handle file upload and preview the image
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
-      imagePreview.value = reader.result; // Set the image preview
+      imagePreview.value = reader.result; 
     };
-    reader.readAsDataURL(file); // Read the file as a data URL
+    reader.readAsDataURL(file);
   }
 };
 
-// Function to handle file upload and update the farmer record
 const confirmUpload = async () => {
   const file = document.querySelector('input[type="file"]').files[0];
   if (!file) {
@@ -336,32 +329,30 @@ const confirmUpload = async () => {
   }
 
   const formData = new FormData();
-  formData.append('image', file); // Include file under 'image' key
+  formData.append('image', file); 
 
   try {
-    // Step 1: Upload the image
     const uploadResponse = await axios.post('http://localhost:8055/files', formData, {
       headers: {
-        Authorization: `Bearer ${token}`, // Use the token from localStorage
+        Authorization: `Bearer ${token}`, 
         'Content-Type': 'multipart/form-data',
       },
     });
 
     if (uploadResponse.status === 200) {
-      const imageID = uploadResponse.data.data.id; // Capture the uploaded file's ID
+      const imageID = uploadResponse.data.data.id; 
       const imageUrl = `http://localhost:8055/assets/${imageID}`;
       uploadedImageUrl.value = imageUrl;
 
-      // Step 2: Update the farmer record
-      const farmerId = selectedFarmerId.value; // Use the selected farmer ID
+      const farmerId = selectedFarmerId.value; 
       const farmerResponse = await axios.patch(
-        `http://localhost:8055/items/farmers/${farmerId}`, // Adjusted API endpoint
+        `http://localhost:8055/items/farmers/${farmerId}`, 
         {
-          image: imageID, // Assign the uploaded image ID to the 'image' field
+          image: imageID, 
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Use the token from localStorage
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         }
@@ -369,7 +360,7 @@ const confirmUpload = async () => {
 
       if (farmerResponse.status === 200) {
         alertMessage.value = 'Image uploaded  successfully!';
-        closeUploadModal(); // Close the modal after successful upload
+        closeUploadModal(); 
       } else {
         throw new Error('Failed to update the farmer record.');
       }
@@ -390,7 +381,6 @@ const initiateIdUpload = async (farmerId) => {
   existingFrontIdUrl.value = null;
   existingBackIdUrl.value = null;
   
-  // Fetch the farmer data to check if ID images exist
   try {
     const farmerResponse = await axios.get(`http://localhost:8055/items/farmers/${farmerId}`, {
       headers: {
@@ -410,7 +400,6 @@ const initiateIdUpload = async (farmerId) => {
   }
 };
 
-// Function to close the modal
 const closeIdUploadModal = () => {
   isUploadModalVisible.value = false;
   currentFarmerForUpload.value = null;
@@ -420,7 +409,6 @@ const closeIdUploadModal = () => {
   existingBackIdUrl.value = null;
 };
 
-// Function to handle front ID file upload and preview
 const handleFrontIdUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
@@ -432,7 +420,6 @@ const handleFrontIdUpload = (event) => {
   }
 };
 
-// Function to handle back ID file upload and preview
 const handleBackIdUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
@@ -444,7 +431,6 @@ const handleBackIdUpload = (event) => {
   }
 };
 
-// Function to handle ID image uploads and update the farmer record
 const confirmIdUpload = async () => {
   const frontIdFile = document.querySelector('input[name="frontId"]').files[0];
   const backIdFile = document.querySelector('input[name="backId"]').files[0];
@@ -455,7 +441,6 @@ const confirmIdUpload = async () => {
   }
 
   try {
-    // Upload Front ID
     const frontIdFormData = new FormData();
     frontIdFormData.append('image', frontIdFile);
     const frontIdUploadResponse = await axios.post('http://localhost:8055/files', frontIdFormData, {
@@ -465,7 +450,6 @@ const confirmIdUpload = async () => {
       },
     });
 
-    // Upload Back ID
     const backIdFormData = new FormData();
     backIdFormData.append('image', backIdFile);
     const backIdUploadResponse = await axios.post('http://localhost:8055/files', backIdFormData, {
@@ -475,7 +459,6 @@ const confirmIdUpload = async () => {
       },
     });
 
-    // Update Farmer Record with both ID images
     const farmerId = currentFarmerForUpload.value;
     const farmerUpdateResponse = await axios.patch(
       `http://localhost:8055/items/farmers/${farmerId}`,
@@ -503,31 +486,25 @@ const confirmIdUpload = async () => {
   }
 };
 
-// Method to toggle options dropdown for a specific farmer
 const toggleOptions = (farmerId) => {
-  // Check if the current farmer's dropdown is already open
   const isCurrentlyVisible = showOptions.value[farmerId];
 
-  // Close all dropdowns
   Object.keys(showOptions.value).forEach((key) => {
     showOptions.value[key] = false;
   });
 
-  // Toggle the current farmer's dropdown based on its previous state
   showOptions.value[farmerId] = !isCurrentlyVisible;
 };
 const showMaintenance = () => {
   alert('This feature is currently under maintenance. Please try again later.');
 };
 
-// Method to hide all options when clicking outside
 const hideAllOptions = () => {
   Object.keys(showOptions.value).forEach((key) => {
     showOptions.value[key] = false;
   });
 };
 
-// Listen for outside clicks
 const handleClickOutside = (event) => {
   const dropdowns = document.querySelectorAll('.option-text, .action-button.option');
   let clickedInside = false;
@@ -539,7 +516,7 @@ const handleClickOutside = (event) => {
   });
 
   if (!clickedInside) {
-    hideAllOptions(); // Hide all options if clicked outside
+    hideAllOptions(); 
   }
 };
 
@@ -555,12 +532,11 @@ const toggleSelectAll = () => {
   }
 };
 
-// Delete Selected Farmers with Undo
 const deleteSelectedFarmers = async () => {
   const confirmDelete = confirm('Are you sure you want to delete the selected farmers?');
   if (!confirmDelete) return;
 
-  const email = localStorage.getItem('email'); // Get the email from localStorage
+  const email = localStorage.getItem('email'); 
   const farmersToDelete = selectedFarmers.value.map(id => farmers.value.find(farmer => farmer.id === id));
 
   try {
@@ -602,7 +578,6 @@ const permanentlyDeleteFarmerSelected = async (id, deletedFarmer) => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // Log activity for permanent deletion using the reference number
     const email = localStorage.getItem('email');
     logActivity(email, `Permanently deleted farmer with reference number: ${deletedFarmer?.reference_number}`);
 
@@ -619,7 +594,7 @@ const restoreDeletedFarmersSelected = async () => {
   for (const id of deletedFarmerId.value) {
     try {
       await axios.patch(`http://localhost:8055/items/farmers/${id}`, {
-        deleted: false,  // Restore the record
+        deleted: false,  
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -650,48 +625,38 @@ const downloadSelectedFarmersPDF = async () => {
   
 };
 
-// Fetch Farmers Data
 const fetchFarmers = async () => {
   let token = localStorage.getItem('auth_token');
   let refreshToken = localStorage.getItem('refresh_token');
 
   try {
-    // First attempt to fetch farmers data using the current access token
     let response = await axios.get('http://localhost:8055/items/farmers', {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // If the response status is 401 (Unauthorized), the token might be expired
     if (response.status === 401) {
-      // Try refreshing the token
       const refreshResponse = await axios.post('http://localhost:8055/auth/refresh', {
-        refresh_token: refreshToken, // Send the refresh token to get a new access token
+        refresh_token: refreshToken, 
       });
 
       if (refreshResponse.status === 200) {
-        // If refresh token is successful, get the new access token and refresh token
         const { access_token: newAccessToken, refresh_token: newRefreshToken } = refreshResponse.data.data;
 
-        // Store the new tokens in localStorage
         localStorage.setItem('auth_token', newAccessToken);
         localStorage.setItem('refresh_token', newRefreshToken);
 
-        // Retry the original request with the new access token
         response = await axios.get('http://localhost:8055/items/farmers', {
           headers: { Authorization: `Bearer ${newAccessToken}` },
         });
       } else if (refreshResponse.status === 401) {
-        // If the refresh token is also expired, request new tokens
         const newTokenResponse = await axios.post('http://localhost:8055/auth/request-new-tokens');
 
         if (newTokenResponse.status === 200) {
           const { access_token: latestAccessToken, refresh_token: latestRefreshToken } = newTokenResponse.data.data;
 
-          // Store the new tokens in localStorage
           localStorage.setItem('auth_token', latestAccessToken);
           localStorage.setItem('refresh_token', latestRefreshToken);
 
-          // Retry the original request with the latest access token
           response = await axios.get('http://localhost:8055/items/farmers', {
             headers: { Authorization: `Bearer ${latestAccessToken}` },
           });
@@ -705,7 +670,6 @@ const fetchFarmers = async () => {
       }
     }
 
-    // If the response is successful, update the farmers data
     farmers.value = response.data.data;
 
   } catch (err) {
@@ -713,11 +677,9 @@ const fetchFarmers = async () => {
   }
 };
 
-// Watch the searchQuery and reset the page to 1 when it changes
 watch(searchQuery, () => {
   currentPage.value = 1;
 });
-// Get unique farming activities for the filter dropdown
 const uniqueActivities = computed(() => {
   const activities = farmers.value.flatMap(farmer => farmer.main_livelihood);
   return [...new Set(activities)];
@@ -735,11 +697,9 @@ const uniqueFarmingActivity = computed(() => {
   return [...new Set(activities)];
 });
 
-// Paginate Farmers Data
 const filteredFarmers = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return farmers.value.filter(farmer => {
-    // Check if the query matches any property of the farmer object
     const matchesSearch = Object.values(farmer).some(value => {
       if (value && typeof value === 'string') {
         return value.toLowerCase().includes(query);
@@ -750,22 +710,18 @@ const filteredFarmers = computed(() => {
       return false;
     });
 
-    // Match the selected main livelihood
     const matchesActivity = selectedMainLivelihood.value
       ? farmer.main_livelihood.includes(selectedMainLivelihood.value)
       : true;
 
-    // Match the selected barangay
     const matchesBarangay = selectedbarangay.value
       ? farmer.barangay === selectedbarangay.value
       : true;
 
-    // Match the selected gender
     const matchesGender = selectedGender.value
       ? farmer.sex === selectedGender.value
       : true;
 
-    // Match the selected farming activity
     const matchesFarmingActivity = selectedFarmingActivity.value
       ? farmer.type_of_farming_activity.join(', ').toLowerCase().includes(selectedFarmingActivity.value.toLowerCase())
       : true;
@@ -777,17 +733,22 @@ const filteredFarmers = computed(() => {
 
 
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredFarmers.value.length / entriesPerPage.value);
-});
-
 const paginatedFarmers = computed(() => {
+  if (entriesPerPage.value === -1) {
+    return filteredFarmers.value; 
+  }
   const start = (currentPage.value - 1) * entriesPerPage.value;
   const end = currentPage.value * entriesPerPage.value;
   return filteredFarmers.value.slice(start, end);
 });
 
-// Change Page
+const totalPages = computed(() => {
+  if (entriesPerPage.value === -1) {
+    return 1; 
+  }
+  return Math.ceil(filteredFarmers.value.length / entriesPerPage.value);
+});
+
 const changePage = (page) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
@@ -800,7 +761,7 @@ const editFarmer = (id) => {
 const showFarmer = (id) => {
   router.push(`/show-farmer/${id}`);
 };
-// Function to log activity (email, time, and action) to localStorage
+
 const logActivity = async (email, action) => {
   const token = localStorage.getItem('auth_token'); 
   try {
@@ -813,8 +774,7 @@ const logActivity = async (email, action) => {
         Authorization: `Bearer ${token}`
       }
     });
-    
-    // Increment unread notifications
+
     const unreadCount = parseInt(localStorage.getItem('unread_notifications')) || 0;
     localStorage.setItem('unread_notifications', unreadCount + 1);
     
@@ -823,32 +783,26 @@ const logActivity = async (email, action) => {
   }
 };
 
-// Delete Farmer with Undo
 const deleteFarmer = async (id) => {
   const confirmDelete = confirm('Are you sure you want to delete this farmer?');
   if (!confirmDelete) return;
 
-  const email = localStorage.getItem('email'); // Get the email from localStorage
+  const email = localStorage.getItem('email'); 
 
   try {
-    // Fetch the farmer data before deletion
     const deletedFarmer = farmers.value.find(farmer => farmer.id === id);
 
-    // Mark as deleted in the database (soft delete)
     await axios.patch(`http://localhost:8055/items/farmers/${id}`, {
-      deleted: true,  // Add a 'deleted' field or use soft delete mechanism in your database
+      deleted: true, 
     }, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // Log activity with email and reference number (before the deletion)
     logActivity(email, `Temporary Deleted farmer with reference number: ${deletedFarmer?.reference_number}`);
 
-    // Update farmers list to reflect the deletion
     farmers.value = farmers.value.filter(farmer => farmer.id !== id);
     alertMessage.value = 'Farmer Deleted Successfully!';
 
-    // Show Undo option
     showUndo.value = true;
     deletedFarmerId.value = id;
 
@@ -863,19 +817,15 @@ const deleteFarmer = async (id) => {
   }
 };
 
-// Permanent Deletion of Farmer
 const permanentlyDeleteFarmer = async (id, deletedFarmer) => {
   try {
-    // Permanently delete the farmer from the database
     await axios.delete(`http://localhost:8055/items/farmers/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // Log activity for permanent deletion using the reference number
     const email = localStorage.getItem('email');
     logActivity(email, `Permanently deleted farmer with reference number: ${deletedFarmer?.reference_number}`);
 
-    // Update farmers list to reflect the permanent deletion
     farmers.value = farmers.value.filter(farmer => farmer.id !== id);
     alertMessage.value = 'Farmer Permanently Deleted!';
 
@@ -885,29 +835,21 @@ const permanentlyDeleteFarmer = async (id, deletedFarmer) => {
   }
 };
 
-// Restore the deleted farmer
 const restoreDeletedFarmer = async () => {
   try {
-    // Restore the farmer by setting 'deleted' to false
     await axios.patch(`http://localhost:8055/items/farmers/${deletedFarmerId.value}`, {
-      deleted: false,  // Set the 'deleted' status to false to restore the record
+      deleted: false, 
     }, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    // Fetch the updated list of farmers after restoration
     await fetchFarmers();
 
-    // Find the restored farmer from the farmers list
     const restoredFarmer = farmers.value.find(farmer => farmer.id === deletedFarmerId.value);
 
-    // Check if restoredFarmer is found and has reference_number
     if (restoredFarmer && restoredFarmer.reference_number) {
-      // Log activity for the restoration
       const email = localStorage.getItem('email');
       logActivity(email, `Restored farmer with reference number: ${restoredFarmer.reference_number}`);
 
-      // Show the success message
       alertMessage.value = 'Farmer Restored Successfully!';
     } else {
       console.error('Farmer not found or missing reference number');
@@ -924,7 +866,6 @@ const closeAlert = () => {
 };
 
 const downloadFarmerPDF = async (id) => {
-  // Find the farmer using their ID
   const farmer = farmers.value.find(farmer => farmer.id === id);
   if (!farmer) {
     alert('Farmer not found!');
@@ -946,6 +887,7 @@ const downloadFarmerPDF = async (id) => {
   province,
   region,
   mobile_number,
+  date_of_birth,
   place_of_birth,
   place_of_birth_province_state,
   place_of_birth_country,
@@ -970,6 +912,7 @@ const downloadFarmerPDF = async (id) => {
   member_of_any_farmers_association_cooperative,
   if_yes_spefify_farmers_association,
   person_to_notify_in_case_of_emergency,
+  contact_number,
   main_livelihood,
   type_of_farming_activity,
   farmworkers_kind_of_work,
@@ -1063,7 +1006,7 @@ let imageArrayBuffer = null;
     try {
       const imageResponse = await fetch(`http://localhost:8055/assets/${farmer.image}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Use your authentication token
+          Authorization: `Bearer ${token}`, 
         },
       });
       
@@ -1075,16 +1018,13 @@ let imageArrayBuffer = null;
       console.error('Error fetching image:', error);
     }
   }
-  // Path to the existing PDF
+
   const filePath = '/src/assets/file/RSBSA_Enrollment-Form_032021.pdf';
 
-  // Fetch the existing PDF
   const existingPdfBytes = await fetch(filePath).then(res => res.arrayBuffer());
 
-  // Load the PDF into PDF-lib
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-  // Get the first page of the PDF
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
   const secondPage = pages[1];
@@ -1110,39 +1050,54 @@ const totalSize3 =
   (parseFloat(sizeHa3_4) || 0) + 
   (parseFloat(sizeHa3_5) || 0);
 
-
-  // Add the farmer's surname to the PDF
-if (enrollment_type === "New") {
-    firstPage.drawText("/", {
-    x: 110, 
-    y: 771, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+  if (enrollment_type === "New") {
+  firstPage.drawRectangle({
+    x: 109,
+    y: 771,
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (enrollment_type === "Updating") {
-    firstPage.drawText("/", {
-    x: 154, 
+    firstPage.drawRectangle({
+    x: 150, 
     y: 771, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8.5, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
+firstPage.drawText(
+  `${String(reference_number).replace(
+    /(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)/,
+    '$1   $2    $3  $4    $5  $6    $7  $8  $9    $10  $11  $12   $13  $14  $15'
+  )}`,
+  {
+    x: 111,
+    y: 753,
+    size: 10,
+    color: rgb(0, 0, 0), 
+  }
+);
   firstPage.drawText(` ${surname}`, {
-    x: 110, // (width)
-    y: 715, //  (height)
+    x: 110, 
+    y: 715, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   if (imageArrayBuffer) {
     try {
-      const image = await pdfDoc.embedPng(imageArrayBuffer); // or embedJpg if it's a JPEG
+      const image = await pdfDoc.embedPng(imageArrayBuffer); 
       firstPage.drawImage(image, {
-        x: 443, // adjust x coordinate
-        y: 742, // adjust y coordinate
-        width: 127, // set width to 200
-        height: 125, // set height to 200
- // set desired height
+        x: 443,
+        y: 742, 
+        width: 127, 
+        height: 125, 
       });
     } catch (error) {
       console.error('Error embedding image:', error);
@@ -1152,312 +1107,393 @@ if (enrollment_type === "Updating") {
     x: 300, 
     y: 715, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${middle_name}`, {
     x: 110, 
     y: 687, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${extension_name}`, {
     x: 300, 
     y: 687, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 if (sex === "male") {
-    firstPage.drawText("/", {
-    x: 457, 
+    firstPage.drawRectangle({
+    x: 455, 
     y: 676,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (sex === "female") {
-    firstPage.drawText("/", {
-    x: 506, 
+    firstPage.drawRectangle({
+    x: 504, 
     y: 676,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
   firstPage.drawText(` ${house_lot_bldg_no_purok}`, {
     x: 72, 
     y: 655, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${street_sitio_subdv}`, {
     x: 242, 
     y: 655, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${barangay}`, {
     x: 412, 
     y: 655, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${municipality_city}`, {
     x: 72, 
     y: 625, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${province}`, {
     x: 242, 
     y: 625, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${region}`, {
     x: 412, 
     y: 625, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
-  firstPage.drawText(` ${mobile_number}`, {
-    x: 35, 
+  firstPage.drawText(` ${String(mobile_number).replace(/(\d{1})(?=\d)/g, '$1  ')}`, {
+    x: 42, 
     y: 591, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
-  });
+    color: rgb(0, 0, 0), 
+  })
+  firstPage.drawText(
+  `${String(date_of_birth).split('-').reverse().join('-').split('-').slice(1,2).join('').split('').join('   ')}   ${String(date_of_birth).split('-').reverse().join('-').split('-').slice(0,1).join('').split('').join('   ')}   ${String(date_of_birth).split('-').reverse().join('-').split('-').slice(2).join('').split('').join('   ')}`,
+  {
+    x: 35,
+    y: 560,
+    size: 10,
+    color: rgb(0, 0, 0), 
+  }
+);
   firstPage.drawText(` ${place_of_birth}`, {
     x: 205, 
     y: 568,  
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${place_of_birth_province_state}`, {
     x: 155, 
     y: 556,  
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${place_of_birth_country}`, {
     x: 240, 
     y: 556,  
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 if (religion === "christianity") {
-    firstPage.drawText("/", {
-    x: 79,  
+    firstPage.drawRectangle({
+    x: 77,  
     y: 525,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8,
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (religion === "islam") {
-    firstPage.drawText("/", {
-    x: 139,  
+    firstPage.drawRectangle({
+    x: 137,  
     y: 525,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8,
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (civil_status === "single") {
-    firstPage.drawText("/", {
-    x: 95,   
+    firstPage.drawRectangle({
+    x: 93,   
     y: 506,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8,
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (civil_status === "married") {
-    firstPage.drawText("/", {
-    x: 140,   
+    firstPage.drawRectangle({
+    x: 138,   
     y: 506,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8,
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,
   });
 }
 if (civil_status === "widowed") {
-    firstPage.drawText("/", {
-    x: 189,   
+    firstPage.drawRectangle({
+    x: 187,   
     y: 506,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8,
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,
   });
 }
 if (civil_status === "separated") {
-    firstPage.drawText("/", {
-    x: 243,   
+    firstPage.drawRectangle({
+    x: 241,   
     y: 506,
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8,
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
   firstPage.drawText(` ${name_of_spouse_if_married}`, {
     x: 110, 
     y: 485, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${mothers_maiden_name}`, {
     x: 110, 
     y: 455, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 if (household_heads === "yes") {
-    firstPage.drawText("/", {
-    x: 136, 
+    firstPage.drawRectangle({
+    x: 134, 
     y: 435, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (household_heads === "no") {
-    firstPage.drawText("/", {
-    x: 179, 
+    firstPage.drawRectangle({
+    x: 177, 
     y: 435, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
   firstPage.drawText(` ${if_no_name_of_household_heads}`, {
     x: 155, 
     y: 420, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${relationship}`, {
     x: 155, 
     y: 403, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${no_of_living_household_members}`, {
     x: 155, 
     y: 385, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${no_of_male}`, {
     x: 100, 
     y: 368, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${no_of_female}`, {
     x: 245, 
     y: 368, 
     size: 10,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 if (highest_formal_education === "pre-school") {
-    firstPage.drawText("/", {
-    x: 317, 
+    firstPage.drawRectangle({
+    x: 315, 
     y: 586, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (highest_formal_education === "junior high school (K-12)") {
-    firstPage.drawText("/", {
-    x: 405, 
+    firstPage.drawRectangle({
+    x: 403, 
     y: 586, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (highest_formal_education === "vocational") {
-    firstPage.drawText("/", {
-    x: 501, 
+    firstPage.drawRectangle({
+    x: 499, 
     y: 586, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (highest_formal_education === "elementary") {
-    firstPage.drawText("/", {
-    x: 317, 
+    firstPage.drawRectangle({
+    x: 315, 
     y: 574, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (highest_formal_education === "senior high school (K-12)") {
-    firstPage.drawText("/", {
-    x: 405, 
+    firstPage.drawRectangle({
+    x: 403, 
     y: 574, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    swidth: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (highest_formal_education === "post-graduate") {
-    firstPage.drawText("/", {
-    x: 501, 
+    firstPage.drawRectangle({
+    x: 499, 
     y: 574, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (highest_formal_education === "high school (non K-12)") {
-    firstPage.drawText("/", {
-    x: 317, 
+    firstPage.drawRectangle({
+    x: 315, 
     y: 562, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (highest_formal_education === "college") {
-    firstPage.drawText("/", {
-    x: 405, 
+    firstPage.drawRectangle({
+    x: 403, 
     y: 562, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (highest_formal_education === "none") {
-    firstPage.drawText("/", {
-    x: 501, 
+    firstPage.drawRectangle({
+    x: 499, 
     y: 562, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (person_with_disability === "yes") {
-    firstPage.drawText("/", {
-    x: 454, 
+    firstPage.drawRectangle({
+    x: 452, 
     y: 541, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (person_with_disability === "no") {
-    firstPage.drawText("/", {
-    x: 496, 
+    firstPage.drawRectangle({
+    x: 494, 
     y: 541, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (IVps_beneficiary === "yes") {
-    firstPage.drawText("/", {
-    x: 452, 
+    firstPage.drawRectangle({
+    x: 450, 
     y: 518, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (IVps_beneficiary === "no") {
-    firstPage.drawText("/", {
-    x: 494, 
+    firstPage.drawRectangle({
+    x: 492, 
     y: 518, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (member_of_an_indiginous_group === "yes") {
-    firstPage.drawText("/", {
-    x: 452, 
+    firstPage.drawRectangle({
+    x: 450, 
     y: 504, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (member_of_an_indiginous_group_if_yes_specify) {
@@ -1465,59 +1501,74 @@ if (member_of_an_indiginous_group_if_yes_specify) {
     x: 380, 
     y: 490,
     size: 9,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (member_of_an_indiginous_group === "no") {
-    firstPage.drawText("/", {
-    x: 494, 
+    firstPage.drawRectangle({
+    x: 492, 
     y: 504, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (with_government_id === "yes") {
-    firstPage.drawText("/", {
-    x: 400, 
+    firstPage.drawRectangle({
+    x: 397, 
     y: 469, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (with_government_id === "no") {
-    firstPage.drawText("/", {
-    x: 441, 
+    firstPage.drawRectangle({
+    x: 439, 
     y: 469, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
   firstPage.drawText(` ${if_yes_specify_id_type}`, {
     x: 400, 
     y: 460, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${id_number}`, {
     x: 400, 
     y: 448, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 if (member_of_any_farmers_association_cooperative === "yes") {
-    firstPage.drawText("/", {
-    x: 504, 
+    firstPage.drawRectangle({
+    x: 502, 
     y: 430, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (member_of_any_farmers_association_cooperative === "no") {
-    firstPage.drawText("/", {
-    x: 539, 
+    firstPage.drawRectangle({
+    x: 537, 
     y: 430, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
   firstPage.drawText(` ${if_yes_spefify_farmers_association}`, {
@@ -1532,235 +1583,320 @@ if (member_of_any_farmers_association_cooperative === "no") {
     size: 10,
     color: rgb(0, 0, 0), 
   });
+  firstPage.drawText(` ${String(contact_number).replace(/(\d{1})(?=\d)/g, '$1   ')}`, {
+    x: 407, 
+    y: 367, 
+    size: 11,
+    color: rgb(0, 0, 0), 
+  })
+
 if (Array.isArray(main_livelihood) && main_livelihood.includes("farmer")) {
-  firstPage.drawText("/", {
-    x: 124, 
+  firstPage.drawRectangle({
+    x: 122, 
     y: 332, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(main_livelihood) && main_livelihood.includes("farmworker/laborer")) {
-  firstPage.drawText("/", {
-    x: 212, 
+  firstPage.drawRectangle({
+    x: 210, 
     y: 332, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(main_livelihood) && main_livelihood.includes("fisherfolk")) {
-  firstPage.drawText("/", {
-    x: 361, 
+  firstPage.drawRectangle({
+    x: 359, 
     y: 332, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(main_livelihood) && main_livelihood.includes("agri youth")) {
-  firstPage.drawText("/", {
-    x: 481, 
+  firstPage.drawRectangle({
+    x: 479, 
     y: 332, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("rice")) {
-  firstPage.drawText("/", {
-    x: 35, 
+  firstPage.drawRectangle({
+    x: 33, 
     y: 285, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("corn")) {
-  firstPage.drawText("/", {
-    x: 35, 
+  firstPage.drawRectangle({
+    x: 33, 
     y: 268, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("other_crop")) {
-  firstPage.drawText("/", {
-    x: 35, 
+  firstPage.drawRectangle({
+    x: 33, 
     y: 251, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("livestock")) {
-  firstPage.drawText("/", {
-    x: 35, 
+  firstPage.drawRectangle({
+    x: 33, 
     y: 225, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(type_of_farming_activity) && type_of_farming_activity.includes("poultry")) {
-  firstPage.drawText("/", {
-    x: 35, 
+  firstPage.drawRectangle({
+    x: 33, 
     y: 202, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("land preparation")) {
-  firstPage.drawText("/", {
-    x: 216, 
+  firstPage.drawRectangle({
+    x: 214, 
     y: 283, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("planting / transplanting")) {
-  firstPage.drawText("/", {
-    x: 216, 
-    y: 265, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+  firstPage.drawRectangle({
+    x: 214, 
+    y: 266, 
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("cultivation")) {
-  firstPage.drawText("/", {
-    x: 216, 
+  firstPage.drawRectangle({
+    x: 214, 
     y: 250, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(farmworkers_kind_of_work) && farmworkers_kind_of_work.includes("harvesting")) {
-  firstPage.drawText("/", {
-    x: 216, 
+  firstPage.drawRectangle({
+    x: 214, 
     y: 233, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
   firstPage.drawText(` ${other_crop_specify}`, {
     x: 100, 
     y: 245, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${livestock_specify}`, {
     x: 100, 
     y: 220, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${poultry_specify}`, {
     x: 100, 
     y: 195, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("fish capture")) {
-  firstPage.drawText("/", {
-    x: 333, 
+  firstPage.drawRectangle({
+    x: 331, 
     y: 240, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("aquaculture")) {
-  firstPage.drawText("/", {
-    x: 333, 
+  firstPage.drawRectangle({
+    x: 331, 
     y: 229, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("gleaning")) {
-  firstPage.drawText("/", {
-    x: 333, 
+  firstPage.drawRectangle({
+    x: 331, 
     y: 218, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("fish processing")) {
-  firstPage.drawText("/", {
-    x: 399, 
+  firstPage.drawRectangle({
+    x: 397, 
     y: 240, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(for_fisherfolk) && for_fisherfolk.includes("fish vending")) {
-  firstPage.drawText("/", {
-    x: 399, 
+  firstPage.drawRectangle({
+    x: 397, 
     y: 229, 
-    size: 12,
-    color: rgb(0, 0, 0), // Black color
+    width: 8, 
+    height: 8, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(for_agri_youth) && for_agri_youth.includes("part of a farming household")) {
-  firstPage.drawText("/", {
-    x: 474, 
+  firstPage.drawRectangle({
+    x: 472, 
     y: 257, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(for_agri_youth) && for_agri_youth.includes("attending attended formal agri fishery related course")) {
-  firstPage.drawText("/", {
-    x: 474, 
+  firstPage.drawRectangle({
+    x: 472, 
     y: 248, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (Array.isArray(for_agri_youth) && for_agri_youth.includes("attending attended non formal agri fishery related course")) {
-  firstPage.drawText("/", {
-    x: 474, 
+  firstPage.drawRectangle({
+    x: 472, 
     y: 231, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (Array.isArray(for_agri_youth) && for_agri_youth.includes("participated in any agricultural activity program")) {
-  firstPage.drawText("/", {
-    x: 474, 
+  firstPage.drawRectangle({
+    x: 472, 
     y: 214, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
+firstPage.drawText(
+  `${String(reference_number).replace(
+    /(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)/,
+    '$1   $2    $3  $4    $5  $6    $7  $8  $9    $10  $11  $12   $13  $14  $15'
+  )}`,
+  {
+    x: 110,
+    y: 97,
+    size: 10,
+    color: rgb(0, 0, 0), 
+  }
+);
   firstPage.drawText(` ${surname}`, {
-    x: 110, // (width)
-    y: 75, //  (height)
+    x: 110, 
+    y: 75, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${first_name}`, {
     x: 300, 
     y: 75, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${middle_name}`, {
     x: 110, 
     y: 46, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${extension_name}`, {
     x: 300, 
     y: 46, 
     size: 12,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${for_farmworkers_other}`, {
     x: 220, 
     y: 195, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
   firstPage.drawText(` ${for_fishfolk_other}`, {
     x: 330, 
     y: 195, 
     size: 8,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 
   if (farm_location_brgy1) {
@@ -1768,7 +1904,7 @@ if (Array.isArray(for_agri_youth) && for_agri_youth.includes("participated in an
     x: 140,
     y: 788,
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1777,7 +1913,7 @@ if (farm_location_city_muni1) {
     x: 140,
     y: 777,
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1786,7 +1922,7 @@ if (ownership_document_no_1) {
     x: 135,
     y: 742,
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1795,7 +1931,7 @@ if (totalSize) {
     x: 145,
     y: 760,
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1804,7 +1940,7 @@ if (tenant_1) {
     x: 160,
     y: 707,
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1813,47 +1949,73 @@ if (lessee_1) {
     x: 160,
     y: 697,
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (ancestral_domain_1 === "yes") {
-  secondPage.drawText("/", {
-    x: 180,
+  secondPage.drawRectangle({
+    x: 178,
     y: 750, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (ancestral_domain_1 === "no") {
-  secondPage.drawText("/", {
-    x: 222,
+  secondPage.drawRectangle({
+    x: 220,
     y: 750, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (agrarian_reform_1 === "yes") {
-  secondPage.drawText("/", {
-    x: 180,
-    y: 730, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+  secondPage.drawRectangle({
+    x: 178,
+    y: 731, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (agrarian_reform_1 === "no") {
-  secondPage.drawText("/", {
-    x: 222,
-    y: 730, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+  secondPage.drawRectangle({
+    x: 220,
+    y: 731, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (registered_owner_1 === "Register Owner") {
-  secondPage.drawText("/", {
-    x: 63,
+  secondPage.drawRectangle({
+    x: 61,
     y: 715, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
+  });
+}
+if (registered_owner_1 === "Others") {
+  secondPage.drawRectangle({
+    x: 144,
+    y: 715, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 
@@ -1862,7 +2024,7 @@ if (crop_commodity1_1) {
     x: 275,
     y: 783,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1871,7 +2033,7 @@ if (crop_commodity1_2) {
     x: 275,
     y: 760,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1880,7 +2042,7 @@ if (crop_commodity1_3) {
     x: 275,
     y: 737,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1889,7 +2051,7 @@ if (crop_commodity1_4) {
     x: 275,
     y: 717,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1898,7 +2060,7 @@ if (crop_commodity1_5) {
     x: 275,
     y: 695,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1907,7 +2069,7 @@ if (sizeHa1_1) {
     x: 360,
     y: 783,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1916,7 +2078,7 @@ if (sizeHa1_2) {
     x: 360,
     y: 760,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1925,7 +2087,7 @@ if (sizeHa1_3) {
     x: 360,
     y: 737,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1934,7 +2096,7 @@ if (sizeHa1_4) {
     x: 360,
     y: 717,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1943,7 +2105,7 @@ if (sizeHa1_5) {
     x: 360,
     y: 695,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1952,7 +2114,7 @@ if (no_of_head1_1) {
     x: 400,
     y: 783,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1961,7 +2123,7 @@ if (no_of_head1_2) {
     x: 400,
     y: 760,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1970,7 +2132,7 @@ if (no_of_head1_3) {
     x: 400,
     y: 737,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1979,7 +2141,7 @@ if (no_of_head1_4) {
     x: 400,
     y: 717,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1988,7 +2150,7 @@ if (no_of_head1_5) {
     x: 400,
     y: 695,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -1997,7 +2159,7 @@ if (farm_type1) {
     x: 440,
     y: 783,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2006,7 +2168,7 @@ if (organic_practitioner1) {
     x: 480,
     y: 783,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2015,7 +2177,7 @@ if (farm_location_brgy2) {
     x: 140, // (width)
     y: 682, // (height)
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2024,7 +2186,7 @@ if (farm_location_city_muni2) {
     x: 140, 
     y: 670, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2033,7 +2195,7 @@ if (ownership_document_no_2) {
     x: 135, 
     y: 635, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2042,7 +2204,7 @@ if (totalSize2) {
     x: 145, 
     y: 653, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (tenant_2) {
@@ -2050,7 +2212,7 @@ if (tenant_2) {
     x: 160, 
     y: 600, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (lessee_2) {
@@ -2058,46 +2220,72 @@ if (lessee_2) {
     x: 160, 
     y: 590, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (ancestral_domain_2 === "yes") {
-  secondPage.drawText("/", {
-    x: 180,
+  secondPage.drawRectangle({
+    x: 178,
     y: 643, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (ancestral_domain_2 === "no") {
-  secondPage.drawText("/", {
-    x: 222,
+  secondPage.drawRectangle({
+    x: 220,
     y: 643, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (agrarian_reform_2 === "yes") {
-  secondPage.drawText("/", {
-    x: 180,
-    y: 623, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+  secondPage.drawRectangle({
+    x: 178,
+    y: 624, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }if (agrarian_reform_2 === "no") {
-  secondPage.drawText("/", {
-    x: 222,
-    y: 623, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+  secondPage.drawRectangle({
+    x: 220,
+    y: 624, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (registered_owner_2 === "Register Owner") {
-  secondPage.drawText("/", {
-    x: 63,
+  secondPage.drawRectangle({
+    x: 61,
     y: 609, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
+  });
+}
+if (registered_owner_2 === "Others") {
+  secondPage.drawRectangle({
+    x: 144,
+    y: 609, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (crop_commodity2_1) {
@@ -2105,7 +2293,7 @@ if (crop_commodity2_1) {
     x: 275, // (width)
     y: 677, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity2_2) {
@@ -2113,7 +2301,7 @@ if (crop_commodity2_2) {
     x: 275, // (width)
     y: 654, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity2_3) {
@@ -2121,7 +2309,7 @@ if (crop_commodity2_3) {
     x: 275, // (width)
     y: 631, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity2_4) {
@@ -2129,7 +2317,7 @@ if (crop_commodity2_4) {
     x: 275, // (width)
     y: 610, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity2_5) {
@@ -2137,7 +2325,7 @@ if (crop_commodity2_5) {
     x: 275, // (width)
     y: 588, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa2_1) {
@@ -2145,7 +2333,7 @@ if (sizeHa2_1) {
     x: 360,
     y: 677, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa2_2) {
@@ -2153,7 +2341,7 @@ if (sizeHa2_2) {
     x: 360,
     y: 654,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2162,7 +2350,7 @@ if (sizeHa2_3) {
     x: 360,
     y: 633,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2171,7 +2359,7 @@ if (sizeHa2_4) {
     x: 360,
     y: 612,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa2_5) {
@@ -2179,7 +2367,7 @@ if (sizeHa2_5) {
     x: 360,
     y: 590,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (no_of_head2_1 > 0) {
@@ -2187,7 +2375,7 @@ if (no_of_head2_1 > 0) {
     x: 400,
     y: 677,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2196,7 +2384,7 @@ if (no_of_head2_2 > 0) {
     x: 400,
     y: 654,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2205,7 +2393,7 @@ if (no_of_head2_3 > 0) {
     x: 400,
     y: 633,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2214,7 +2402,7 @@ if (no_of_head2_4 > 0) {
     x: 400,
     y: 612, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2223,7 +2411,7 @@ if (no_of_head2_5 > 0) {
     x: 400,
     y: 590, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (farm_type2) {
@@ -2231,7 +2419,7 @@ if (farm_type2) {
     x: 440,
     y: 677,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (organic_practitioner2) {
@@ -2239,7 +2427,7 @@ if (organic_practitioner2) {
     x: 480,
     y: 677,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (farm_location_brgy3) {
@@ -2247,7 +2435,7 @@ if (farm_location_brgy3) {
     x: 140, // (width)
     y: 576, // (height)
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (farm_location_city_muni3) {
@@ -2255,7 +2443,7 @@ if (farm_location_city_muni3) {
     x: 140, 
     y: 565, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (ownership_document_no_3) {
@@ -2263,7 +2451,7 @@ if (ownership_document_no_3) {
     x: 137, 
     y: 530, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (totalSize3) {
@@ -2271,7 +2459,7 @@ if (totalSize3) {
     x: 146, 
     y: 548, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (tenant_3) {
@@ -2279,7 +2467,7 @@ if (tenant_3) {
     x: 160, 
     y: 495, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (lessee_3) {
@@ -2287,47 +2475,73 @@ if (lessee_3) {
     x: 160, 
     y: 485, 
     size: 5,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (ancestral_domain_3 === "yes") {
-  secondPage.drawText("/", {
-    x: 183,
+  secondPage.drawRectangle({
+    x: 181,
     y: 539, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (ancestral_domain_3 === "no") {
-  secondPage.drawText("/", {
-    x: 225,
+  secondPage.drawRectangle({
+    x: 223,
     y: 539, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (agrarian_reform_3 === "yes") {
-  secondPage.drawText("/", {
-    x: 183,
-    y: 519, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+  secondPage.drawRectangle({
+    x: 181,
+    y: 520, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
   });
 }
 if (agrarian_reform_3 === "no") {
-  secondPage.drawText("/", {
-    x: 225,
-    y: 519, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+  secondPage.drawRectangle({
+    x: 223,
+    y: 520, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 if (registered_owner_3 === "Register Owner") {
-  secondPage.drawText("/", {
-    x: 66,
+  secondPage.drawRectangle({
+    x: 64,
     y: 503, 
-    size: 9,
-    color: rgb(0, 0, 0), // Black color
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1,  
+  });
+}
+if (registered_owner_3 === "Others") {
+  secondPage.drawRectangle({
+    x: 146,
+    y: 503, 
+    width: 6, 
+    height: 6, 
+    color: rgb(0,0,0), 
+    borderColor: rgb(0, 0, 0), 
+    borderWidth: 1, 
   });
 }
 
@@ -2336,7 +2550,7 @@ if (crop_commodity3_1) {
     x: 275, // (width)
     y: 571, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity3_2) {
@@ -2344,7 +2558,7 @@ if (crop_commodity3_2) {
     x: 275, // (width)
     y: 548, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity3_3) {
@@ -2352,7 +2566,7 @@ if (crop_commodity3_3) {
     x: 275, // (width)
     y: 525, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity3_4) {
@@ -2360,7 +2574,7 @@ if (crop_commodity3_4) {
     x: 275, // (width)
     y: 504, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (crop_commodity3_5) {
@@ -2368,7 +2582,7 @@ if (crop_commodity3_5) {
     x: 275, // (width)
     y: 483, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa3_1) {
@@ -2376,7 +2590,7 @@ if (sizeHa3_1) {
     x: 360,
     y: 571, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa3_2) {
@@ -2384,7 +2598,7 @@ if (sizeHa3_2) {
     x: 360,
     y: 548, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa3_3) {
@@ -2392,7 +2606,7 @@ if (sizeHa3_3) {
     x: 360,
     y: 525, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa3_4) {
@@ -2400,7 +2614,7 @@ if (sizeHa3_4) {
     x: 360,
     y: 504, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (sizeHa3_5) {
@@ -2408,7 +2622,7 @@ if (sizeHa3_5) {
     x: 360,
     y: 483, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (no_of_head3_1 > 0) {
@@ -2416,7 +2630,7 @@ if (no_of_head3_1 > 0) {
     x: 400,
     y: 571,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2425,7 +2639,7 @@ if (no_of_head3_2 > 0) {
     x: 400,
     y: 548,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2434,7 +2648,7 @@ if (no_of_head3_3 > 0) {
     x: 400,
     y: 525,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2443,7 +2657,7 @@ if (no_of_head3_4 > 0) {
     x: 400,
     y: 504, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 
@@ -2452,7 +2666,7 @@ if (no_of_head3_5 > 0) {
     x: 400,
     y: 483, 
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (farm_type3) {
@@ -2460,7 +2674,7 @@ if (farm_type3) {
     x: 440,
     y: 570,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
 if (organic_practitioner3) {
@@ -2468,9 +2682,32 @@ if (organic_practitioner3) {
     x: 480,
     y: 570,
     size: 6,
-    color: rgb(0, 0, 0), // Black color
+    color: rgb(0, 0, 0), 
   });
 }
+const fullName = `${first_name} ${surname}`.toUpperCase();
+
+secondPage.drawText(fullName, {
+  x: 140, // (width)
+  y: 325, // (height)
+  size: 8,
+  color: rgb(0, 0, 0), 
+});
+
+const currentDate = new Date().toLocaleDateString('en-PH', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
+secondPage.drawText(currentDate, {
+  x: 40, 
+  y: 325, 
+  size: 12,
+  color: rgb(0, 0, 0), 
+});
+
+
 
   const pdfBytes = await pdfDoc.save();
 
@@ -2512,9 +2749,8 @@ onBeforeUnmount(() => {
     max-height: 80vh;
     overflow-y: auto; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-  
-  /* Style the search input */
+  }
+
   .input-field1 {
     position: relative;
     margin-bottom: 2rem;
@@ -2587,26 +2823,26 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid #d7d7d7;
   border-left: none; 
   border-right: none;
-}
+  }
 
-.table td:first-child {
+  .table td:first-child {
   border-left: 1px solid #F5F5F5; 
-}
+  }
 
-.table td:last-child {
+  .table td:last-child {
   border-right: 1px solid #F5F5F5;
-}
-.table th {
+  }
+  .table th {
   border-top: 1px solid #ddd; 
   border-bottom: 1px solid #ddd;
   border-left: none; 
   border-right: none;
-}
+  }
 
-.table thead th {
+  .table thead th {
   border-top: 1px solid white;
   border-bottom: 1px solid white; 
-}
+  }
   .table th {
     font-weight: bold;
   }
@@ -2763,7 +2999,7 @@ onBeforeUnmount(() => {
 }
 
 .delete-button:hover {
-    color: #7e4ee6; /* Change the text color to dark red on hover */
+    color: #7e4ee6; 
 }
 .modal-overlay {
   position: fixed;
@@ -2847,7 +3083,7 @@ onBeforeUnmount(() => {
   
     .table th,
     .table td {
-      font-size: 0.875rem; /* Smaller font size on smaller screens */
+      font-size: 0.875rem; 
     }
   }
 
@@ -2865,9 +3101,9 @@ onBeforeUnmount(() => {
     }
   
     .btn {
-      width: 100%; /* Full width on small screens */
-      text-align: center; /* Center text */
-      margin-left: 0; /* Reset margin */
+      width: 100%; 
+      text-align: center; 
+      margin-left: 0; 
     }
   }
   </style>

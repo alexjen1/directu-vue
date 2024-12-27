@@ -61,7 +61,7 @@ const fetchFarmers = async () => {
     // Group farmers by barangay and count occurrences
     const barangayCounts = {};
     response.data.data.forEach(farmer => {
-      const barangay = farmer.barangay || 'Unknown';
+      const barangay = farmer.barangay || 'Not Specified';
       if (barangayCounts[barangay]) {
         barangayCounts[barangay]++;
       } else {

@@ -67,6 +67,9 @@
           <IndexGraph />
         </div>
         <div class="chart-box">
+          <div class="icon-container" onclick="window.location.href='/per-indi-group'">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </div>
           <h1>Member of Indiginous Group</h1>
           <IndiginousgGroup/>
         </div>

@@ -134,7 +134,6 @@ onMounted(fetchIndigenousGroupData);
 <style scoped>
 #indigenousGroupLineChart {
   width: 100%; /* Full width */
-  max-width: 900px; /* Set a max width for the chart */
   height: 350px; /* Set a fixed height for the chart */
 }
 </style>

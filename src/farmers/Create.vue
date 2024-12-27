@@ -32,11 +32,16 @@
       </div>
       <br>
       <br>
+      <div class="top-section">
+        <div class="info-box">
+          <h1> Name: {{ farmer.surname }}, {{ farmer.first_name }}, {{ farmer.middle_name }}, {{ farmer.extension_name }} </h1>
+          <h2>Location: {{ farmer.house_lot_bldg_no_purok }}, {{ farmer.street_sitio_subdv }}, {{ farmer.barangay }}, {{ farmer.municipality_city }}, {{ farmer.region }} </h2>
+        </div>
+      </div>
       <div class="personal-info-sections">
         <form @submit.prevent="submitForm">
-        <!-- Personal Information I -->
         <div v-if="isHovered === 1" id="personalInfoI" class="personal-info-section">
-            <div class="row mb-3">
+            <div class="row5">
               <div class="input-field">
                 <select v-model="farmer.enrollment_type" required spellcheck="false" class="black-select">
                   <option value="New">New</option>
@@ -49,9 +54,12 @@
                   v-model="farmer.reference_number"
                   required
                   spellcheck="false"
+                  maxlength="15"
                 />
                 <label>Reference Number:</label>
               </div>
+            </div>
+              <div class="row mb-3">
               <div class="input-field">
                 <input
                   type="text"
@@ -215,6 +223,7 @@
                   v-model="farmer.mobile_number"
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>MOBILE NUMBER:</label>
               </div>
@@ -224,6 +233,7 @@
                   v-model="farmer.landline_number"
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>LANDLINE NUMBER:</label>
               </div>
@@ -475,6 +485,7 @@
                   v-model="farmer.contact_number" 
                   required
                   spellcheck="false"
+                  maxlength="10"
                 />
                 <label>CONTACT NUMBER:</label>
               </div>
@@ -523,7 +534,7 @@
               </label>
               <label>
                 <input type="checkbox" value="other_crop" v-model="selectedFarmingActivity" />
-                Other crops,
+                Other crops
               </label>
               <div class="input-field2" v-if="selectedFarmingActivity.includes('other_crop')">
               <div class="input-field2">
@@ -537,7 +548,7 @@
             </div> 
               <label>
                 <input type="checkbox" value="livestock" v-model="selectedFarmingActivity" />
-                Livestock / specify
+                Livestock
               </label>
               <div class="input-field2" v-if="selectedFarmingActivity.includes('livestock')">
               <div class="input-field2">
@@ -551,7 +562,7 @@
             </div>
               <label>
                 <input type="checkbox" value="poultry" v-model="selectedFarmingActivity" />
-                Poultry,
+                Poultry
               </label>
               <div class="input-field2" v-if="selectedFarmingActivity.includes('poultry')">
               <div class="input-fiel2">
@@ -693,454 +704,184 @@
         </div>
 
         <div v-if="isHovered === 3" id="personalInfoIV" class="personal-info-section">
-          <button type="button" @click="addFarmTable" class="add-farm-table-button">Add Farm Parcel No.</button>
-            <div class="table-container">
-                <!-- Table 1 -->
-                <table id="farmTable1">
-                    <thead>
-                        <tr>
-                            <th>Farm Parcel No.</th>
-                            <th>Farm Land Description</th>
-                            <th>CROP/COMMODITY <br>(Rice/Corn/HVC/Livestock/Poultry/Agri-fishery) <br> For Livestock & Poultry <br>(specify type of animal)</th>
-                            <th>SIZE (ha)</th>
-                            <th>No. of Head <br>(For Livestock and Poultry)</th>
-                            <th>Farm Type</th>
-                            <th>Organic Practitioner <br>(Y/N)</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody id="farmRows1">
-                        <tr class="farmRow">
-                            <td class="parcelNo">1</td>
-                            <td>
-                                <div>
-                                    <b>Farm Location:</b>
-                                    <input type="text" v-model="farmer.farm_location_brgy1" class="farm-location-input" required>
-                                    <div style="text-align: center;">Barangay</div>
-                                    <input type="text" v-model="farmer.farm_location_city_muni1" class="farm-location-input" required>
-                                    <div style="text-align: center;">City/Municipality</div>
-                                    <br>
-                                    <b>Total Farm Area (in hectares):</b> <input type="number" v-model="totalSizeHa" class="ha" required readonly> ha <br>
-                                    <b>Within Ancestral Domain:</b>
-                                    <input type="radio" v-model="selectedAncentralDomain" value="yes" id="yes" required>
-                                    <label for="yes">Yes</label>
-                                    <input type="radio" v-model="selectedAncentralDomain" value="no" id="no" required>
-                                    <label for="no">No</label><br>
-                                    <b>Ownership Document No.:</b> <input type="text" v-model="farmer.ownership_document_no_1" class="farm-location-input2" required> <br>
-                                    <b>Agrarian Reform Beneficiary:</b>
-                                    <input type="radio" v-model="selectedAgrarianReform" value="yes" id="yes" required>
-                                    <label for="yes">Yes</label>
-                                    <input type="radio" v-model="selectedAgrarianReform" value="no" id="no" required>
-                                    <label for="no">No</label><br>
-                                    <b>Ownership Type:</b>
-                                    <input type="radio" v-model="selectedRegisterOwner" value="Register Owner" id="Register Owner" required>
-                                    <label for="Register Owner">Register Owner</label>
-                                    <input type="radio" v-model="selectedRegisterOwner" value="Others" id="Others" required>
-                                    <label for="Others">Others</label><br>
-                                    Tenant(Name of Land Owner: <input type="text" v-model="farmer.tenant_1" class="farm-location-input2" required>)<br>
-                                    Lessee(Name of Land Owner: <input type="text" v-model="farmer.lessee_1" class="farm-location-input2" required>)
-                                </div>
-                            </td>
-                            <td>
-                              <button class="add-crops" type="button" @click="toggleCropInput">Add Crops</button>
-                              <div class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity1_1" required spellcheck="false"/>
-                                <label>Crops / Commodity (1):</label>
-                              </div>
-                              <div v-if="showCropInput2" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity1_2" required spellcheck="false"/>
-                                <label>Crops / Commodity (2):</label>
-                              </div>
-                              <div v-if="showCropInput3" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity1_3" required spellcheck="false" />
-                                <label>Crops / Commodity (3):</label>
-                              </div>
-                              <div v-if="showCropInput4" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity1_4" required spellcheck="false" />
-                                <label>Crops / Commodity (4):</label>
-                              </div>
-                              <div v-if="showCropInput5" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity1_5" required spellcheck="false" />
-                                <label>Crops / Commodity (5):</label>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_1" required spellcheck="false" step="any" />
-                                <label>Size (ha) (1):</label>
-                              </div>
-                              <div v-if="showSizeHa2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_2" required spellcheck="false" step="any" />
-                                <label>Size (ha) (2):</label>
-                              </div>
-                              <div v-if="showSizeHa3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_3" required spellcheck="false" step="any" />
-                                <label>Size (ha) (3):</label>
-                              </div>
-                              <div v-if="showSizeHa4" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_4" required spellcheck="false" step="any" />
-                                <label>Size (ha) (4):</label>
-                              </div>
-                              <div v-if="showSizeHa5" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa1_5" required spellcheck="false" step="any" />
-                                <label>Size (ha) (5):</label>
-                              </div>
-                              <!-- <div class="total-size">
-                                <p>Total Size (ha): {{ totalSizeHa }}</p>
-                              </div> -->
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_1" required spellcheck="false" step="any" />
-                                <label>No. of Heads (1):</label>
-                              </div>
-                              <div v-if="showNoOfHeads2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_2" required spellcheck="false" step="any" />
-                                <label>No. of Heads (2):</label>
-                              </div>
-                              <div v-if="showNoOfHeads3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_3" required spellcheck="false" step="any" />
-                                <label>No. of Heads (3):</label>
-                              </div>
-                              <div v-if="showNoOfHeads4" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_4" required spellcheck="false" step="any" />
-                                <label>No. of Heads (4):</label>
-                              </div>
-                              <div v-if="showNoOfHeads5" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head1_5" required spellcheck="false" step="any" />
-                                <label>No. of Heads (5):</label>
-                              </div>
-                              
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <select v-model="selectedFarmType" required spellcheck="false" class="black-select">
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                </select>
-                                <label>Farm Type:</label>
-                                <span class="arrow-down1"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <select v-model="selectedOrganicPractitioner" required spellcheck="false" class="black-select">
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </select>
-                                <label>Practitioner:</label>
-                                <span class="arrow-down1"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field2">
-                                <textarea type="text" v-model="farmer.remarks1" required spellcheck="false"/>
-                              </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!-- Table 2 -->
-                <table v-if="showFarmTable2" id="farmTable2">
-                    <thead>
-                        <tr>
-                            <th>Farm Parcel No.</th>
-                            <th>Farm Land Description</th>
-                            <th>CROP/COMMODITY <br>(Rice/Corn/HVC/Livestock/Poultry/Agri-fishery) <br> For Livestock & Poultry <br>(specify type of animal)</th>
-                            <th>SIZE (ha)</th>
-                            <th>No. of Head <br>(For Livestock and Poultry)</th>
-                            <th>Farm Type</th>
-                            <th>Organic Practitioner <br>(Y/N)</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody id="farmRows2">
-                        <tr class="farmRow">
-                            <td class="parcelNo">2</td>
-                            <td>
-                              <div>
-                                    <b>Farm Location:</b>
-                                    <input type="text" v-model="farmer.farm_location_brgy2" class="farm-location-input">
-                                    <div style="text-align: center;">Barangay</div>
-                                    <input type="text" v-model="farmer.farm_location_city_muni2" class="farm-location-input">
-                                    <div style="text-align: center;">City/Municipality</div>
-                                    <br>
-                                    <b>Total Farm Area (in hectares):</b> <input type="number" v-model="totalSizeHa2" class="ha" required readonly> ha <br>
-                                    <b>Within Ancestral Domain:</b>
-                                    <input type="radio" v-model="selectedAncentralDomain2" value="yes" id="yes">
-                                    <label for="yes">Yes</label>
-                                    <input type="radio" v-model="selectedAncentralDomain2" value="no" id="no">
-                                    <label for="no">No</label><br>
-                                    <b>Ownership Document No.:</b> <input type="text" v-model="farmer.ownership_document_no_2" class="farm-location-input2"> <br>
-                                    <b>Agrarian Reform Beneficiary:</b>
-                                    <input type="radio" v-model="selectedAgrarianReform2" value="yes" id="yes">
-                                    <label for="yes">Yes</label>
-                                    <input type="radio" v-model="selectedAgrarianReform2" value="no" id="no">
-                                    <label for="no">No</label><br>
-                                    <b>Ownership Type:</b>
-                                    <input type="radio" v-model="selectedRegisterOwner2" value="Register Owner" id="Register Owner">
-                                    <label for="Register Owner">Register Owner</label>
-                                    <input type="radio" v-model="selectedRegisterOwner2" value="Others" id="Others">
-                                    <label for="Others">Others</label><br>
-                                    Tenant(Name of Land Owner: <input type="text" v-model="farmer.tenant_2" class="farm-location-input2">)<br>
-                                    Lessee(Name of Land Owner: <input type="text" v-model="farmer.lessee_2" class="farm-location-input2">)
-                                </div>
-                            </td>
-                            <td>
-                              <button class="add-crops" type="button" @click="toggleCropInput2">Add Crops</button>
-                              <div class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity2_1" required spellcheck="false"/>
-                                <label>Crops / Commodity (1):</label>
-                              </div>
-                              <div v-if="showCropInput2_2" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity2_2" required spellcheck="false"/>
-                                <label>Crops / Commodity (2):</label>
-                              </div>
-                              <div v-if="showCropInput3_2" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity2_3" required spellcheck="false" />
-                                <label>Crops / Commodity (3):</label>
-                              </div>
-                              <div v-if="showCropInput4_2" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity2_4" required spellcheck="false" />
-                                <label>Crops / Commodity (4):</label>
-                              </div>
-                              <div v-if="showCropInput5_2" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity2_5" required spellcheck="false" />
-                                <label>Crops / Commodity (5):</label>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_1" required spellcheck="false" step="any" />
-                                <label>Size (ha) (1):</label>
-                              </div>
-                              <div v-if="showSizeHa2_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_2" required spellcheck="false" step="any" />
-                                <label>Size (ha) (2):</label>
-                              </div>
-                              <div v-if="showSizeHa3_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_3" required spellcheck="false" step="any" />
-                                <label>Size (ha) (3):</label>
-                              </div>
-                              <div v-if="showSizeHa4_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_4" required spellcheck="false" step="any" />
-                                <label>Size (ha) (4):</label>
-                              </div>
-                              <div v-if="showSizeHa5_2" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa2_5" required spellcheck="false" step="any" />
-                                <label>Size (ha) (5):</label>
-                              </div>
-                              <!-- <div class="total-size">
-                                <p>Total Size (ha): {{ totalSizeHa }}</p>
-                              </div> -->
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_1" required spellcheck="false" step="any" />
-                                <label>No. of Heads (1):</label>
-                              </div>
-                              <div v-if="showNoOfHeads2_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_2" required spellcheck="false" step="any" />
-                                <label>No. of Heads (2):</label>
-                              </div>
-                              <div v-if="showNoOfHeads3_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_3" required spellcheck="false" step="any" />
-                                <label>No. of Heads (3):</label>
-                              </div>
-                              <div v-if="showNoOfHeads4_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_4" required spellcheck="false" step="any" />
-                                <label>No. of Heads (4):</label>
-                              </div>
-                              <div v-if="showNoOfHeads5_2" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head2_5" required spellcheck="false" step="any" />
-                                <label>No. of Heads (5):</label>
-                              </div>
-                              
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <select v-model="selectedFarmType2" required spellcheck="false" class="black-select">
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                </select>
-                                <label>Farm Type:</label>
-                                <span class="arrow-down1"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <select v-model="selectedOrganicPractitioner2" required spellcheck="false" class="black-select">
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </select>
-                                <label>Practitioner:</label>
-                                <span class="arrow-down1"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field2">
-                                <textarea type="text" v-model="farmer.remarks2" required spellcheck="false"/>
-                              </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!-- Table 3 -->
-                <table v-if="showFarmTable3" id="farmTable3">
-                    <thead>
-                        <tr>
-                          <th>Farm Parcel No.</th>
-                            <th>Farm Land Description</th>
-                            <th>CROP/COMMODITY <br>(Rice/Corn/HVC/Livestock/Poultry/Agri-fishery) <br> For Livestock & Poultry <br>(specify type of animal)</th>
-                            <th>SIZE (ha)</th>
-                            <th>No. of Head <br>(For Livestock and Poultry)</th>
-                            <th>Farm Type</th>
-                            <th>Organic Practitioner <br>(Y/N)</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody id="farmRows3">
-                        <tr class="farmRow">
-                            <td class="parcelNo">3</td>
-                            <td>
-                              <div>
-                                    <b>Farm Location:</b>
-                                    <input type="text" v-model="farmer.farm_location_brgy3" class="farm-location-input">
-                                    <div style="text-align: center;">Barangay</div>
-                                    <input type="text" v-model="farmer.farm_location_city_muni3" class="farm-location-input">
-                                    <div style="text-align: center;">City/Municipality</div>
-                                    <br>
-                                    <b>Total Farm Area (in hectares):</b> <input type="number" v-model="totalSizeHa3" class="ha" required readonly> ha <br>
-                                    <b>Within Ancestral Domain:</b>
-                                    <input type="radio" v-model="selectedAncentralDomain3" value="yes" id="yes">
-                                    <label for="yes">Yes</label>
-                                    <input type="radio" v-model="selectedAncentralDomain3" value="no" id="no">
-                                    <label for="no">No</label><br>
-                                    <b>Ownership Document No.:</b> <input type="text" v-model="farmer.ownership_document_no_3" class="farm-location-input2"> <br>
-                                    <b>Agrarian Reform Beneficiary:</b>
-                                    <input type="radio" v-model="selectedAgrarianReform3" value="yes" id="yes">
-                                    <label for="yes">Yes</label>
-                                    <input type="radio" v-model="selectedAgrarianReform3" value="no" id="no">
-                                    <label for="no">No</label><br>
-                                    <b>Ownership Type:</b>
-                                    <input type="radio" v-model="selectedRegisterOwner3" value="Register Owner" id="Register Owner">
-                                    <label for="Register Owner">Register Owner</label>
-                                    <input type="radio" v-model="selectedRegisterOwner3" value="Others" id="Others">
-                                    <label for="Others">Others</label><br>
-                                    Tenant(Name of Land Owner: <input type="text" v-model="farmer.tenant_3" class="farm-location-input2">)<br>
-                                    Lessee(Name of Land Owner: <input type="text" v-model="farmer.lessee_3" class="farm-location-input2">)
-                                </div>
-                            </td>
-                            <td>
-                              <button class="add-crops" type="button" @click="toggleCropInput3">Add Crops</button>
-                              <div class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity3_1" required spellcheck="false"/>
-                                <label>Crops / Commodity (1):</label>
-                              </div>
-                              <div v-if="showCropInput2_3" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity3_2" required spellcheck="false"/>
-                                <label>Crops / Commodity (2):</label>
-                              </div>
-                              <div v-if="showCropInput3_3" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity3_3" required spellcheck="false" />
-                                <label>Crops / Commodity (3):</label>
-                              </div>
-                              <div v-if="showCropInput4_3" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity3_4" required spellcheck="false" />
-                                <label>Crops / Commodity (4):</label>
-                              </div>
-                              <div v-if="showCropInput5_3" class="input-field1">
-                                <input type="text" v-model="farmer.crop_commodity3_5" required spellcheck="false" />
-                                <label>Crops / Commodity (5):</label>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_1" required spellcheck="false" step="any" />
-                                <label>Size (ha) (1):</label>
-                              </div>
-                              <div v-if="showSizeHa2_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_2" required spellcheck="false" step="any" />
-                                <label>Size (ha) (2):</label>
-                              </div>
-                              <div v-if="showSizeHa3_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_3" required spellcheck="false" step="any" />
-                                <label>Size (ha) (3):</label>
-                              </div>
-                              <div v-if="showSizeHa4_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_4" required spellcheck="false" step="any" />
-                                <label>Size (ha) (4):</label>
-                              </div>
-                              <div v-if="showSizeHa5_3" class="input-field1">
-                                <input type="number" v-model="farmer.sizeHa3_5" required spellcheck="false" step="any" />
-                                <label>Size (ha) (5):</label>
-                              </div>
-                              <!-- <div class="total-size">
-                                <p>Total Size (ha): {{ totalSizeHa }}</p>
-                              </div> -->
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_1" required spellcheck="false" step="any" />
-                                <label>No. of Heads (1):</label>
-                              </div>
-                              <div v-if="showNoOfHeads2_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_2" required spellcheck="false" step="any" />
-                                <label>No. of Heads (2):</label>
-                              </div>
-                              <div v-if="showNoOfHeads3_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_3" required spellcheck="false" step="any" />
-                                <label>No. of Heads (3):</label>
-                              </div>
-                              <div v-if="showNoOfHeads4_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_4" required spellcheck="false" step="any" />
-                                <label>No. of Heads (4):</label>
-                              </div>
-                              <div v-if="showNoOfHeads5_3" class="input-field1">
-                                <input type="number" v-model="farmer.no_of_head3_5" required spellcheck="false" step="any" />
-                                <label>No. of Heads (5):</label>
-                              </div>
-                              
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <select v-model="selectedFarmType3" required spellcheck="false" class="black-select">
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                </select>
-                                <label>Farm Type:</label>
-                                <span class="arrow-down1"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field1">
-                                <select v-model="selectedOrganicPractitioner3" required spellcheck="false" class="black-select">
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </select>
-                                <label>Practitioner:</label>
-                                <span class="arrow-down1"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-field2">
-                                <textarea type="text" v-model="farmer.remarks3" required spellcheck="false"/>
-                              </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> 
-                <div class="button-container">
-                  <button class="preview1-button" @click="changeHover(2)">Preview</button>
-                  <button type="submit" class="submit-button" >Submit</button> 
-                </div> 
-                <!-- <button class="preview-button" @click="changeHover(2)">Preview</button>
-                <button type="submit" class="submit-button" style="display: block; margin: 0 auto;">Submit</button>       -->
+        <button type="button" @click="addFarmTable" class="add-farm-table-button">
+          <i class="fas fa-plus"></i>
+        </button>
+        <div v-for="(parcel, index) in farmParcels" :key="index" class="table-container" style="color: black;">
+          <div class="parcel-header">
+            Farm Parcel {{ index + 1 }}
+            <button type="button" class="remove-parcel-button" @click="removeFarmTable(index)">x</button>
+          </div>
+          <br>
+
+          <!-- Parcel Row -->
+          <div v-if="parcel.isPreview" class="row1">
+            <div class="input-field">
+              <input
+                type="text"
+                v-model="parcel.barangay"
+                required
+                spellcheck="false"
+              />
+              <label>Barangay:</label>
             </div>
+
+            <div class="input-field">
+              <input
+                type="text"
+                v-model="parcel.city_municipality"
+                required
+                spellcheck="false"
+              />
+              <label>City/Municipality:</label>
+            </div>
+
+            <div class="input-field">
+              <input
+                type="text"
+                v-model="parcel.total_farm_area_ha"
+                required
+                spellcheck="false"
+              />
+              <label>Total Farm Area:</label>
+            </div>
+            <div class="input-field">
+              <input
+                type="text"
+                v-model="parcel.ownership_document_no"
+                required
+                spellcheck="false"
+              />
+              <label>Ownership Document:</label>
+            </div>
+            <div class="input-field">
+              <select v-model="parcel.with_ancestral_domain" required spellcheck="false" class="black-select" >
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label>With Ancestral Domain:</label>
+              <span class="arrow-down"></span>
+            </div>
+            <div class="input-field">
+              <select v-model="parcel.agrarian_reform_beneficiary" required spellcheck="false" class="black-select" >
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label>Agrarian Reform Beneficiary:</label>
+              <span class="arrow-down"></span>
+            </div>
+            <div class="input-field">
+              <select v-model="parcel.ownership_type" required spellcheck="false" class="black-select" >
+                <option value="registered owner">registered owner</option>
+                <option value="other">other</option>
+              </select>
+              <label>Ownership Type:</label>
+              <span class="arrow-down"></span>
+            </div>
+            <div class="input-field">
+              <input
+                type="text"
+                v-model="parcel.tenant"
+                required
+                spellcheck="false"
+              />
+              <label>Tenant:</label>
+            </div>
+            <div class="input-field">
+              <input
+                type="text"
+                v-model="parcel.lessee"
+                required
+                spellcheck="false"
+              />
+              <label>Lessee:</label>
+            </div>
+          </div>
+
+          <div v-if="!parcel.isPreview" class="row">
+            <!-- Loop through each table for "Crop/Livestock" and "Area Size" -->
+            <div v-for="(table, tableIndex) in parcel.tables" :key="tableIndex" class="row">
+
+            <div class="input-field">
+              <select v-model="table.category" required spellcheck="false" class="black-select" >
+                <option value="Crop Commodity">Crop Commodity</option>
+                <option value="Livestock">Livestock</option>
+              </select>
+              <label>Category ({{ tableIndex + 1 }}):</label>
+              <span class="arrow-down"></span>
+            </div>
+
+              <div v-if="table.category === 'Crop Commodity' || table.category === 'Livestock'" class="input-field">
+                <input
+                  type="text"
+                  v-model="table.crop_livestock"
+                  required
+                  spellcheck="false"
+                />
+                <label>Crop/Livestock ({{ tableIndex + 1 }}):</label>
+              </div>
+
+              <div class="input-field" v-if="table.category === 'Crop Commodity'" >
+                <input
+                  type="text"
+                  v-model="table.size"
+                  required
+                  spellcheck="false"
+                />
+                <label>Size ({{ tableIndex + 1 }}):</label>
+              </div> 
+              <div class="input-field" v-if="table.category === 'Livestock'" >
+                <input
+                  type="text"
+                  v-model="table.no_of_heads"
+                  required
+                  spellcheck="false"
+                />
+                <label>No of Heads ({{ tableIndex + 1 }}):</label>
+              </div>
+              <div class="input-field">
+              <select v-model="table.farm_type" required spellcheck="false" class="black-select" >
+                <option value="(1)Irrigated">(1)Irrigated</option>
+                <option value="(2)Rainfed Upland">(2)Rainfed Upland</option>
+                <option value="(3)Rainfed Lowland">(3)Rainfed Lowland</option>
+              </select>
+              <label>Farm Type ({{ tableIndex + 1 }}):</label>
+              <span class="arrow-down"></span>
+            </div>
+            <div class="input-field">
+              <select v-model="table.organic_practitioner" required spellcheck="false" class="black-select" >
+                <option value="yes">yes</option>
+                <option value="no">no</option>
+              </select>
+              <label>Organic Practitioner ({{ tableIndex + 1 }}):</label>
+              <span class="arrow-down"></span>
+            </div>
+            <div class="input-field" >
+                <input
+                  type="text"
+                  v-model="table.remarks"
+                  required
+                  spellcheck="false"
+                />
+                <label>Remarks ({{ tableIndex + 1 }}):</label>
+              </div>
+            </div>
+          </div>
+          <div v-if="!parcel.isPreview" class="actions right-align">
+              <button type="button" @click="previewParcel(index)">Preview</button>
+              <button type="button" @click="addInputBox(index)">Add Parcel Table</button>
+          </div>
+          <div v-if="parcel.isPreview" class="actions right-align">
+              <button type="button" @click="nextParcel(index)">Next</button>
+          </div>
+
         </div>
+          <div class="button-container">
+          <button class="preview1-button" @click="changeHover(2)">Preview</button>
+            <button type="submit" class="submit-button" >Submit</button> 
+          </div>
+        </div>
+        
 
         <div v-if="alertMessage" class="alert-box">
           <i class="fa-regular fa-circle-check fa-5x" style="color: #63E6BE;"></i>
@@ -1166,145 +907,49 @@ import axios from 'axios';
 const router = useRouter();
 const isHovered = ref(1); 
 const alertMessage = ref(''); 
-const showFarmTable2 = ref(false);
-const showFarmTable3 = ref(false); 
-const showCropInput2 = ref(false);
-const showCropInput3 = ref(false);
-const showCropInput4 = ref(false);
-const showCropInput5 = ref(false);
-const showSizeHa2 = ref(false);
-const showSizeHa3 = ref(false);
-const showSizeHa4 = ref(false);
-const showSizeHa5 = ref(false);
-const showNoOfHeads2 = ref(false);
-const showNoOfHeads3 = ref(false);
-const showNoOfHeads4 = ref(false);
-const showNoOfHeads5 = ref(false);
-const showCropInput2_2 = ref(false);
-const showCropInput3_2 = ref(false);
-const showCropInput4_2 = ref(false);
-const showCropInput5_2 = ref(false);
-const showSizeHa2_2 = ref(false);
-const showSizeHa3_2 = ref(false);
-const showSizeHa4_2 = ref(false);
-const showSizeHa5_2 = ref(false);
-const showNoOfHeads2_2 = ref(false);
-const showNoOfHeads3_2 = ref(false);
-const showNoOfHeads4_2 = ref(false);
-const showNoOfHeads5_2 = ref(false);
-const showCropInput2_3 = ref(false);
-const showCropInput3_3 = ref(false);
-const showCropInput4_3 = ref(false);
-const showCropInput5_3 = ref(false);
-const showSizeHa2_3 = ref(false);
-const showSizeHa3_3 = ref(false);
-const showSizeHa4_3 = ref(false);
-const showSizeHa5_3 = ref(false);
-const showNoOfHeads2_3 = ref(false);
-const showNoOfHeads3_3 = ref(false);
-const showNoOfHeads4_3 = ref(false);
-const showNoOfHeads5_3 = ref(false);
-
-let clickCount = 0; 
+const farmParcels = ref([]);
+const clickCount = ref(0);
 
 const addFarmTable = () => {
-  clickCount++;
-  
-  if (clickCount === 1) {
-    showFarmTable2.value = true; // First click
-  } else if (clickCount === 2) {
-    showFarmTable3.value = true; // Second click
-    clickCount = 0; // Reset clickCount for future toggles
+  farmParcels.value.push({
+    farmer_id: null, // This will be assigned upon submit
+    barangay: '',
+    city_municipality: '',
+    total_farm_area_ha: '',
+    ownership_document_no: '',
+    with_ancestral_domain: '',
+    agrarian_reform_beneficiary: '',
+    ownership_type: '',
+    tenant: '',
+    lessee: '',
+    isPreview: true,
+    tables: [], // To store additional related data
+  });
+  clickCount.value++;
+};
+
+const removeFarmTable = (index) => {
+  farmParcels.value.splice(index, 1);
+  if (clickCount.value > 0) {
+    clickCount.value--;
   }
 };
-const toggleCropInput = () => {
-      // Show inputs sequentially based on button clicks
-      if (!showCropInput2.value && !showNoOfHeads2.value && !showSizeHa2.value) {
-        showCropInput2.value = true;
-        showNoOfHeads2.value = true;
-        showSizeHa2.value = true;
-      }else if (!showCropInput3.value && !showNoOfHeads3.value && !showSizeHa3.value) {
-        showCropInput3.value = true;
-        showNoOfHeads3.value = true;
-        showSizeHa3.value = true;
-      } else if (!showCropInput4.value && !showNoOfHeads4.value && !showSizeHa4.value) {
-        showCropInput4.value = true;
-        showNoOfHeads4.value = true;
-        showSizeHa4.value = true;
-      }else if (!showCropInput5.value && !showNoOfHeads5.value && !showSizeHa5.value) {
-        showCropInput5.value = true;
-        showNoOfHeads5.value = true;
-        showSizeHa5.value = true;
-      } 
-    };
-    const toggleCropInput2 = () => {
-      // Show inputs sequentially based on button clicks
-      if (!showCropInput2_2.value && !showNoOfHeads2_2.value && !showSizeHa2_2.value) {
-        showCropInput2_2.value = true;
-        showNoOfHeads2_2.value = true;
-        showSizeHa2_2.value = true;
-      }else if (!showCropInput3_2.value && !showNoOfHeads3_2.value && !showSizeHa3_2.value) {
-        showCropInput3_2.value = true;
-        showNoOfHeads3_2.value = true;
-        showSizeHa3_2.value = true;
-      } else if (!showCropInput4_2.value && !showNoOfHeads4_2.value && !showSizeHa4_2.value) {
-        showCropInput4_2.value = true;
-        showNoOfHeads4_2.value = true;
-        showSizeHa4_2.value = true;
-      }else if (!showCropInput5_2.value && !showNoOfHeads5_2.value && !showSizeHa5_2.value) {
-        showCropInput5_2.value = true;
-        showNoOfHeads5_2.value = true;
-        showSizeHa5_2.value = true;
-      } 
-    };
-    const toggleCropInput3 = () => {
-      // Show inputs sequentially based on button clicks
-      if (!showCropInput2_3.value && !showNoOfHeads2_3.value && !showSizeHa2_3.value) {
-        showCropInput2_3.value = true;
-        showNoOfHeads2_3.value = true;
-        showSizeHa2_3.value = true;
-      }else if (!showCropInput3_3.value && !showNoOfHeads3_3.value && !showSizeHa3_3.value) {
-        showCropInput3_3.value = true;
-        showNoOfHeads3_3.value = true;
-        showSizeHa3_3.value = true;
-      } else if (!showCropInput4_3.value && !showNoOfHeads4_3.value && !showSizeHa4_3.value) {
-        showCropInput4_3.value = true;
-        showNoOfHeads4_3.value = true;
-        showSizeHa4_3.value = true;
-      }else if (!showCropInput5_3.value && !showNoOfHeads5_3.value && !showSizeHa5_3.value) {
-        showCropInput5_3.value = true;
-        showNoOfHeads5_3.value = true;
-        showSizeHa5_3.value = true;
-      } 
-    };
 
-    const totalSizeHa = computed(() => {
-      return (
-        (farmer.value.sizeHa1_1 || 0) +
-        (farmer.value.sizeHa1_2 || 0) +
-        (farmer.value.sizeHa1_3 || 0) +
-        (farmer.value.sizeHa1_4 || 0) +
-        (farmer.value.sizeHa1_5 || 0)
-      );
-    });
-    const totalSizeHa2 = computed(() => {
-      return (
-        (farmer.value.sizeHa2_1 || 0) +
-        (farmer.value.sizeHa2_2 || 0) +
-        (farmer.value.sizeHa2_3 || 0) +
-        (farmer.value.sizeHa2_4 || 0) +
-        (farmer.value.sizeHa2_5 || 0)
-      );
-    });
-    const totalSizeHa3 = computed(() => {
-      return (
-        (farmer.value.sizeHa3_1 || 0) +
-        (farmer.value.sizeHa3_2 || 0) +
-        (farmer.value.sizeHa3_3 || 0) +
-        (farmer.value.sizeHa3_4 || 0) +
-        (farmer.value.sizeHa3_5 || 0)
-      );
-    });
+const nextParcel = (index) => {
+  const parcel = farmParcels.value[index];
+  parcel.isPreview = false;
+};
+
+const previewParcel = (index) => {
+  const parcel = farmParcels.value[index];
+  parcel.isPreview = true;
+};
+
+const addInputBox = (parcelIndex) => {
+  farmParcels.value[parcelIndex].tables.push({
+    crop_livestock: '', // Example field for the input box
+  });
+};
 
 const farmer = ref({
   enrollment_type: 'New',
@@ -1359,37 +1004,10 @@ const farmer = ref({
   for_farmworkers_other: '',
   for_fishfolk_other: '',
   for_agri_youth_other: '',
-  no_of_head1_1:'0',
-  no_of_head1_2:'0',
-  no_of_head1_3:'0',
-  no_of_head1_4:'0',
-  no_of_head1_5:'0',
-  no_of_head2_1:'0',
-  no_of_head2_2:'0',
-  no_of_head2_3:'0',
-  no_of_head2_4:'0',
-  no_of_head2_5:'0',
-  no_of_head3_1:'0',
-  no_of_head3_2:'0',
-  no_of_head3_3:'0',
-  no_of_head3_4:'0',
-  no_of_head3_5:'0',
-});
-// Image upload handling
-// const onImageSelected = (event) => {
-//    const file = event.target.files[0];
-//    if (file) {
-//      const reader = new FileReader();
-//      reader.onload = (e) => {
-//        farmer.value.image = e.target.result; // Set the base64 image to farmer
-//      };
-//      reader.readAsDataURL(file); // Convert image to base64 string
-//    }
-//  };
-// Add this reactive variable
-const showAdditionalInput = ref(false); // Initialize to false
 
-// New reactive variables to handle selections
+});
+const showAdditionalInput = ref(false); 
+
 const selectedSex = ref('');
 const selectedReligion = ref('');
 const selectedCivilStatus = ref('');
@@ -1405,53 +1023,42 @@ const selectedFarmingActivity = ref([]);
 const selectedFarmorker = ref([]); 
 const selectedFishfolk = ref([]);
 const selectedForAgriYouth = ref([]);
-const selectedAncentralDomain = ref('');
-const selectedAgrarianReform = ref('');
-const selectedRegisterOwner = ref('');
-const selectedAncentralDomain2 = ref('');
-const selectedAgrarianReform2 = ref('');
-const selectedRegisterOwner2 = ref('');
-const selectedAncentralDomain3 = ref('');
-const selectedAgrarianReform3 = ref('');
-const selectedRegisterOwner3 = ref('');
-const selectedOrganicPractitioner = ref('');
-const selectedFarmType = ref('');
-const selectedOrganicPractitioner2 = ref('');
-const selectedFarmType2 = ref('');
-const selectedOrganicPractitioner3 = ref('');
-const selectedFarmType3 = ref('');
 
-// Computed properties to check if "Other" is selected
 const isOtherSexSelected = computed(() => selectedSex.value === 'Other');
 const isOtherSelected = computed(() => selectedReligion.value === 'Other');
 const isOtherCivilStatusSelected = computed(() => selectedCivilStatus.value === 'Other');
 const isOtherHighestFormalEduc = computed(() => selectedHighestFormalEduc.value === 'Other');
 
-
-// Watch selectedMainLivelihood to update farmer's main livelihood
 watch(selectedMainLivelihood, (newVal) => {
-  farmer.value.main_livelihood = newVal; // Update based on selected checkboxes
+  farmer.value.main_livelihood = newVal; 
 });
-// Watch selectedFarmingActivity to update farmer's type_of_farming_activity
 watch(selectedFarmingActivity, (newVal) => {
-  farmer.value.type_of_farming_activity = newVal; // Update based on selected checkboxes
+  farmer.value.type_of_farming_activity = newVal; 
 });
 
 watch(selectedFarmorker, (newVal) => {
-  farmer.value.farmworkers_kind_of_work = newVal; // Update based on selected checkboxes
+  farmer.value.farmworkers_kind_of_work = newVal; 
 });
 watch(selectedFishfolk, (newVal) => {
-  farmer.value.for_fisherfolk = newVal; // Update based on selected checkboxes
+  farmer.value.for_fisherfolk = newVal; 
 });
 watch(selectedForAgriYouth, (newVal) => {
-  farmer.value.for_agri_youth = newVal; // Update based on selected checkboxes
+  farmer.value.for_agri_youth = newVal; 
 });
 
 const changeHover = (index) => {
   isHovered.value = index; 
 };
+// const validateInputs = () => {
+//       if (!farmer.value.enrollment_type || !farmer.value.reference_number || !farmer.value.surname || !farmer.value.first_name || !farmer.value.middle_name || !farmer.value.house_lot_bldg_no_purok
+//       || !farmer.value.street_sitio_subdv || !farmer.value.mobile_number || !farmer.value.date_of_birth || !farmer.value.place_of_birth || !farmer.value.place_of_birth_province_state || !farmer.value.place_of_birth_country || !farmer.value.mothers_maiden_name
+//       || !farmer.value.person_to_notify_in_case_of_emergency || !farmer.value.contact_number ) {
+//         return;
+//       }
+//       changeHover(2); 
+//     };
 
-// Function to log activity (email, time, and action) to localStorage
+
 const logActivity = async (email, action) => {
   const token = localStorage.getItem('auth_token'); 
   try {
@@ -1464,8 +1071,7 @@ const logActivity = async (email, action) => {
         Authorization: `Bearer ${token}`
       }
     });
-    
-    // Increment unread notifications
+
     const unreadCount = parseInt(localStorage.getItem('unread_notifications')) || 0;
     localStorage.setItem('unread_notifications', unreadCount + 1);
     
@@ -1473,10 +1079,8 @@ const logActivity = async (email, action) => {
     console.error('Failed to log activity:', error);
   }
 };
-// Function to submit the form
 const submitForm = async () => {
   try {
-    // Set farmer information based on selected values
     farmer.value.sex = selectedSex.value === 'Other' ? farmer.value.sex : selectedSex.value;
     farmer.value.religion = selectedReligion.value === 'Other' ? farmer.value.religion : selectedReligion.value;
     farmer.value.civil_status = selectedCivilStatus.value === 'Other' ? farmer.value.civil_status : selectedCivilStatus.value;
@@ -1492,45 +1096,66 @@ const submitForm = async () => {
     farmer.value.farmworkers_kind_of_work = selectedFarmorker.value;
     farmer.value.for_fisherfolk = selectedFishfolk.value;
     farmer.value.for_agri_youth = selectedForAgriYouth.value;
-    farmer.value.ancestral_domain_1 = selectedAncentralDomain.value;
-    farmer.value.agrarian_reform_1 = selectedAgrarianReform.value;
-    farmer.value.registered_owner_1 = selectedRegisterOwner.value;
-    farmer.value.ancestral_domain_2 = selectedAncentralDomain2.value;
-    farmer.value.agrarian_reform_2 = selectedAgrarianReform2.value;
-    farmer.value.registered_owner_2 = selectedRegisterOwner2.value;
-    farmer.value.ancestral_domain_3 = selectedAncentralDomain3.value;
-    farmer.value.agrarian_reform_3 = selectedAgrarianReform3.value;
-    farmer.value.registered_owner_3 = selectedRegisterOwner3.value;
-    farmer.value.organic_practitioner1 = selectedOrganicPractitioner.value;
-    farmer.value.farm_type1 = selectedFarmType.value;
-    farmer.value.organic_practitioner2 = selectedOrganicPractitioner2.value;
-    farmer.value.farm_type2 = selectedFarmType2.value;
-    farmer.value.organic_practitioner3 = selectedOrganicPractitioner3.value;
-    farmer.value.farm_type3 = selectedFarmType3.value;
 
-    // Retrieve token and email from localStorage
     const token = localStorage.getItem('auth_token');
     const refreshToken = localStorage.getItem('refresh_token');
     const email = localStorage.getItem('email');
-
+    
     if (!token || !email) {
       alert('No authentication token or email found. Please log in again.');
       return;
     }
 
-    let response;
     try {
-      // Attempt to make the POST request with the current access token
-      response = await axios.post('http://localhost:8055/items/farmers', farmer.value, {
+    // Create the farmer record
+    const farmerResponse = await axios.post('http://localhost:8055/items/farmers', farmer.value, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const farmerId = farmerResponse.data.data.id;
+
+    // Assign farmer_id to farmParcels and tables
+    farmParcels.value = farmParcels.value.map(parcel => ({
+      ...parcel,
+      farmer_id: farmerId,
+      tables: parcel.tables.map(table => ({
+        ...table,
+        farmer_table_id: farmerId,
+      })),
+    }));
+
+    // Submit `farmParcels` data to Directus
+    const parcelPromises = farmParcels.value.map(parcel => {
+      const { tables, ...parcelData } = parcel; // Exclude 'tables' from main parcel submission
+      return axios.post('http://localhost:8055/items/parcel', parcelData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
+    });
+
+    // Submit `parcelTable` data to Directus
+    const parcelTablePromises = farmParcels.value.flatMap(parcel =>
+      parcel.tables.map(table =>
+        axios.post('http://localhost:8055/items/parcel_table', table, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+      )
+    );
+
+    // Wait for all the requests to complete
+    await Promise.all([...parcelPromises, ...parcelTablePromises]);
+
+
     } catch (error) {
-      // If the request fails with a 401 Unauthorized error (expired token), attempt to refresh the token
       if (error.response && error.response.status === 401) {
-        // Attempt to refresh the token
         const refreshResponse = await axios.post('http://localhost:8055/auth/refresh', {
           refresh_token: refreshToken,
         });
@@ -1539,11 +1164,9 @@ const submitForm = async () => {
           const newAccessToken = refreshResponse.data.data.access_token;
           const newRefreshToken = refreshResponse.data.data.refresh_token;
 
-          // Store new tokens in localStorage
           localStorage.setItem('auth_token', newAccessToken);
           localStorage.setItem('refresh_token', newRefreshToken);
 
-          // Retry the POST request with the new access token
           response = await axios.post('http://localhost:8055/items/farmers', farmer.value, {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,
@@ -1555,33 +1178,27 @@ const submitForm = async () => {
           return;
         }
       } else {
-        // Handle other errors
         console.error('Error creating farmer:', error.response ? error.response.data : error.message);
         alertMessage.value = 'An error occurred while creating the farmer.';
         return;
       }
     }
 
-    // Log activity with email and reference number
     logActivity(email, `Added farmer with reference number: ${farmer.value.reference_number}`);
 
-    // Show success alert
     alertMessage.value = 'Farmer Created Successfully!';
 
-    // Redirect to farmers index page on success
     setTimeout(() => {
       router.push('/farmers/index');
-    }, 2000); // Redirect after 5 seconds
+    }, 2000); 
   } catch (error) {
     console.error('Error submitting form:', error.response ? error.response.data : error.message);
     alertMessage.value = 'An error occurred while creating the farmer.';
   }
 };
 
-
-// Function to close the alert and navigate to farmers index
 const closeAlert = () => {
-  alertMessage.value = ''; // Clear the alert message
+  alertMessage.value = ''; 
   router.push('/farmers/index');
 };
 </script>
@@ -1592,10 +1209,10 @@ const closeAlert = () => {
 .create-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Full height */
-  width: 100vw; /* Full width */
+  height: 100vh; 
+  width: 100vw; 
   background-color: #f2f4f7;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden; 
 }
 
 .content-box {
@@ -1604,32 +1221,32 @@ const closeAlert = () => {
   background-color: #f2f4f7;
   margin-top: 2rem;
   border-radius: 8px;
-  height: auto; /* Allowing flexibility in height */
+  height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto; 
 }
 
 .nav-buttons {
   display: flex;
-  gap: 20px; /* Add space between buttons */
-  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  gap: 20px; 
+  flex-wrap: wrap; 
   margin-left: 60px;
 }
 
 .nav-button {
-  background-color: #387e90; /* Initial background */
-  color: white; /* Black text */
-  border: none; /* No border */
-  padding: 10px 20px; /* Padding for button */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Pointer on hover */
-  font-weight: bold; /* Bold text */
-  transition: background-color 0.3s; /* Smooth transition */
+  background-color: #387e90;
+  color: white; 
+  border: none;
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  cursor: pointer;
+  font-weight: bold; 
+  transition: background-color 0.3s; 
 }
 
 .hover-green {
-  background-color: #46cab6; /* Change background to green on hover */
-  color: white; /* Change text color to white */
+  background-color: #46cab6;
+  color: white; 
 }
 
 .submit-button {
@@ -1637,14 +1254,14 @@ const closeAlert = () => {
   color: white;
   border: none;
   padding: 10px 20px;
-  cursor: pointer; /* Pointer on hover */
-  transition: background-color 0.3s ease; /* Smooth transition */
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
 }
 
 .button-container {
   display: flex;
-  justify-content: center; /* Center the buttons horizontally */
-  gap: 10px; /* Add spacing between buttons */
+  justify-content: center; 
+  gap: 10px; 
   margin-top: 20px;
 }
 
@@ -1677,12 +1294,12 @@ const closeAlert = () => {
 
 
 .submit-button:hover {
-  background-color: darkgreen; /* Darker shade on hover */
+  background-color: darkgreen; 
 }
 .farm-location-input {
     width: 450px;
     display: block;
-    margin: 5px auto 5px auto; /* Center horizontally */
+    margin: 5px auto 5px auto;
     height: 35px;
 }
 
@@ -1693,57 +1310,10 @@ const closeAlert = () => {
 .ha {
     width: 70px;
 }
-.add-farm-table-button {
-    background-color: #4CAF50; 
-    color: white; 
-    border: none; 
-    padding: 10px 20px; 
-    text-align: center; 
-    text-decoration: none; 
-    display: inline-block; 
-    font-size: 16px; 
-    margin: 20px 0; 
-    cursor: pointer; 
-    border-radius: 5px; 
-    transition: background-color 0.3s; 
-}
-
-.add-farm-table-button:hover {
-    background-color: #45a049; /* Darker green on hover */
-}
 .input-field1 {
     position: relative;
     height: 70px;
-    /* height: 350px; */
 }
-
-.input-field1 select {
-    border-radius: 6px;
-    font-size: 15px;
-    padding: 0 15px;
-    border: 1px solid black;
-    background: transparent;
-    color: black;
-    outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
-    width: 150px; 
-    height: 50px;
-}
-.input-field1 input {
-    width: 240px;
-    height: 50px;
-    border-radius: 6px;
-    font-size: 15px;
-    padding: 0 15px;
-    border: 1px solid black;
-    background: transparent;
-    color: black;
-    outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
-}
-
 
 .input-field2 input {
     width: 210px;
@@ -1754,53 +1324,10 @@ const closeAlert = () => {
     border-bottom: 1px solid black;
     background: transparent;
     color: black;
-    outline: none; /* Removes the default focus outline */
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
-    transition: border-color 0.3s ease; /* Smooth transition for focus effect */
-}
-
-.input-field2 textarea {
-    width: 150px;
-    height: 350px;
-    border-radius: 6px;
-    font-size: 15px;
-    padding: 0 15px;
-    border: 1px solid black;
-    background: transparent;
-    color: black;
-    outline: none;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow for Safari */
-}
-
-.input-field1 .icon {
-    position: absolute;
-    right: 20px; /* Position the icon */
-    top: 50%;
-    transform: translateY(-50%); /* Center the icon vertically */
-    font-size: 24px; /* Size of the icon */
-    pointer-events: none; /* Allow clicks on select */
-}
-
-
-.input-field1 label {
-    position: absolute;
-    top: 35%;
-    left: 15px;
-    transform: translateY(-50%);
-    color: black;
-    font-size: 15px;
-    pointer-events: none;
-    transition: 0.3s;     
-    }
-    .black-select option {
-    background-color: white;
-    color: black;
-  }
-
-select:focus {
-    border: 2px solid lightgreen;
+    outline: none; 
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.3s ease; 
 }
 
 select:focus ~ label,
@@ -1813,10 +1340,9 @@ select:valid ~ label {
     }
 
   input:focus {
-    outline: none; /* Remove the green outline entirely */
-    box-shadow: 0 0 5px #f8f9fa; /* Add a light green glow instead */
+    outline: none;
+    box-shadow: 0 0 5px #f8f9fa; 
 }
-
 
 input:focus ~ label,
 input:valid ~ label {
@@ -1826,30 +1352,104 @@ input:valid ~ label {
   padding: 0 2px;
   background: #f2f4f7;
 }
-.arrow-down1 {
-    position: absolute;
-    top: 35%;
-    right: 18px; 
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid black; 
-    transform: translateY(-50%);
-    pointer-events: none; 
-}
-.add-crops {
+
+.add-farm-table-button {
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
   color: white;
-  background-color: #387e90;
-  border-color: #387e90;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  position: absolute;
+  right: 40px;
+  top: 32px;
+}
+
+.add-farm-table-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+.container {
+  position: relative;
+}
+
+.table-container {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px dashed #aaa;
+  background-color: #f9f9f9;
+}
+
+.parcel-info {
+  margin-top: 5px;
+}
+.remove-parcel-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  width: 20px; /* Set width for the circle */
+  height: 20px; /* Set height for the circle */
+  display: inline-flex; /* Center content */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  cursor: pointer;
+  border-radius: 50%; /* Make it circular */
+}
+
+.remove-parcel-button:hover {
+  background-color: #d93636;
+}
+.right-align {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 15px; /* Adjust this value as needed */
+}
+
+.actions button {
+    padding: 10px 20px;  /* You can adjust this padding */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.actions button:hover {
+    background-color: #0056b3;
+}
+
+.top-section {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  border: 1px solid #387e90;
-  margin-bottom: 10px;
 }
-.add-crops:hover {
-  background-color: #46cab6; /* Darker shade for hover effect */
-  border-color: #46cab6;
-  color: #f0f0f0; /* Light gray color for text on hover */
+
+.info-box h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: bold;
+  color: black;
+  text-transform: capitalize;
 }
+.info-box h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+  text-transform: capitalize;
+}
+
 
 </style>

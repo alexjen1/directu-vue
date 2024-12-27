@@ -35,7 +35,7 @@ const fetchBarangayData = async () => {
     // Grouping farmers by barangay
     const barangayCount = {};
     farmers.forEach(farmer => {
-      const barangay = farmer.barangay; // Adjust this to your actual field name
+      const barangay = farmer.barangay || "Not Specified";
       barangayCount[barangay] = (barangayCount[barangay] || 0) + 1;
     });
 
@@ -70,6 +70,7 @@ const createBarChart = () => {
           beginAtZero: true,
           ticks: {
             color: 'black', // Set Y-axis label color to white
+            precision: 0
           }
         },
         x: {
@@ -96,7 +97,6 @@ onMounted(fetchBarangayData);
 <style scoped>
 #barangayBarChart {
   width: 100%; /* Full width */
-  max-width: 900px; /* Set a max width for the chart */
   height: 400px; /* Set a fixed height for the chart */
 }
 </style>

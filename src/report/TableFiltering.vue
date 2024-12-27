@@ -56,6 +56,7 @@
 
       <div v-if="selectedColumns.length > 0">
         <div class="download-buttons-container">
+          <p style="color: black; align-self: center;">Total Count: {{ filteredFarmers.length }}</p>
           <button @click="downloadPDF" class="btn btn-primary btn-margin">Download as PDF</button>
           <button @click="downloadCSV" class="btn btn-secondary">Export as CSV</button>
         </div>
@@ -105,7 +106,7 @@ const loading = ref(false);
 const searchQuery = ref(''); // Single search query instead of an array
 const token = localStorage.getItem('auth_token');
 const selectedValue = ref('');
- const lastSelectedColumn = ref('');
+const lastSelectedColumn = ref('');
 const uniqueValues = computed(() => {
   const lastColumn = lastSelectedColumn.value;
   if (!lastColumn) return [];
@@ -351,7 +352,8 @@ input:valid ~ label {
   .table th {
     color: black;
     background-color: white;
-  }
+    border: none !important; /* Ensures the border is removed */
+}
   .table td {
   border-bottom: 1px solid #d7d7d7;
   border-left: none; 

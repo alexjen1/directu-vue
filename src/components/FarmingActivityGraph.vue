@@ -75,8 +75,6 @@ const createFarmingActivityCharts = () => {
   const pieCtx = document.getElementById('farmingActivityPieChart').getContext('2d');
   const barCtx = document.getElementById('farmingActivityBarChart').getContext('2d');
 
-  const totalCount = farmingActivityData.value.reduce((a, b) => a + b, 0); // Calculate total count
-
   const chartColors = [
     '#355265',
     '#6a8d92',
@@ -91,7 +89,9 @@ const createFarmingActivityCharts = () => {
   new Chart(pieCtx, {
     type: 'pie',
     data: {
-      labels: farmingActivityLabels.value,
+      labels: farmingActivityLabels.value.map((label, index) => 
+        `${label} (${farmingActivityData.value[index]})`
+      ),
       datasets: [{
         label: 'Farming Activities',
         data: farmingActivityData.value,
@@ -115,7 +115,7 @@ const createFarmingActivityCharts = () => {
             color: 'black',
             font: {
               family: 'Arial',
-              size: 10, // Adjust font size for pie chart legend
+              size: 10,
             },
           },
         },
@@ -143,22 +143,22 @@ const createFarmingActivityCharts = () => {
           beginAtZero: true,
           ticks: {
             color: 'black',
+            precision: 0
           }
         },
         x: {
           ticks: {
             color: 'black',
             font: {
-              size: 8, // Reduced font size for x-axis labels
+              size: 8,
             },
-            maxRotation: 45, // Rotate labels to prevent overlap
-            minRotation: 45, // Ensure labels are rotated for readability
+            maxRotation: 45,
+            minRotation: 45,
             callback: function(value) {
-              // Truncate long labels
-              if (value.length > 15) {
-                return value.slice(0, 15) + '...'; // Truncate to 15 characters
+              if (farmingActivityLabels.value[value].length > 15) {
+                return farmingActivityLabels.value[value].slice(0, 15) + '...';
               }
-              return value;
+              return farmingActivityLabels.value[value];
             }
           }
         }
@@ -175,7 +175,6 @@ const createFarmingActivityCharts = () => {
   });
 };
 
-
 onMounted(fetchFarmingActivityData);
 </script>
 
@@ -191,20 +190,13 @@ onMounted(fetchFarmingActivityData);
   margin: 10px;
 }
 
-.pie-chart {
+#farmingActivityPieChart {
   width: 100%;
-  max-width: 900px;
   height: 400px;
 }
 
-#farmingActivityPieChart {
-  width: 100%; /* Full width */
-  max-width: 900px; /* Set a max width for the chart */
-  height: 400px; /* Set a fixed height for the chart */}
-
 #farmingActivityBarChart {
-  width: 100%; /* Full width */
-  max-width: 900px; /* Set a max width for the chart */
-  height: 400px; /* Set a fixed height for the chart */
+  width: 100%;
+  height: 400px;
 }
 </style>

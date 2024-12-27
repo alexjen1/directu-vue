@@ -57,7 +57,7 @@ const fetchGroupedFarmers = async () => {
     // Group farmers by highest_formal_education and count occurrences
     const educationCounts = {};
     response.data.data.forEach(farmer => {
-      const education = farmer.highest_formal_education || 'Unknown';
+      const education = farmer.highest_formal_education || 'Not Specified';
       if (educationCounts[education]) {
         educationCounts[education]++;
       } else {

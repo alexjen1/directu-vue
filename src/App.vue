@@ -52,17 +52,6 @@ html, body {
   outline: none;
 }
 
-/* .input-field label {
-  position: absolute;
-  top: 50%;
-  left: 15px;
-  transform: translateY(-50%);
-  color: black;
-  font-size: 19px;
-  pointer-events: none;
-  transition: 0.3s;
-} */
-
 input:focus {
   border-color: #63e6be;
   box-shadow: 0 0 5px rgba(99, 230, 190, 0.5);
@@ -80,13 +69,23 @@ input:valid ~ label {
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin-left: 55px;
-  gap: 10px 60px; /* Gap between the input fields: 10px vertical, 20px horizontal */
+  gap: 10px 90px; 
 }
+.row5 {
+  display: flex;
+  gap: 10px 990px; 
+}
+.row1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Aligns items horizontally at the center */
+  gap: 10px 100px; /* Gap between the input fields: 50px vertical, 100px horizontal */
+}
+
 .input-field-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 150px; /* Gap between the input fields: 10px vertical, 20px horizontal */
+  gap: 10px 150px; 
 }
 
 .input-field {

@@ -35,7 +35,7 @@ const fetchSexData = async () => {
     // Grouping by sex
     const sexCount = {};
     farmers.forEach(farmer => {
-      const sex = farmer.sex; // Adjust to match your field name for sex
+      const sex = farmer.sex || "Not Specified";
       sexCount[sex] = (sexCount[sex] || 0) + 1;
     });
 
